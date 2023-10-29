@@ -4,6 +4,7 @@ namespace Domain.Abstractions
 {
     public interface IUserRepository
     {
-        List<User> GetAll(); 
+        List<User> GetAll();
+        void AddUser(User user);
     }
 }

@@ -1,20 +1,21 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Domain.Abstractions;
 using Domain.Model;
-using Domain.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    [Route("api/users")]
-    public class UsersController : ControllerBase
-    {
-        private readonly IUserRepository repository;
 
-        public UsersController(IUserRepository repository)
+    [Route("api/offers")]
+    public class OffersController : ControllerBase
+    {
+        private readonly IOfferRepository repository;
+
+        public OffersController(IOfferRepository repository)
         {
             this.repository = repository;
         }
 
-        // GET api/users
+        // GET api/offers
         [HttpGet]
         public ActionResult<List<User>> Get()
         {
@@ -23,13 +24,13 @@ namespace Api.Controllers
             return Ok(users);
         }
 
-        // GET api/users/{id}
+        // GET api/offers/{id}
         [HttpGet("{id}")]
         public ActionResult<List<User>> GetByID(int id)
         {
             var users = repository.GetAll();
-            
-            if(id > users.Count)
+
+            if (id > users.Count)
             {
                 return BadRequest();
             }
@@ -37,19 +38,18 @@ namespace Api.Controllers
             return Ok(users[id]);
         }
 
-        // POST api/users (dodawanie nowego u¿ytkownika)
+        // POST api/offers (dodawanie nowej oferty)
         [HttpPost]
-        public ActionResult<User> Create([FromBody] User user)
+        public ActionResult<User> Create([FromBody] Offer offer)
         {
-            if (user == null)
+            if (offer == null)
             {
                 return BadRequest();
             }
-            
-            repository.AddUser(user);
 
-            return CreatedAtAction("GetById", new { id = user.Id }, user);
+            repository.AddOffer(offer);
+
+            return CreatedAtAction("GetById", new { id = offer.Id }, offer);
         }
     }
-
 }
