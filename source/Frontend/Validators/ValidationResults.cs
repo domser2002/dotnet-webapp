@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Frontend.Validators
 {
-    public class ValidationResults
+    public struct ValidationResults
     {
         public bool Success { get; set; }
         public string Message { get; set; }

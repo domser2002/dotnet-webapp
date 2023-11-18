@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Frontend.Validators.Abstractions
 {
-    public interface IOfferEvaluationValidator
+    public interface IValidator
     {
-
+        public void GetRequest();
+        public ValidationResults Validate();
     }
 }
