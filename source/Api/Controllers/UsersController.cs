@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
 using Domain.Abstractions;
+using Frontend.Validators.Abstractions;
+using Frontend.Validators;
 
 namespace Api.Controllers
 {
@@ -8,10 +10,12 @@ namespace Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository repository;
+        private readonly IRegistrationValidator validator;
 
-        public UsersController(IUserRepository repository)
+        public UsersController(IUserRepository repository,IRegistrationValidator validator)
         {
             this.repository = repository;
+            this.validator = validator;
         }
 
         // GET api/users

@@ -1,5 +1,6 @@
 using Api.Infrastructure;
 using Domain.Abstractions;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

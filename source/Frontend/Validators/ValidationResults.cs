@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Frontend.Validators
+﻿namespace Frontend.Validators
 {
-    public struct ValidationResults
+    public class ValidationResults
     {
-        public bool Success { get; set; }
-        public string Message { get; set; }
+        public bool Success { get; }
+        public string Message { get; }
 
-        public ValidationResults(string message) { Message = message; }
+        public ValidationResults() 
+        {
+            Message = "";
+            Success = true;
+        }
+        public ValidationResults(string message) 
+        { 
+            Message = message; 
+            Success = false;
+        }
     }
 }

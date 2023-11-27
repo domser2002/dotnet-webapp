@@ -4,12 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{65ED2726-AD6E-48F9-803F-E862011505BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{24BB9F4E-0889-4049-A1B5-C98E16FA6F8C} = {24BB9F4E-0889-4049-A1B5-C98E16FA6F8C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{98B67E22-A283-4EA1-9BC7-28BFC964BBBB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{62525BAF-B830-48C1-BE00-BD70D3D27691}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "Frontend\Frontend.csproj", "{24BB9F4E-0889-4049-A1B5-C98E16FA6F8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend", "Frontend\Frontend.csproj", "{24BB9F4E-0889-4049-A1B5-C98E16FA6F8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
