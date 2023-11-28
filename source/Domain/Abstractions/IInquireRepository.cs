@@ -10,6 +10,6 @@ namespace Domain.Abstractions
     public interface IInquireRepository
     {
         List<Offer> GetAll();
-        void AddOffer(Offer offer);
+        void AddInquiry(Inquiry inquiry);
     }
 }

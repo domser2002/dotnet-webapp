@@ -17,5 +17,23 @@ namespace Api.Controllers
             this.validator = validator;
         }
 
+        // POST api/contacts
+        [HttpPost]
+        public ActionResult<ContactInformation> Create([FromBody] ContactInformation info)
+        {
+            if (info == null)
+            {
+                return BadRequest();
+            }
+
+            ValidationResults validationResults = validator.Validate(info);
+            if (validationResults == null)
+                return BadRequest("could not validate");
+            if (!validationResults.Success)
+                return BadRequest(validationResults.Message);
+
+            repository.AddContactInformation(info);
+            return CreatedAtAction("GetById", new { id = info.Id }, info);
+        }
     }
 }

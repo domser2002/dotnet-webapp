@@ -3,7 +3,8 @@
     public class Inquiry: Base
     {
         public Package Package { get; set; }
-        public DateOnly DeliveryDate { get; set; }
+        public DateTime PickupDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
         public Address SourceAddress { get; set; }
         public Address DestinationAddress { get; set; }
         public Priority Priority { get; set; }

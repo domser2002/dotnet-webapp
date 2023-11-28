@@ -44,5 +44,9 @@ namespace Frontend.Validators
         {
             return Validate(package.Length, package.Width, package.Height, package.Weight, sourceAddress, destinationAddress, pickupDate, deliveryDate);
         }
+        public ValidationResults Validate(Inquiry inquiry)
+        {
+            return Validate(inquiry.Package,inquiry.SourceAddress,inquiry.DestinationAddress,inquiry.PickupDate, inquiry.DeliveryDate);
+        }
     }
 }

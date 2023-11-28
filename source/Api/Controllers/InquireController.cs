@@ -16,6 +16,23 @@ namespace Api.Controllers
             this.repository = repository;
             this.validator = validator;
         }
+        // POST api/inquiries
+        [HttpPost]
+        public ActionResult<Inquiry> Create([FromBody] Inquiry inquiry)
+        {
+            if (inquiry == null)
+            {
+                return BadRequest();
+            }
 
+            ValidationResults validationResults = validator.Validate(inquiry);
+            if (validationResults == null)
+                return BadRequest("could not validate");
+            if (!validationResults.Success)
+                return BadRequest(validationResults.Message);
+
+            repository.AddInquiry(inquiry);
+            return CreatedAtAction("GetById", new { id = inquiry.Id }, inquiry);
+        }
     }
 }
