@@ -1,14 +1,11 @@
-﻿namespace Frontend.Validators.Abstractions
+﻿using Domain.Model;
+
+namespace Frontend.Validators.Abstractions
 {
-    public interface IInquireValidator : IValidator
+    public interface IInquireValidator
     {
-        public float? Length { get; set; }
-        public float? Width { get; set; }
-        public float? Height { get; set; }
-        public float? Weight { get; set; }
-        public Domain.Model.Address? SourceAddress { get; set; }
-        public Domain.Model.Address? DestinationAddress {  get; set; }
-        public DateTime? PickupDate { get; set; }
-        public DateTime? DeliveryDate {  get; set; }
+        public ValidationResults Validate(float? length, float? width, float? height, float? weight, Address? sourceAddress, 
+            Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate);
+        public ValidationResults Validate(Package package, Address? sourceAddress, Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate);
     }
 }

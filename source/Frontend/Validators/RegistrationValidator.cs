@@ -5,45 +5,33 @@ namespace Frontend.Validators
 {
     public class RegistrationValidator : IRegistrationValidator
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
-        public Address? Address { get; set; }
-        public Address? DefaultSourceAddress { get; set; }
+        private readonly int minStringLength;
+        private readonly int maxStringLength;
 
-        public RegistrationValidator(string? firstName, string? lastName, string? email, Address? address, Address? defaultSourceAddress)
+        public RegistrationValidator(int minStringLength, int maxStringLength)
         {
-            FirstName = firstName;
-            LastName = lastName;
-            Email = email;
-            Address = address;
-            DefaultSourceAddress = defaultSourceAddress;
+            this.minStringLength = minStringLength;
+            this.maxStringLength = maxStringLength;
         }
 
-        public RegistrationValidator(User user)
+        public ValidationResults Validate(string? firstName, string? lastName, string? email, Address? address, Address? defaultSourceAddress)
         {
-            FirstName = user.FirstName;
-            LastName = user.LastName;
-            Email = user.Email;
-            Address = user.Address;
-            DefaultSourceAddress = user.DefaultSourceAddress;
-        }
-
-        public ValidationResults Validate()
-        {
-            int min = 2;
-            int max = 100;
             ValidationResults temp;
-            temp = GenericValidators.Name(FirstName, min, max, "First name");
+            temp = GenericValidators.Name(firstName, minStringLength, maxStringLength, "First name");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Name(LastName, min, max, "Last name");
+            temp = GenericValidators.Name(lastName, minStringLength, maxStringLength, "Last name");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Email(Email);
+            temp = GenericValidators.Email(email);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(Address);
+            temp = GenericValidators.Address(address);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(DefaultSourceAddress);
+            temp = GenericValidators.Address(defaultSourceAddress);
             return temp;
+        }
+
+        public ValidationResults Validate(User user)
+        {
+            return Validate(user.FirstName, user.LastName, user.Email, user.Address, user.DefaultSourceAddress);
         }
     }
 }

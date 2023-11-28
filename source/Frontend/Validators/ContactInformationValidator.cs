@@ -5,18 +5,26 @@ namespace Frontend.Validators
 {
     public class ContactInformationValidator : IContactInformationValidator
     {
-        public ContactInformation? ContactInformation { get; set; }
+        public readonly int minStringLength;
+        public readonly int maxStringLength;
 
-        public ContactInformationValidator(ContactInformation? contactInformation) { ContactInformation = contactInformation; }
-
-        public ValidationResults Validate()
+        public ContactInformationValidator(int minStringLength, int maxStringLength)
         {
-            if (ContactInformation is null) return new ValidationResults("Contact information must be specified");
-            if (ContactInformation.PersonalData.Length < 1) return new ValidationResults("Personal data must be specified");
+            this.minStringLength = minStringLength;
+            this.maxStringLength = maxStringLength;
+        }
+
+        public ValidationResults Validate(ContactInformation? contactInformation)
+        {
+            if (contactInformation is null) return new ValidationResults("Contact information must be specified");
+            if (contactInformation.PersonalData.Length < minStringLength) 
+                return new ValidationResults($"Personal data must consist of at least {minStringLength} characters.");
+            if (contactInformation.PersonalData.Length > maxStringLength) 
+                return new ValidationResults($"Personal data cannot consist of more than {maxStringLength} characters.");
             ValidationResults temp;
-            temp = GenericValidators.Email(ContactInformation.Email);
+            temp = GenericValidators.Email(contactInformation.Email);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(ContactInformation.Address);
+            temp = GenericValidators.Address(contactInformation.Address);
             return temp;
         }
     }

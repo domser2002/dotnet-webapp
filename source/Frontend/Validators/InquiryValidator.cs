@@ -5,61 +5,44 @@ namespace Frontend.Validators
 {
     public class InquireValidator : IInquireValidator
     {
-        public float? Length { get; set; }
-        public float? Width { get; set; }
-        public float? Height { get; set; }
-        public float? Weight { get; set; }
-        public Address? SourceAddress { get; set; }
-        public Address? DestinationAddress { get; set; }
-        public DateTime? PickupDate { get; set; }
-        public DateTime? DeliveryDate { get; set; }
+        private readonly float minDimension;
+        private readonly float maxDimension;
+        private readonly float minWeight;
+        private readonly float maxWeight;
 
-        public InquireValidator(Package package, Address? sourceAddress, Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate)
+        public InquireValidator(float minDimension, float maxDimension, float minWeight, float maxWeight)
         {
-            Length = package.Length;
-            Width = package.Width;
-            Height = package.Height;
-            Weight = package.Weight;
-            SourceAddress = sourceAddress;
-            DestinationAddress = destinationAddress;
-            PickupDate = pickupDate;
-            DeliveryDate = deliveryDate;
+            this.minDimension = minDimension;
+            this.maxDimension = maxDimension;
+            this.minWeight = minWeight;
+            this.maxWeight = maxWeight;
         }
 
-        public InquireValidator(float? length, float? width, float? height, float? weight, 
-            Address? sourceAddress, Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate)
+        public ValidationResults Validate(float? length, float? width, float? height, float? weight, Address? sourceAddress, 
+            Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate)
         {
-            Length = length;
-            Width = width;
-            Height = height;
-            Weight = weight;
-            SourceAddress = sourceAddress;
-            DestinationAddress = destinationAddress;
-            PickupDate = pickupDate;
-            DeliveryDate = deliveryDate;
-        }
-
-        public ValidationResults Validate()
-        {
-            float minDimension = 0;
-            float maxDimension = 200;
-            ValidationResults temp = GenericValidators.Date(PickupDate, "Pickup");
+            ValidationResults temp = GenericValidators.Date(pickupDate, "Pickup");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Date(DeliveryDate, "Delivery");
+            temp = GenericValidators.Date(deliveryDate, "Delivery");
             if (!temp.Success) return temp;
-            if (DateTime.Compare((DateTime)PickupDate!, (DateTime)DeliveryDate!) >= 0) return new ValidationResults("Pickup cannot take place after delivery.");
-            temp = GenericValidators.Dimension(Length, minDimension, maxDimension, "Length");
+            if (DateTime.Compare((DateTime)pickupDate!, (DateTime)deliveryDate!) >= 0) return new ValidationResults("Pickup cannot take place after delivery.");
+            temp = GenericValidators.Dimension(length, minDimension, maxDimension, "Length");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(Width, minDimension, maxDimension, "Width");
+            temp = GenericValidators.Dimension(width, minDimension, maxDimension, "Width");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(Height, minDimension, maxDimension, "Height");
+            temp = GenericValidators.Dimension(height, minDimension, maxDimension, "Height");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(Weight, 0, 1000, "Weight");
+            temp = GenericValidators.Dimension(weight, minWeight, maxWeight, "Weight");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(SourceAddress);
+            temp = GenericValidators.Address(sourceAddress);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(DestinationAddress);
+            temp = GenericValidators.Address(destinationAddress);
             return temp;
+        }
+
+        public ValidationResults Validate(Package package, Address? sourceAddress, Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate)
+        {
+            return Validate(package.Length, package.Width, package.Height, package.Weight, sourceAddress, destinationAddress, pickupDate, deliveryDate);
         }
     }
 }

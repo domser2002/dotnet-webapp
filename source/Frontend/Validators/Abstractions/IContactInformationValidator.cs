@@ -2,8 +2,8 @@
 
 namespace Frontend.Validators.Abstractions
 {
-    public interface IContactInformationValidator : IValidator
+    public interface IContactInformationValidator
     {
-        public ContactInformation? ContactInformation { get; set; }
+        public ValidationResults Validate(ContactInformation? contactInformation);
     }
 }

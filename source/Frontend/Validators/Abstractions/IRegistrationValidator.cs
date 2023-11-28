@@ -1,11 +1,10 @@
-﻿namespace Frontend.Validators.Abstractions
+﻿using Domain.Model;
+
+namespace Frontend.Validators.Abstractions
 {
-    public interface IRegistrationValidator : IValidator
+    public interface IRegistrationValidator
     {
-        public string? FirstName {  get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
-        public Domain.Model.Address? Address {  get; set; }
-        public Domain.Model.Address? DefaultSourceAddress { get; set; }
+        public ValidationResults Validate(string? firstName, string? lastName, string? email, Address? address, Address? defaultSourceAddress);
+        public ValidationResults Validate(User User);
     }
 }
