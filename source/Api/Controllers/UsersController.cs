@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
 using Domain.Abstractions;
+using Frontend.Validators.Abstractions;
+using Frontend.Validators;
 
 namespace Api.Controllers
 {
@@ -8,10 +10,12 @@ namespace Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository repository;
+        private readonly IRegistrationValidator validator;
 
-        public UsersController(IUserRepository repository)
+        public UsersController(IUserRepository repository,IRegistrationValidator validator)
         {
             this.repository = repository;
+            this.validator = validator;
         }
 
         // GET api/users
@@ -36,7 +40,6 @@ namespace Api.Controllers
 
             return Ok(users[id]);
         }
-
         // POST api/users (dodawanie nowego u¿ytkownika)
         [HttpPost]
         public ActionResult<User> Create([FromBody] User user)
@@ -45,9 +48,14 @@ namespace Api.Controllers
             {
                 return BadRequest();
             }
-            
-            repository.AddUser(user);
 
+            ValidationResults validationResults = validator.Validate(user);
+            if (validationResults == null)
+                return BadRequest("could not validate");
+            if (!validationResults.Success)
+                return BadRequest(validationResults.Message);
+
+            repository.AddUser(user);
             return CreatedAtAction("GetById", new { id = user.Id }, user);
         }
     }
