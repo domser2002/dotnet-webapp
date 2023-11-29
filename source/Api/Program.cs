@@ -16,6 +16,9 @@ builder.Services.AddSingleton<IOfferRepository, FakeOfferRepository>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 
+// Cors
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
