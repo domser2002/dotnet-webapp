@@ -2,6 +2,7 @@ using Domain.Abstractions;
 using Frontend.Validators;
 using Frontend.Validators.Abstractions;
 using Infrastructure.Repositories;
+using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
