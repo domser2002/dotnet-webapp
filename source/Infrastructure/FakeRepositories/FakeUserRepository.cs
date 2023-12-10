@@ -29,10 +29,5 @@ namespace Infrastructure.FakeRepositories
         {
             users.Add(users.Count + 1, user);
         }
-
-        public void AddOffer(int id, int offerID)
-        {
-            users[id].Inquiries.Add(offerID);
-        }
     }
 }

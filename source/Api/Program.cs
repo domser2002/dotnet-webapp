@@ -1,7 +1,6 @@
 using Domain.Abstractions;
 using Frontend.Validators;
 using Frontend.Validators.Abstractions;
-using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -32,7 +31,7 @@ builder.Services.AddSingleton<IContactInformationValidator>(provider =>
 });
 builder.Services.AddSingleton<IInquireValidator>(provider =>
 {
-    return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight);
+    return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight, minStringLength, maxStringLength);
 });
 
 var app = builder.Build();

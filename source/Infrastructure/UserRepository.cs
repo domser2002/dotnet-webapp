@@ -3,15 +3,36 @@ using Domain.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Infrastructure.Repositories
+namespace Api.Infrastructure
 {
     public class UserRepository : IUserRepository
     {
+        private readonly SqlConnectionStringBuilder builder = new()
+        {
+            DataSource = "dot-net-webapp.database.windows.net",
+            UserID = "database_admin",
+            Password = "dawid_to_koks1234",
+            InitialCatalog = "NET"
+        };
+
+        public void AddOffer(int id, int offerID)
+        {
+            List<User> users = GetAll();
+            foreach (User user in users)
+            {
+                if (user.Id == id)
+                {
+                    user.Inquiries.Add(offerID);
+                    return;
+                }
+            }
+        }
+
         public void AddUser(User user)
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(builder.ConnectionString);
                 string sql = $"INSERT INTO Users VALUES (@FirstName, @LastName, @CompanyName, @Email, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
                     $"@DefaultStreet, @DefaultStreetnumber, @DefaultFlatNumber, @DefaultPostalCode, @DefaultCity)";
                 using SqlCommand command = new(sql, connection);
@@ -54,14 +75,12 @@ namespace Infrastructure.Repositories
             List<User> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(builder.ConnectionString);
                 string sql = "SELECT * FROM Users";
 
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
-                InquireRepository inquireRepository = new InquireRepository();
-                List<Inquiry> inquiries = inquireRepository.GetAll();
                 while (reader.Read())
                 {
                     Address address = new()
@@ -90,8 +109,6 @@ namespace Infrastructure.Repositories
                         Address = address,
                         DefaultSourceAddress = defaultAddress
                     };
-                    List<Inquiry> usersInquiries = inquiries.Where(c => c.OwnerId == user.Id).ToList();
-                    user.Inquiries = usersInquiries;
                     result.Add(user);
                 }
             }

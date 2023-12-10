@@ -17,5 +17,31 @@
             PostalCode = address.PostalCode;
             City = address.City;
         }
+        public object this[string fieldname]
+        {
+            set
+            {
+                switch (fieldname)
+                {
+                    case "Street":
+                        this.Street = (string)value;
+                        break;
+                    case "StreetNumber":
+                        this.StreetNumber = (string)value;
+                        break;
+                    case "FlatNumber":
+                        this.FlatNumber = (string)value;
+                        break;
+                    case "PostalCode":
+                        this.PostalCode = (string)value;
+                        break;
+                    case "City":
+                        this.City = (string)value;
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
     }
 }

@@ -3,22 +3,28 @@ using Domain.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Infrastructure.Repositories
+namespace Api.Infrastructure
 {
     public class InquireRepository : IInquireRepository
     {
+        private readonly SqlConnectionStringBuilder builder = new()
+        {
+            DataSource = "dot-net-webapp.database.windows.net",
+            UserID = "database_admin",
+            Password = "dawid_to_koks1234",
+            InitialCatalog = "NET"
+        };
+
         public void AddInquiry(Inquiry inquiry)
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
-                string sql = $"INSERT INTO Inquiries VALUES (@OwnerId, @Length, @Width, @Height, @Weight, @PickupDate, @DeliveryDate, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
-                    $"@DestinationStreet, @DestinationStreetnumber, @DestinationFlatNumber, @DestinationPostalCode, @DestinationCity, @Priority, @Weekend, @Active)";
+                using SqlConnection connection = new(builder.ConnectionString);
+                string sql = $"INSERT INTO Inquiries VALUES (@Length, @Width, @Height, @Weight, @PickupDate, @DeliveryDate, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
+                    $"@DestinationStreet, @DestinationStreetnumber, @DestionationFlatNumber, @DestinationPostalCode, @DestinationCity, @Priority, @Weekend, @Active)";
                 using SqlCommand command = new(sql, connection);
-                command.Parameters.Add("@OwnerId", SqlDbType.Int);
-                command.Parameters["@OwnerId"].Value = inquiry.OwnerId;
                 command.Parameters.Add("@Length", SqlDbType.Float);
-                command.Parameters["@Length"].Value = inquiry.Package!.Length;
+                command.Parameters["@Length"].Value = inquiry.Package.Length;
                 command.Parameters.Add("@Width", SqlDbType.Float);
                 command.Parameters["@Width"].Value = inquiry.Package.Width;
                 command.Parameters.Add("@Height", SqlDbType.Float);
@@ -30,7 +36,7 @@ namespace Infrastructure.Repositories
                 command.Parameters.Add("@DeliveryDate", SqlDbType.DateTime);
                 command.Parameters["@DeliveryDate"].Value = inquiry.DeliveryDate;
                 command.Parameters.Add("@Street", SqlDbType.VarChar);
-                command.Parameters["@Street"].Value = inquiry.SourceAddress!.Street;
+                command.Parameters["@Street"].Value = inquiry.SourceAddress.Street;
                 command.Parameters.Add("@StreetNumber", SqlDbType.VarChar);
                 command.Parameters["@Streetnumber"].Value = inquiry.SourceAddress.StreetNumber;
                 command.Parameters.Add("@FlatNumber", SqlDbType.VarChar);
@@ -40,10 +46,10 @@ namespace Infrastructure.Repositories
                 command.Parameters.Add("@City", SqlDbType.VarChar);
                 command.Parameters["@City"].Value = inquiry.SourceAddress.City;
                 command.Parameters.Add("@DestinationStreet", SqlDbType.VarChar);
-                command.Parameters["@DestinationStreet"].Value = inquiry.DestinationAddress!.Street;
+                command.Parameters["@DestinationStreet"].Value = inquiry.DestinationAddress.Street;
                 command.Parameters.Add("@DestinationStreetnumber", SqlDbType.VarChar);
                 command.Parameters["@DestinationStreetnumber"].Value = inquiry.DestinationAddress.StreetNumber;
-                command.Parameters.Add("@DestinationFlatNumber", SqlDbType.VarChar);
+                command.Parameters.Add("@DestionationFlatNumber", SqlDbType.VarChar);
                 command.Parameters["@DestinationFlatNumber"].Value = inquiry.DestinationAddress.FlatNumber;
                 command.Parameters.Add("@DestinationPostalCode", SqlDbType.VarChar);
                 command.Parameters["@DestinationPostalCode"].Value = inquiry.DestinationAddress.PostalCode;
@@ -66,7 +72,7 @@ namespace Infrastructure.Repositories
             List<Inquiry> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(builder.ConnectionString);
                 string sql = "SELECT * FROM Inquiries";
 
                 using SqlCommand command = new(sql, connection);
@@ -76,10 +82,10 @@ namespace Infrastructure.Repositories
                 {
                     Package package = new()
                     {
-                        Length = (float)reader.GetDouble(2),
-                        Width = (float)reader.GetDouble(3),
-                        Height = (float)reader.GetDouble(4),
-                        Weight = (float)reader.GetDouble(5)
+                        Length = reader.GetFloat(2),
+                        Width = reader.GetFloat(3),
+                        Height = reader.GetFloat(4),
+                        Weight = reader.GetFloat(5)
                     };
                     Address sourceAddress = new()
                     {

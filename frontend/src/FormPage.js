@@ -1,12 +1,20 @@
 import './App.css';
 import React, { useState } from 'react';
 import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
+<<<<<<< HEAD
 //import { useNavigate } from 'react-router-dom';
+=======
+import { useNavigate } from 'react-router-dom';
+>>>>>>> release
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export function FormPage() {
+<<<<<<< HEAD
     //const navigate = useNavigate();
+=======
+    const navigate = useNavigate();
+>>>>>>> release
 
     const [SourceStreet, setSourceStreet] = useState("");
     const [SourceStreetNumber, setSourceStreetNumber] = useState("");
@@ -67,6 +75,7 @@ export function FormPage() {
                   City: DestinationCity}}),
               timeout: 30000,
           });
+<<<<<<< HEAD
 
           const responseData = await response.text();
           console.log(JSON.stringify(responseData));
@@ -74,6 +83,31 @@ export function FormPage() {
 
       } catch (error) {
           //console.error('Błąd:', error);
+=======
+          
+          if (response.ok) {
+              console.log('Pomyślnie wysłano żądanie POST do API');
+              navigate("/couriersList");
+              
+          }else if (response.status >= 200 && response.status < 300) {
+
+            console.log('Odpowiedź o statusie:', response.status);
+            navigate("/couriersList");
+          }
+          else if(response.status === 400)
+          {
+            const responseData = await response.json();
+            console.log('Pomyślnie wysłano żądanie POST do API', responseData);
+            setOnErrorMessage(`Provided data is invalid, details:`);
+          }
+          else {
+              console.error('Błąd podczas wysyłania żądania POST do API');
+              //console.log(JSON.stringify(response.body));
+          }
+      } catch (error) {
+          console.error('Błąd:', error);
+          setOnErrorMessage(`Provided data is invalid, details: ${error}`);
+>>>>>>> release
       }
       setIsLoading(false);
   }
@@ -252,8 +286,31 @@ export function FormPage() {
               onChange={(newDate) => setDateTo(newDate)}
               renderInput={(params) => <TextField {...params} /> }/>
             </LocalizationProvider>
+<<<<<<< HEAD
             <FormControlLabel control={<Checkbox value={DeliveryAtWeekend} defaultChecked
               onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} color="textSecondary" label="Delivery at weekend" />
+=======
+
+            {/* <TextField
+              label="Pickup date"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+              value={DateFrom}
+              onChange={(e)=>setDateFrom(e.target.value)}
+            />
+            
+            <TextField
+              label="Delivery date"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+              value={DateTo}
+              onChange={(e)=>setDateTo(e.target.value)}
+            /> */}
+>>>>>>> release
 
           </FormControl>
           </Box>
@@ -273,6 +330,7 @@ export function FormPage() {
               </Select>
             </FormControl>
           </Box>
+<<<<<<< HEAD
           {onErrorMessage &&           <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%',
                               marginLeft: 'auto', marginRight: 'auto'}}>
             <Typography variant="h6" color="textSecondary">
@@ -282,11 +340,20 @@ export function FormPage() {
 
 
 
+=======
+  
+  
+  
+          <FormControlLabel control={<Checkbox value={DeliveryAtWeekend} defaultChecked
+          onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} label="Delivery at weekend" />
+        {/* <NavLink to={"/couriersList"}></NavLink> */}
+>>>>>>> release
         <Button type="button" onClick={handleSubmit} variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Submit</Button>
         
           
         </FormControl>
       </form>
+      <Typography>{onErrorMessage}</Typography>
       </div>
         )}
       </div>
