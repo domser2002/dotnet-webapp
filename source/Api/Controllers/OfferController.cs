@@ -28,8 +28,14 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<List<Offer>> GetByID(int id)
         {
-            var offer = repository.GetByID(id);
-            return Ok(offer);
+            var offers = repository.GetAll();
+
+            if (id > offers.Count)
+            {
+                return BadRequest();
+            }
+
+            return Ok(offers[id]);
         }
 
         // POST api/offers (dodawanie nowej oferty)
