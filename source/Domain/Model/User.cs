@@ -14,7 +14,7 @@ public class User : Base
 
     public User()
     {
-        Inquiries = new List<Inquiry>();
+        Inquiries = new List<int>();
     }
     public object this[string fieldname]
     {

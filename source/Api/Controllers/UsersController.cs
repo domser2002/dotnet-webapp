@@ -35,7 +35,7 @@ namespace Api.Controllers
             foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
-        // POST api/users (dodawanie nowego u¿ytkownika)
+        // POST api/users (dodawanie nowego uï¿½ytkownika)
         [HttpPost]
         public ActionResult<User> Create([FromBody] User user)
         {
@@ -52,6 +52,12 @@ namespace Api.Controllers
 
             repository.AddUser(user);
             return CreatedAtAction("GetById", new { id = user.Id }, user);
+        }
+        [HttpPatch("{id}")]
+        public ActionResult<User> UpdateList([FromRoute] int id, [FromBody] int offerID)
+        {
+            repository.AddOffer(id, offerID);
+            return Ok();
         }
     }
 }
