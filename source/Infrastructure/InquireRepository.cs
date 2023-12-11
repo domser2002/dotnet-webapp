@@ -21,7 +21,7 @@ namespace Api.Infrastructure
             {
                 using SqlConnection connection = new(builder.ConnectionString);
                 string sql = $"INSERT INTO Inquiries VALUES (@Length, @Width, @Height, @Weight, @PickupDate, @DeliveryDate, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
-                    $"@DestinationStreet, @DestinationStreetnumber, @DestionationFlatNumber, @DestinationPostalCode, @DestinationCity, @Priority, @Weekend, @Active)";
+                    $"@DestinationStreet, @DestinationStreetnumber, @DestinationFlatNumber, @DestinationPostalCode, @DestinationCity, @Priority, @Weekend, @Active)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@Length", SqlDbType.Float);
                 command.Parameters["@Length"].Value = inquiry.Package.Length;
@@ -49,7 +49,7 @@ namespace Api.Infrastructure
                 command.Parameters["@DestinationStreet"].Value = inquiry.DestinationAddress.Street;
                 command.Parameters.Add("@DestinationStreetnumber", SqlDbType.VarChar);
                 command.Parameters["@DestinationStreetnumber"].Value = inquiry.DestinationAddress.StreetNumber;
-                command.Parameters.Add("@DestionationFlatNumber", SqlDbType.VarChar);
+                command.Parameters.Add("@DestinationFlatNumber", SqlDbType.VarChar);
                 command.Parameters["@DestinationFlatNumber"].Value = inquiry.DestinationAddress.FlatNumber;
                 command.Parameters.Add("@DestinationPostalCode", SqlDbType.VarChar);
                 command.Parameters["@DestinationPostalCode"].Value = inquiry.DestinationAddress.PostalCode;
