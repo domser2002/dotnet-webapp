@@ -34,8 +34,6 @@ builder.Services.AddSingleton<IInquireValidator>(provider =>
 {
     return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight, minStringLength, maxStringLength);
 });
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IOfferRepository, OfferRepository>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
