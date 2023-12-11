@@ -12,10 +12,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IUserRepository, FakeUserRepository>();
-builder.Services.AddSingleton<IOfferRepository, FakeOfferRepository>();
-builder.Services.AddSingleton<IInquireRepository, FakeInquiryRepository>();
-builder.Services.AddSingleton<IContactInformationRepository, FakeContactInformationRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IOfferRepository, OfferRepository>();
+builder.Services.AddSingleton<IInquireRepository, InquireRepository>();
+builder.Services.AddSingleton<IContactInformationRepository, ContactInformationRepository>();
 int minStringLength = 3;
 int maxStringLength = 15;
 int minDimension = 0;
@@ -34,8 +34,6 @@ builder.Services.AddSingleton<IInquireValidator>(provider =>
 {
     return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight);
 });
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IOfferRepository, OfferRepository>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
