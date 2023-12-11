@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Api.Infrastructure
 {
-    public class ContactInfomationRepository : IContactInformationRepository
+    public class ContactInformationRepository : IContactInformationRepository
     {
         private readonly SqlConnectionStringBuilder builder = new()
         {
