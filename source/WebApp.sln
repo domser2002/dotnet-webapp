@@ -25,6 +25,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "Authenticator\AuthenticationService.csproj", "{5EFE548D-954A-48E8-8F08-1CC47A4A81A9}"
 
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationService", "Authenticator\AuthenticationService.csproj", "{5EFE548D-954A-48E8-8F08-1CC47A4A81A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBIntegrationTests", "DBIntegrationTests\DBIntegrationTests.csproj", "{27CB4BE8-2780-46BC-8394-703B635695C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,7 +56,6 @@ Global
 		{5EFE548D-954A-48E8-8F08-1CC47A4A81A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EFE548D-954A-48E8-8F08-1CC47A4A81A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EFE548D-954A-48E8-8F08-1CC47A4A81A9}.Release|Any CPU.Build.0 = Release|Any CPU
-
 		{27CB4BE8-2780-46BC-8394-703B635695C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27CB4BE8-2780-46BC-8394-703B635695C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27CB4BE8-2780-46BC-8394-703B635695C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,6 +81,6 @@ Global
 		SolutionGuid = {E60319FC-E56E-4692-9B6B-1C6B4A73D3D1}
 
 		SolutionGuid = {8EEB83A3-4C9B-40EE-BEE6-D74BA3A14830}
-		
+
 	EndGlobalSection
 EndGlobal
