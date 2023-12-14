@@ -7,6 +7,19 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        public void AddOffer(int id, int offerID)
+        {
+            List<User> users = GetAll();
+            foreach (User user in users)
+            {
+                if (user.Id == id)
+                {
+                    user.Inquiries.Add(offerID);
+                    return;
+                }
+            }
+        }
+
         public void AddUser(User user)
         {
             try
@@ -60,8 +73,6 @@ namespace Infrastructure.Repositories
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
-                InquireRepository inquireRepository = new InquireRepository();
-                List<Inquiry> inquiries = inquireRepository.GetAll();
                 while (reader.Read())
                 {
                     Address address = new()
@@ -90,8 +101,6 @@ namespace Infrastructure.Repositories
                         Address = address,
                         DefaultSourceAddress = defaultAddress
                     };
-                    List<Inquiry> usersInquiries = inquiries.Where(c => c.OwnerId == user.Id).ToList();
-                    user.Inquiries = usersInquiries;
                     result.Add(user);
                 }
             }
