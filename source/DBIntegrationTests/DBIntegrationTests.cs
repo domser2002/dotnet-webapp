@@ -9,13 +9,6 @@ namespace DBIntegrationTests
     [TestClass]
     public class DBIntegrationTests
     {
-        private readonly SqlConnectionStringBuilder builder = new()
-        {
-            DataSource = "dot-net-webapp.database.windows.net",
-            UserID = "database_admin",
-            Password = "dawid_to_koks1234",
-            InitialCatalog = "NET"
-        };
         private readonly DateTime date1 = new(2025, 3, 1, 7, 0, 0);
         private readonly DateTime date2 = new(2026, 3, 1, 7, 0, 0);
         private readonly Address address = new() { City="Bartodzieje", Street="Uliczna", FlatNumber="1", PostalCode="00-000", StreetNumber="1" };
