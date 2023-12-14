@@ -1,4 +1,4 @@
-﻿using Domain.Abstractions;
+﻿﻿using Domain.Abstractions;
 using Domain.Model;
 
 namespace Infrastructure.FakeRepositories
