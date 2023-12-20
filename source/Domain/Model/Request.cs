@@ -15,5 +15,9 @@ namespace Domain.Model
         public DateTime DeliveryDate { get; set; }
         public string CompanyName { get; set; }
         public decimal Price { get; set; }
+        public Request(Offer offer,Inquiry inquiry)
+        {
+
+        }
     }
 }
