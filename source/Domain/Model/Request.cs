@@ -17,7 +17,13 @@ namespace Domain.Model
         public decimal Price { get; set; }
         public Request(Offer offer,Inquiry inquiry)
         {
-
+            Package = inquiry.Package;
+            SourceAddress = inquiry.SourceAddress;
+            DestinationAddress = inquiry.DestinationAddress;
+            PickupDate = inquiry.PickupDate;
+            DeliveryDate = inquiry.DeliveryDate.AddDays(offer.DeliveryTime);
+            CompanyName = offer.CompanyName;
+            Price = offer.Price;
         }
     }
 }
