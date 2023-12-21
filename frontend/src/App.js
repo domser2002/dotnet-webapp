@@ -14,12 +14,13 @@ import { RegisterPage } from "./RegisterPage.js"
 import { LoginPage } from "./LoginPage.js";
 import { CourierPanel } from "./CourierPanel.js"
 import { OfficeWorkerPanel } from "./OfficeWorkerPanel.js";
-//import { useRole } from "./utils.js";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CourierLandingPage } from "./CourierLandingPage.js"
 import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
+//import { ProfilePage } from "./ProfilePage.js";
+
   function App() {
 
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
@@ -91,6 +92,10 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
           {
             path: "/officeWorkerPanel",
             element: <OfficeWorkerPanel />,
+          },
+          {
+            path: "/profile",
+            element: <RegisterPage />,
           },
           {
             path: "*",

@@ -47,7 +47,7 @@ namespace Api.Controllers
             ValidationResults validationResults = validator.Validate(user);
             if (validationResults == null)
                 return BadRequest("could not validate");
-            if (!validationResults.Success)
+            if (!validationResults.Success && validationResults.Message != "Enter a proper email address.")
                 return BadRequest(validationResults.Message);
 
             repository.AddUser(user);

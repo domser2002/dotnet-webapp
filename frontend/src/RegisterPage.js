@@ -1,16 +1,102 @@
 import './App.css';
-import React, { useState } from 'react';
-import { Grid, FormControl, TextField, Button, FormLabel, Box } from '@mui/material';
+import { useAuth0 } from "@auth0/auth0-react";
+import React, { useState, useEffect } from 'react';
+import { Grid, FormControl, TextField, Button, FormLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+// import IconButton from '@mui/material/IconButton';
+// import InputAdornment from '@mui/material/InputAdornment';
+// import Visibility from '@mui/icons-material/Visibility';
+// import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 export function RegisterPage() {
     const navigate = useNavigate();
+
+    const { isAuthenticated, getIdTokenClaims } = useAuth0();
+    const [profileId, setProfileId] = useState();
+    const [userInDb, setUserInDb] = useState(true);
+    //const [user, setUser] = useState();
+    useEffect(() => {
+        const getIdFromToken = async () => {
+          try {
+            if (isAuthenticated) {
+              const accessToken = await getIdTokenClaims();
+    
+              const newProfileId = accessToken["sub"].split('|')[1].slice(-2);
+              setProfileId(newProfileId);
+    
+              // Przenieś resztę logiki do bloku then
+              const resp = await getUserById(25);
+              if (resp) {
+                // Zrób coś, jeśli użytkownik istnieje
+              } else {
+                //await handleSaveUser(newProfileId);
+              }
+            }
+          } catch (error) {
+            console.error('Error while decoding token:', error);
+          }
+        };
+    
+        const getUserById = async (id) => {
+          try {
+            const response = await fetch(`https://localhost:7160/api/users/${id}`);
+            if(response.status === 200)
+            {
+              setUserInDb(true);
+              return true;
+            }
+
+          } catch (error) {
+            console.error('Error fetching user:', error);
+            return false;
+          }
+        };
+    
+        // const handleSaveUser = async (id) => {
+        //   try {
+        //     const response = await fetch(`https://localhost:7160/api/users`, {
+        //       method: 'POST',
+        //       headers: {
+        //         'Content-Type': 'application/json',
+        //       },
+        //       body: JSON.stringify({
+        //         Id: id,
+        //         FirstName: "aaaa",
+        //         LastName: "aaaa",
+        //         CompanyName: "cccccc",
+        //         Email: "mdp.ch3@gmail.com",
+        //         Address: {
+        //             Street: "SourceStreet", 
+        //             StreetNumber: "0", 
+        //             FlatNumber: "0", 
+        //             PostalCode: "26-706", 
+        //             City: "SourceCity"},
+        //           DefaultSourceAddress: {
+        //             Street: "SourceStreet", 
+        //             StreetNumber: "0", 
+        //             FlatNumber: "0", 
+        //             PostalCode: "26-706", 
+        //             City: "SourceCity"},
+        //       }),
+        //     });
+    
+        //     if (response.ok) {
+        //       console.log('User created successfully');
+        //       // Tutaj możesz dodać dodatkową logikę po zapisaniu użytkownika
+        //     } else {
+        //       console.error('Failed to create user:', response.statusText);
+        //     }
+        //   } catch (error) {
+        //     console.error('Error while creating user:', error);
+        //   }
+        // };
+    
+        getIdFromToken();
+    
+      }, [getIdTokenClaims, isAuthenticated]);
+
 
     const handleSubmit = async () => {
       try {
@@ -20,22 +106,23 @@ export function RegisterPage() {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify({
+                Id: profileId,
                 FirstName: FirstName,
                 LastName: LastName,
-                Company: Company,
+                CompanyName: Company,
                 Email: Email,
-                SourceAddress: {
+                Address: {
                   Street: SourceStreet, 
                   StreetNumber: SourceStreetNumber, 
                   FlatNumber: SourceFlatNumber, 
                   PostalCode: SourcePostalCode, 
                   City: SourceCity},
                 DefaultSourceAddress: {
-                    DefaultStreet: DefaultSourceStreet, 
-                    DefaultStreetNumber: DefaultSourceStreetNumber, 
-                    DefaultFlatNumber: DefaultSourceFlatNumber, 
-                    DefaultPostalCode: DefaultSourcePostalCode, 
-                    DefaultCity: DefaultSourceCity}}),
+                    Street: DefaultSourceStreet, 
+                    StreetNumber: DefaultSourceStreetNumber, 
+                    FlatNumber: DefaultSourceFlatNumber, 
+                    PostalCode: DefaultSourcePostalCode, 
+                    City: DefaultSourceCity}}),
           });
 
           if (response.ok) {
@@ -48,15 +135,15 @@ export function RegisterPage() {
           console.error('Błąd:', error);
       }
   }
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-    const [showPassword, setShowPassword] = useState(false);
+  // const handleTogglePasswordVisibility = () => {
+  //   setShowPassword(!showPassword);
+  // };
+    //const [showPassword, setShowPassword] = useState(false);
     const [FirstName, setFisrtName] = useState("");
     const [LastName, setLastName] = useState("");
     const [Email, setEmail] = useState("");
     const [Company, setCompany] = useState("");
-    const [Password, setPassword] = useState("");
+    //const [Password, setPassword] = useState("");
 
     const [SourceStreet, setSourceStreet] = useState("");
     const [SourceStreetNumber, setSourceStreetNumber] = useState("");
@@ -69,6 +156,17 @@ export function RegisterPage() {
     const [DefaultSourceFlatNumber, setDefaultSourceFlatNumber] = useState("");
     const [DefaultSourcePostalCode, setDefaultSourcePostalCode] = useState("");
     const [DefaultSourceCity, setDefaultSourceCity] = useState("");
+
+    if(userInDb)
+    {
+      return (
+        <div className="App-header">
+          <Typography variant="h2" color="primary" gutterBottom>
+            Hello user of id:{profileId}
+          </Typography>
+        </div>
+      );
+    }
 
     return (
       <div className="App-header">
@@ -115,7 +213,7 @@ export function RegisterPage() {
                             value={Email}
                             onChange={(e)=>setEmail(e.target.value)}
                             />
-                            <TextField
+                            {/* <TextField
                             label="Password"
                             variant="outlined"
                             margin="normal"
@@ -134,7 +232,7 @@ export function RegisterPage() {
                                   </InputAdornment>
                                 ),
                               }}
-                            />
+                            /> */}
                         </FormControl>
                     </Box>
                 </Grid>
