@@ -21,7 +21,7 @@ namespace Domain.Model
             SourceAddress = inquiry.SourceAddress;
             DestinationAddress = inquiry.DestinationAddress;
             PickupDate = inquiry.PickupDate;
-            DeliveryDate = inquiry.DeliveryDate.AddDays(offer.DeliveryTime);
+            DeliveryDate = inquiry.PickupDate.AddDays(offer.DeliveryTime);
             CompanyName = offer.CompanyName;
             Price = offer.Price;
         }
