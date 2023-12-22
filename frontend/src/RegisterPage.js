@@ -2,10 +2,13 @@ import './App.css';
 import React, { useState } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-//import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-// import DatePicker from '@mui/lab/DatePicker';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/x-date-pickers';
+
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+
 export function RegisterPage() {
     const navigate = useNavigate();
 
@@ -45,8 +48,10 @@ export function RegisterPage() {
           console.error('Błąd:', error);
       }
   }
-
-
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+    const [showPassword, setShowPassword] = useState(false);
     const [FirstName, setFisrtName] = useState("");
     const [LastName, setLastName] = useState("");
     const [Email, setEmail] = useState("");
@@ -114,10 +119,21 @@ export function RegisterPage() {
                             label="Password"
                             variant="outlined"
                             margin="normal"
+                            type={showPassword ? 'text' : 'password'}
                             fullWidth
                             required
                             value={Password}
                             onChange={(e)=>setPassword(e.target.value)}
+
+                            InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePasswordVisibility}>
+                                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                         </FormControl>
                     </Box>

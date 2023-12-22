@@ -9,34 +9,38 @@ namespace Frontend.Validators
         private readonly float maxDimension;
         private readonly float minWeight;
         private readonly float maxWeight;
+        private readonly int minStringLength;
+        private readonly int maxStringLength;
 
-        public InquireValidator(float minDimension, float maxDimension, float minWeight, float maxWeight)
+        public InquireValidator(float minDimension, float maxDimension, float minWeight, float maxWeight, int minStringLength, int maxStringLength)
         {
             this.minDimension = minDimension;
             this.maxDimension = maxDimension;
             this.minWeight = minWeight;
             this.maxWeight = maxWeight;
+            this.minStringLength = minStringLength;
+            this.maxStringLength = maxStringLength;
         }
 
-        public ValidationResults Validate(float? length, float? width, float? height, float? weight, Address? sourceAddress, 
-            Address? destinationAddress, DateTime? pickupDate, DateTime? deliveryDate)
+        public ValidationResults Validate(float? length, float? width, float? height, float? weight, Address? sourceAddress, Address? destinationAddress, 
+            DateTime? pickupDate, DateTime? deliveryDate)
         {
             ValidationResults temp = GenericValidators.Date(pickupDate, "Pickup");
             if (!temp.Success) return temp;
             temp = GenericValidators.Date(deliveryDate, "Delivery");
             if (!temp.Success) return temp;
-            if (DateTime.Compare((DateTime)pickupDate!, (DateTime)deliveryDate!) >= 0) return new ValidationResults("Pickup cannot take place after delivery.");
-            temp = GenericValidators.Dimension(length, minDimension, maxDimension, "Length");
+            if (DateTime.Compare((DateTime)pickupDate!, (DateTime)deliveryDate!) >= 0) return new ValidationResults("Delivery date must be set after pickup date.");
+            temp = GenericValidators.Dimension(length, minDimension, maxDimension, "length");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(width, minDimension, maxDimension, "Width");
+            temp = GenericValidators.Dimension(width, minDimension, maxDimension, "width");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(height, minDimension, maxDimension, "Height");
+            temp = GenericValidators.Dimension(height, minDimension, maxDimension, "height");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Dimension(weight, minWeight, maxWeight, "Weight");
+            temp = GenericValidators.Dimension(weight, minWeight, maxWeight, "weight");
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(sourceAddress);
+            temp = GenericValidators.Address(sourceAddress, minStringLength, maxStringLength);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(destinationAddress);
+            temp = GenericValidators.Address(destinationAddress, minStringLength, maxStringLength);
             return temp;
         }
 
@@ -46,7 +50,7 @@ namespace Frontend.Validators
         }
         public ValidationResults Validate(Inquiry inquiry)
         {
-            return Validate(inquiry.Package,inquiry.SourceAddress,inquiry.DestinationAddress,inquiry.PickupDate, inquiry.DeliveryDate);
+            return Validate(inquiry.Package!,inquiry.SourceAddress,inquiry.DestinationAddress,inquiry.PickupDate, inquiry.DeliveryDate);
         }
     }
 }

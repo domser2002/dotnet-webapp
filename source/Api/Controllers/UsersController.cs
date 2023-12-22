@@ -12,7 +12,7 @@ namespace Api.Controllers
         private readonly IUserRepository repository;
         private readonly IRegistrationValidator validator;
 
-        public UsersController(IUserRepository repository,IRegistrationValidator validator)
+        public UsersController(IUserRepository repository, IRegistrationValidator validator)
         {
             this.repository = repository;
             this.validator = validator;
@@ -32,13 +32,8 @@ namespace Api.Controllers
         public ActionResult<List<User>> GetByID(int id)
         {
             var users = repository.GetAll();
-            
-            if(id > users.Count)
-            {
-                return BadRequest();
-            }
-
-            return Ok(users[id]);
+            foreach(User user in users) if (user.Id == id) return Ok(user);
+            return BadRequest($"User with id {id} does not exist in the database.");
         }
         // POST api/users (dodawanie nowego u¿ytkownika)
         [HttpPost]

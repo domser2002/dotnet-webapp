@@ -9,7 +9,7 @@ namespace Domain.Abstractions
 {
     public interface IInquireRepository
     {
-        List<Offer> GetAll();
+        List<Inquiry> GetAll();
         void AddInquiry(Inquiry inquiry);
     }
 }

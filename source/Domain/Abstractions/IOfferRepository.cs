@@ -11,5 +11,7 @@ namespace Domain.Abstractions
     {
         List<Offer> GetAll();
         void AddOffer(Offer offer);
+        Offer GetByID(int id);
+        void Deactivate(int id);
     }
 }

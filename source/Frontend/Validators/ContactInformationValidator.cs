@@ -16,15 +16,12 @@ namespace Frontend.Validators
 
         public ValidationResults Validate(ContactInformation? contactInformation)
         {
-            if (contactInformation is null) return new ValidationResults("Contact information must be specified");
-            if (contactInformation.PersonalData.Length < minStringLength) 
-                return new ValidationResults($"Personal data must consist of at least {minStringLength} characters.");
-            if (contactInformation.PersonalData.Length > maxStringLength) 
-                return new ValidationResults($"Personal data cannot consist of more than {maxStringLength} characters.");
             ValidationResults temp;
+            temp = GenericValidators.String(contactInformation!.PersonalData, minStringLength, maxStringLength, "Personal data");
+            if (!temp.Success) return temp;
             temp = GenericValidators.Email(contactInformation.Email);
             if (!temp.Success) return temp;
-            temp = GenericValidators.Address(contactInformation.Address);
+            temp = GenericValidators.Address(contactInformation.Address, minStringLength, maxStringLength);
             return temp;
         }
     }

@@ -3,10 +3,11 @@ using Domain.Model;
 using Domain.Abstractions;
 using Frontend.Validators.Abstractions;
 using Frontend.Validators;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace Api.Controllers
 {
-    [Route("api/inquires")]
+    [Route("api/inquiries")]
     public class InquireController : ControllerBase
     {
         private readonly IInquireRepository repository;
@@ -15,6 +16,11 @@ namespace Api.Controllers
         {
             this.repository = repository;
             this.validator = validator;
+        }
+        [HttpGet]
+        public ActionResult<List<Inquiry>> Get()
+        {
+            return Ok(repository.GetAll());
         }
         // POST api/inquiries
         [HttpPost]
@@ -32,7 +38,10 @@ namespace Api.Controllers
                 return BadRequest(validationResults.Message);
 
             repository.AddInquiry(inquiry);
-            return CreatedAtAction("GetById", new { id = inquiry.Id }, inquiry);
+            //return CreatedAtAction("GetById", new { id = inquiry.Id }, inquiry);
+            return Ok();
         }
+
+
     }
 }

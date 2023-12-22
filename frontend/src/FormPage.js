@@ -1,55 +1,12 @@
 import './App.css';
 import React, { useState } from 'react';
-import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box } from '@mui/material';
+import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-//import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-// import DatePicker from '@mui/lab/DatePicker';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 export function FormPage() {
     const navigate = useNavigate();
-
-    const handleSubmit = async () => {
-      try {
-          const response = await fetch('https://localhost:7160/api/inquires', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                Package: {
-                  Length: Length, 
-                  Width: Width, 
-                  Height: Height, 
-                  Weight: Weight
-                },
-                PickupDate: DateFrom,
-                DeliveryDate: DateTo,
-                SourceAddress: {
-                  Street: SourceStreet, 
-                  StreetNumber: SourceStreetNumber, 
-                  FlatNumber: SourceFlatNumber, 
-                  PostalCode: SourcePostalCode, 
-                  City: SourceCity},
-                DeliveryAddress: {
-                  Street: DestinationStreet, 
-                  StreetNumber: DestinationStreetNumber, 
-                  FlatNumber: DestinationFlatNumber, 
-                  PostalCode: DestinationPostalCode, 
-                  City: DestinationCity}}),
-          });
-
-          if (response.ok) {
-              console.log('Pomyślnie wysłano żądanie POST do API');
-              navigate('/couriersList');
-          } else {
-              console.error('Błąd podczas wysyłania żądania POST do API');
-          }
-      } catch (error) {
-          console.error('Błąd:', error);
-      }
-  }
-
 
     const [SourceStreet, setSourceStreet] = useState("");
     const [SourceStreetNumber, setSourceStreetNumber] = useState("");
@@ -72,11 +29,77 @@ export function FormPage() {
     const [Height, setHeight] = useState("");
     const [Weight, setWeight] = useState("");
 
-    const [DateFrom, setDateFrom] = useState("");
-    const [DateTo, setDateTo] = useState("");
+    const [DateFrom, setDateFrom] = useState(null);
+    const [DateTo, setDateTo] = useState(null);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [onErrorMessage, setOnErrorMessage] = useState("");
+
+    const handleSubmit = async () => {
+      setIsLoading(true);
+      try {
+          const response = await fetch('http://localhost:5261/api/inquiries', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                Package: {
+                  Length: Length, 
+                  Width: Width, 
+                  Height: Height, 
+                  Weight: Weight
+                },
+                PickupDate: DateFrom.toISOString(),
+                DeliveryDate: DateTo.toISOString(),
+                SourceAddress: {
+                  Street: SourceStreet, 
+                  StreetNumber: SourceStreetNumber, 
+                  FlatNumber: SourceFlatNumber, 
+                  PostalCode: SourcePostalCode, 
+                  City: SourceCity},
+                DestinationAddress: {
+                  Street: DestinationStreet, 
+                  StreetNumber: DestinationStreetNumber, 
+                  FlatNumber: DestinationFlatNumber, 
+                  PostalCode: DestinationPostalCode, 
+                  City: DestinationCity}}),
+              timeout: 30000,
+          });
+          
+          if (response.ok) {
+              console.log('Pomyślnie wysłano żądanie POST do API');
+              navigate("/couriersList");
+              
+          }else if (response.status >= 200 && response.status < 300) {
+
+            console.log('Odpowiedź o statusie:', response.status);
+            navigate("/couriersList");
+          }
+          else if(response.status === 400)
+          {
+            const responseData = await response.json();
+            console.log('Pomyślnie wysłano żądanie POST do API', responseData);
+            setOnErrorMessage(`Provided data is invalid, details:`);
+          }
+          else {
+              console.error('Błąd podczas wysyłania żądania POST do API');
+              //console.log(JSON.stringify(response.body));
+          }
+      } catch (error) {
+          console.error('Błąd:', error);
+          setOnErrorMessage(`Provided data is invalid, details: ${error}`);
+      }
+      setIsLoading(false);
+  }
 
     return (
-      <div className="App-header">
+      <div>
+        {isLoading ? (<div>
+        <label>Loading...</label>
+        </div>) : (
+          <div className="App-header">
         <form onSubmit={handleSubmit}>
         <FormControl fullWidth>
             <Grid container spacing={2}>
@@ -233,7 +256,20 @@ export function FormPage() {
           <FormControl variant='outlined'>
             <FormLabel >Delivery and pickup date</FormLabel>
             
-            <TextField
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker value={DateFrom}               
+              onChange={(newDate) => setDateFrom(newDate)}
+              renderInput={(params) => <TextField {...params} /> }/>
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker 
+              value={DateTo}           
+              onChange={(newDate) => setDateTo(newDate)}
+              renderInput={(params) => <TextField {...params} /> }/>
+            </LocalizationProvider>
+
+            {/* <TextField
               label="Pickup date"
               variant="outlined"
               margin="normal"
@@ -251,7 +287,7 @@ export function FormPage() {
               required
               value={DateTo}
               onChange={(e)=>setDateTo(e.target.value)}
-            />
+            /> */}
 
           </FormControl>
           </Box>
@@ -259,12 +295,7 @@ export function FormPage() {
 
             </Grid>
           
-          
-  
-          
-          
-  
-          
+        
   
           <Box component="section" sx={{ p: 2, border: '1px solid grey', borderRadius: 8, m: 3, width: '40%',
                             marginLeft: 'auto', marginRight: 'auto'}}>
@@ -282,11 +313,16 @@ export function FormPage() {
           <FormControlLabel control={<Checkbox value={DeliveryAtWeekend} defaultChecked
           onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} label="Delivery at weekend" />
         {/* <NavLink to={"/couriersList"}></NavLink> */}
-        <Button type="submit" variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Submit</Button>
+        <Button type="button" onClick={handleSubmit} variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Submit</Button>
         
           
         </FormControl>
       </form>
+      <Typography>{onErrorMessage}</Typography>
       </div>
+        )}
+      </div>
+      
+      
     );
   }

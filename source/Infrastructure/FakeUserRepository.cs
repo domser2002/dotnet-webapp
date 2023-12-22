@@ -12,17 +12,18 @@ namespace Api.Infrastructure
             var users = new List<User>
             {
                 new User { Id = 1, FirstName = "John", LastName = "Smith",
-                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com"},
+                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com", 
+                    Inquiries=new List<Inquiry>()},
                 new User { Id = 2, FirstName = "Bob", LastName = "Smith",
-                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com"},
+                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com", 
+                    Inquiries=new List<Inquiry>()},
                 new User { Id = 3, FirstName = "Ann", LastName = "Smith",
-                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com"},
+                    Address=new Address {Street="Prosta", City="Warsaw", FlatNumber="1", PostalCode="13-337", StreetNumber="2" }, CompanyName="ABC", Email="a@gmail.com", 
+                    Inquiries=new List<Inquiry>()},
             };
 
             this.users = users.ToDictionary(p => p.Id);
         }
-
-
 
         public List<User> GetAll()
         {

@@ -33,7 +33,8 @@ namespace Api.Controllers
                 return BadRequest(validationResults.Message);
 
             repository.AddContactInformation(info);
-            return CreatedAtAction("GetById", new { id = info.Id }, info);
+            // return CreatedAtAction("GetById", new { id = info.Id }, info);
+            return Ok();
         }
     }
 }
