@@ -21,6 +21,7 @@ namespace Domain.Model
         public Address DestinationAddress { get; set; }
         public DateTime PickupDate { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public DateTime? CancelDate { get; set; }
         public string CompanyName { get; set; }
         public decimal Price { get; set; }
         public RequestStatus Status { get; set; }
