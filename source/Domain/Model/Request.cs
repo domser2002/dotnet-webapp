@@ -9,6 +9,7 @@ namespace Domain.Model
     public enum RequestStatus
     {
         Idle,
+        Accepted,
         Received,
         Delivered,
         CannotDeliver,
@@ -47,5 +48,7 @@ namespace Domain.Model
         public DateTime DeliveryDate { get; set; }
         public DateTime CancelDate { get; set; }    
         public RequestStatus Status { get; set; }
+        public string Message { get; set; }
+        public string CourierId { get; set; }
     }
 }

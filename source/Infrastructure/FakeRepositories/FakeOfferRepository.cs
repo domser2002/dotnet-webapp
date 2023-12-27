@@ -21,9 +21,9 @@ namespace Infrastructure.FakeRepositories
             this.offers = offers.ToDictionary(p => p.Id);
         }
 
-        public List<Offer> GetAll()
+        public Task<List<Offer>> GetAll()
         {
-            return offers.Values.ToList();
+            return Task.FromResult(offers.Values.ToList());
         }
 
         public void AddOffer(Offer offer)
@@ -40,6 +40,17 @@ namespace Infrastructure.FakeRepositories
         {
             offers[id].Active = false;
             return;
+        }
+
+        public Task<List<Offer>> GetByInquiry(Inquiry inquiry)
+        {
+            List<Offer> ret = new();
+            foreach(var offer in offers) 
+            {
+                if (offer.Value.MatchesInquiry(inquiry))
+                    ret.Add(offer.Value);
+            }
+            return Task.FromResult(ret);
         }
     }
 }
