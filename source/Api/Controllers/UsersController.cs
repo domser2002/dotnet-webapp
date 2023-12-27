@@ -32,7 +32,7 @@ namespace Api.Controllers
         public ActionResult<List<User>> GetByID(int id)
         {
             var users = repository.GetAll();
-            foreach(User user in users) if (user.Id == id) return Ok(user);
+            foreach (User user in users) if (user.Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
         // POST api/users (dodawanie nowego u¿ytkownika)
@@ -54,5 +54,4 @@ namespace Api.Controllers
             return CreatedAtAction("GetById", new { id = user.Id }, user);
         }
     }
-
 }
