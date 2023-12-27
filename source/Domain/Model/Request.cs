@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Model
 {
+    public enum RequestStatus
+    {
+        Idle,
+        Received,
+        Delivered,
+        CannotDeliver,
+        Cancelled
+    }
     public class Request:Base
     {
         public Package Package { get; set; }
@@ -15,6 +23,7 @@ namespace Domain.Model
         public DateTime DeliveryDate { get; set; }
         public string CompanyName { get; set; }
         public decimal Price { get; set; }
+        public RequestStatus Status { get; set; }
         public Request(Offer offer,Inquiry inquiry)
         {
             Package = inquiry.Package;
@@ -24,6 +33,7 @@ namespace Domain.Model
             DeliveryDate = inquiry.PickupDate.AddDays(offer.DeliveryTime);
             CompanyName = offer.CompanyName;
             Price = offer.Price;
+            Status = RequestStatus.Idle;
         }
     }
 }
