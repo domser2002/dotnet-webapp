@@ -16,11 +16,11 @@ namespace Infrastructure.FakeRepositories
             var inquiries = new List<Inquiry>
             {
                 new() { Id = 1, SourceAddress = new Address(address1), DestinationAddress = new Address(address2), Active=true, Priority=Priority.Low, DeliveryAtWeekend=true, 
-                    PickupDate = date1, DeliveryDate = date2, Package = new(package)},
+                    PickupDate = date1, DeliveryDate = date2, Package = new(package), OwnerId = 1},
                 new() { Id = 2, SourceAddress = new Address(address1), DestinationAddress = new Address(address2), Active=false, Priority=Priority.High, DeliveryAtWeekend=false,
-                    PickupDate = date1, DeliveryDate = date2, Package = new(package)},
+                    PickupDate = date1, DeliveryDate = date2, Package = new(package), OwnerId = 2},
                 new() { Id = 3, SourceAddress = new Address(address1), DestinationAddress = new Address(address2), Active=true, Priority=Priority.High, DeliveryAtWeekend=true,
-                    PickupDate = date1, DeliveryDate = date2, Package = new(package)}
+                    PickupDate = date1, DeliveryDate = date2, Package = new(package), OwnerId = 3}
             };
             this.inquiries = inquiries.ToDictionary(p => p.Id);
         }

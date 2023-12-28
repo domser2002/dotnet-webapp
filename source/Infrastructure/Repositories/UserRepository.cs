@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories
             {
                 using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = $"INSERT INTO Users VALUES (@FirstName, @LastName, @CompanyName, @Email, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
-                    $"@DefaultStreet, @DefaultStreetnumber, @DefaultFlatNumber, @DefaultPostalCode, @DefaultCity)";
+                    $"@DefaultStreet, @DefaultStreetnumber, @DefaultFlatNumber, @DefaultPostalCode, @DefaultCity, @AuthId)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@FirstName", SqlDbType.VarChar);
                 command.Parameters["@FirstName"].Value = user.FirstName;
@@ -43,6 +43,8 @@ namespace Infrastructure.Repositories
                 command.Parameters["@DefaultPostalCode"].Value = user.DefaultSourceAddress.PostalCode;
                 command.Parameters.Add("@DefaultCity", SqlDbType.VarChar);
                 command.Parameters["@DefaultCity"].Value = user.DefaultSourceAddress.City;
+                command.Parameters.Add("@AuthId", SqlDbType.VarChar);
+                command.Parameters["@AuthId"].Value = user.Auth0Id;
                 connection.Open();
                 command.ExecuteNonQuery();
             }
@@ -88,7 +90,8 @@ namespace Infrastructure.Repositories
                         CompanyName = reader.GetString(3),
                         Email = reader.GetString(4),
                         Address = address,
-                        DefaultSourceAddress = defaultAddress
+                        DefaultSourceAddress = defaultAddress,
+                        Auth0Id = reader.GetString(15)
                     };
                     List<Inquiry> usersInquiries = inquiries.Where(c => c.OwnerId == user.Id).ToList();
                     user.Inquiries = usersInquiries;

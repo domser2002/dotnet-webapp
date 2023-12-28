@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
             try
             {
                 using SqlConnection connection = new(Connection.GetConnectionString());
-                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City";
+                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@PersonalData", SqlDbType.VarChar);
                 command.Parameters["@PersonalData"].Value = contactInformation.PersonalData;

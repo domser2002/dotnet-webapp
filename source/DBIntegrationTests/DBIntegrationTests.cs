@@ -37,7 +37,7 @@ namespace DBIntegrationTests
         public void InsertIntoUsers()
         {
             //Arrange
-            User user = new() { FirstName = "Koziołek", LastName="Matołek", Address=address, DefaultSourceAddress=address, CompanyName="Firma", Email="adres@mail.com" };
+            User user = new() { FirstName = "Koziołek", LastName="Matołek", Address=address, DefaultSourceAddress=address, CompanyName="Firma", Email="adres@mail.com", Auth0Id = "1" };
             using var connection = new SqlConnection(Connection.GetConnectionString());
             string select = "SELECT COUNT(*) FROM Users";
 
@@ -80,9 +80,12 @@ namespace DBIntegrationTests
         public void InsertIntoInquiries()
         {
             //Arrange
+            UserRepository userRepo = new();
+            List<User> users = userRepo.GetAll();
+            int owner = users[0].Id;
             Package package = new() { Length=1, Weight=1, Height=1, Width=1 };
             Inquiry inquiry = new() { Active=true, DeliveryAtWeekend=true, DeliveryDate=date2, PickupDate=date1, DestinationAddress=address, SourceAddress=address, 
-                Priority=Priority.Low, Package=package };
+                Priority=Priority.Low, Package=package, OwnerId = owner };
             using var connection = new SqlConnection(Connection.GetConnectionString());
             string select = "SELECT COUNT(*) FROM Inquiries";
 
