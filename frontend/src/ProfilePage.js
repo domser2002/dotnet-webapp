@@ -16,10 +16,9 @@ export const ProfilePage = () =>
               const newProfileId = accessToken["sub"].split('|')[1].slice(-2);
               setProfileId(newProfileId);
     
-              // Przenieś resztę logiki do bloku then
               const resp = await getUserById(newProfileId);
               if (resp) {
-                // Zrób coś, jeśli użytkownik istnieje
+
               } else {
                 await handleSaveUser(newProfileId);
               }

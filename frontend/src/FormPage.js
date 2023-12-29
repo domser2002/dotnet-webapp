@@ -1,12 +1,12 @@
 import './App.css';
 import React, { useState } from 'react';
 import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export function FormPage() {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [SourceStreet, setSourceStreet] = useState("");
     const [SourceStreetNumber, setSourceStreetNumber] = useState("");
@@ -69,8 +69,18 @@ export function FormPage() {
           });
 
           const responseData = await response.text();
-          console.log(JSON.stringify(responseData));
-          setOnErrorMessage(`Provided data is invalid ${responseData}`);
+
+          const responseStatus = response.status;
+          
+          if(responseStatus === 200)
+          {
+            navigate('/couriersList');
+          }
+          else
+          {
+            console.log(JSON.stringify(responseData));
+            setOnErrorMessage(`Provided data is invalid ${responseData}`);
+          }
 
       } catch (error) {
           //console.error('Błąd:', error);

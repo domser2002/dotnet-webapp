@@ -35,6 +35,17 @@ namespace Api.Controllers
             foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
+        // GET api/users/count
+        [HttpGet("count")]
+        public ActionResult<int> GetUserCount()
+        {
+            var users = repository.GetAll();
+
+            int count = users.Count();
+
+
+            return Ok(count);
+        }
         // POST api/users (dodawanie nowego u�ytkownika)
         [HttpPost]
         public ActionResult<User> Create([FromBody] User user)

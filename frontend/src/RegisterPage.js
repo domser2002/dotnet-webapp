@@ -4,11 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-// import IconButton from '@mui/material/IconButton';
-// import InputAdornment from '@mui/material/InputAdornment';
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
 
 export function RegisterPage() {
     const navigate = useNavigate();

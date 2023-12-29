@@ -1,11 +1,12 @@
 import './App.css';
 import React, { useState } from 'react';
-import { Grid, FormControl, TextField, Button, FormLabel, Box } from '@mui/material';
+import { Grid, FormControl, TextField, Button, FormLabel, Box,Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export function ContactInformationPage() {
     const navigate = useNavigate();
 
+    const [onErrorMessage, setOnErrorMessage] = useState("");
 
     const [SourceStreet, setSourceStreet] = useState("");
     const [SourceStreetNumber, setSourceStreetNumber] = useState("");
@@ -19,7 +20,7 @@ export function ContactInformationPage() {
 
     const handleSubmit = async () => {
       try {
-          const response = await fetch('https://localhost:7160/api/contacts', {
+          const response = await fetch('https://localhost:7160/api/ContactInformation', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -34,12 +35,12 @@ export function ContactInformationPage() {
                   PostalCode: SourcePostalCode, 
                   City: SourceCity}}),
           });
-
-          if (response.ok) {
+          const responseData = await response.text();
+          if (response.status === 200) {
               console.log('Pomyślnie wysłano żądanie POST do API');
-              navigate('/couriersList');
+              navigate('/summaryPage');
           } else {
-              console.error('Błąd podczas wysyłania żądania POST do API');
+            setOnErrorMessage(`Provided data is invalid ${responseData}`);
           }
       } catch (error) {
           console.error('Błąd:', error);
@@ -132,8 +133,16 @@ export function ContactInformationPage() {
                 </Grid>
             </Grid>
         
+            {onErrorMessage && 
+                <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%',
+                                marginLeft: 'auto', marginRight: 'auto'}}>
+                    <Typography variant="h6" color="textSecondary">
+                    {onErrorMessage}
+                    </Typography>
+                </Box>
+            }
 
-        <Button type="submit" variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Submit</Button>
+        <Button type="button" onClick={handleSubmit} variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Submit</Button>
         
           
         </FormControl>
