@@ -30,8 +30,8 @@ namespace Domain.Model
             Package = inquiry.Package;
             SourceAddress = inquiry.SourceAddress;
             DestinationAddress = inquiry.DestinationAddress;
-            PickupDate = inquiry.PickupDate;
-            DeliveryDate = inquiry.PickupDate.AddDays(offer.DeliveryTime);
+            PickupDate = (DateTime)inquiry.PickupDate;
+            DeliveryDate = ((DateTime)(inquiry.PickupDate)).AddDays(offer.DeliveryTime);
             CompanyName = offer.CompanyName;
             Price = offer.Price;
             Status = RequestStatus.Idle;
