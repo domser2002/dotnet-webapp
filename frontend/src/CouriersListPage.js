@@ -6,12 +6,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText'
 import './CouriersListPage.css';
 import { Button } from '@mui/material';
-//import Typography from '@mui/material/Typography';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 export function CouriersListPage() {
 
     const [offers, setOffers] = useState([]);
-
+    const {isAuthenticated} = useAuth0();
+    const navigate = useNavigate();
     useEffect(() => {
         fetch('https://localhost:7160/api/offers').then(response => response.json()).then(data => {setOffers(data);})
         .catch(error => {
@@ -30,8 +32,15 @@ export function CouriersListPage() {
           body: null,
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (response.status === 200) {
+          if(!isAuthenticated)
+          {
+            navigate("/contactInformation");
+          }
+          else
+          {
+            navigate("/summaryPage");
+          }
         }
 
         const data = await response.json();

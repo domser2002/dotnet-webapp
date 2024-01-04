@@ -10,7 +10,7 @@ export function CourierLandingPage() {
             <div>
                 <img src='./wydraTransparent.png' alt='wydra' style={{ width: '200px', height: '200px' }}></img>
             </div>
-            <div>
+            <div style={{ textAlign: 'center' }}>
                 <Typography variant="h1" component="div" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
                     Courier Hub
                 </Typography>

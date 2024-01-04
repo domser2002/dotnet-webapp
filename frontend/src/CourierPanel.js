@@ -1,10 +1,10 @@
-
+import './App.css';
 
 export const CourierPanel = () =>
 {
 
     return (
-        <div>
+        <div className='App-header-courier'>
             <label>Courier Panel Page</label>
         </div>
     );

@@ -35,7 +35,18 @@ namespace Api.Controllers
             foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
-        // POST api/users (dodawanie nowego u¿ytkownika)
+        // GET api/users/count
+        [HttpGet("count")]
+        public ActionResult<int> GetUserCount()
+        {
+            var users = repository.GetAll();
+
+            int count = users.Count();
+
+
+            return Ok(count);
+        }
+        // POST api/users (dodawanie nowego uï¿½ytkownika)
         [HttpPost]
         public ActionResult<User> Create([FromBody] User user)
         {
@@ -47,7 +58,7 @@ namespace Api.Controllers
             ValidationResults validationResults = validator.Validate(user);
             if (validationResults == null)
                 return BadRequest("could not validate");
-            if (!validationResults.Success)
+            if (!validationResults.Success && validationResults.Message != "Enter a proper email address.")
                 return BadRequest(validationResults.Message);
 
             repository.AddUser(user);

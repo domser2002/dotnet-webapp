@@ -11,15 +11,16 @@ import { Layout } from "./Layout.js"
 import { CouriersListPage } from "./CouriersListPage.js";
 import { ContactInformationPage } from "./ContactInformationPage.js";
 import { RegisterPage } from "./RegisterPage.js"
-import { LoginPage } from "./LoginPage.js";
 import { CourierPanel } from "./CourierPanel.js"
 import { OfficeWorkerPanel } from "./OfficeWorkerPanel.js";
-//import { useRole } from "./utils.js";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CourierLandingPage } from "./CourierLandingPage.js"
 import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
+//import { ProfilePage } from "./ProfilePage.js";
+import { SummaryPage } from "./SummaryPage.js";
+
   function App() {
 
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
@@ -54,6 +55,41 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
       }
     };
 
+    const renderCourierPage = () => {
+      switch (role) {
+        case "Courier":
+          return <CourierPanel />;
+
+        default:
+          return <Error404 />;
+      }
+    };
+
+    const renderOfficeWorkerPage = () => {
+      switch (role) {
+        case "Office worker":
+          return <OfficeWorkerPanel />;
+
+        default:
+          return <Error404 />;
+      }
+    };
+
+    const renderFormPage = () => {
+        if(!isAuthenticated)
+        {
+          return <FormPage/>;
+        }
+        else
+        {
+          if(role === "User")
+          {
+            return <FormPage/>;
+          }
+        }
+        return <Error404/>;
+      }
+    
 
     const router = createBrowserRouter([
       {
@@ -66,7 +102,7 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
           },
           {
             path: "/form",
-            element: <FormPage />,
+            element: renderFormPage(),
           },
           {
             path: "/couriersList",
@@ -77,20 +113,20 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
             element: <ContactInformationPage />,
           },
           {
-            path: "/login",
-            element: <LoginPage />,
-          },
-          {
-            path: "/register",
-            element: <RegisterPage />,
+            path: "/summaryPage",
+            element: <SummaryPage />,
           },
           {
             path: "/courierPanel",
-            element: <CourierPanel />,
+            element: renderCourierPage(),
           },
           {
             path: "/officeWorkerPanel",
-            element: <OfficeWorkerPanel />,
+            element: renderOfficeWorkerPage(),
+          },
+          {
+            path: "/profile",
+            element: <RegisterPage />,
           },
           {
             path: "*",
