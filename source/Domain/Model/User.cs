@@ -14,11 +14,11 @@ public class User : Base
 
     public User()
     {
-        Inquiries = new List<int>();
+        Inquiries = new List<Inquiry>();
     }
     public object this[string fieldname]
     {
-        set 
+        set
         {
             switch (fieldname)
             {
@@ -29,7 +29,7 @@ public class User : Base
                     this.LastName = (string)value;
                     break;
                 case "CompanyName":
-                    this.CompanyName= (string)value; 
+                    this.CompanyName = (string)value;
                     break;
                 case "Email":
                     this.Email = (string)value;

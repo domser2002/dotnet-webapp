@@ -75,6 +75,22 @@ import { SummaryPage } from "./SummaryPage.js";
       }
     };
 
+    const renderFormPage = () => {
+        if(!isAuthenticated)
+        {
+          return <FormPage/>;
+        }
+        else
+        {
+          if(role === "User")
+          {
+            return <FormPage/>;
+          }
+        }
+        return <Error404/>;
+      }
+    
+
     const router = createBrowserRouter([
       {
         path: "/",
@@ -86,7 +102,7 @@ import { SummaryPage } from "./SummaryPage.js";
           },
           {
             path: "/form",
-            element: <FormPage />,
+            element: renderFormPage(),
           },
           {
             path: "/couriersList",

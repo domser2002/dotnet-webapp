@@ -64,11 +64,5 @@ namespace Api.Controllers
             repository.AddUser(user);
             return CreatedAtAction("GetById", new { id = user.Id }, user);
         }
-        [HttpPatch("{id}")]
-        public ActionResult<User> UpdateList([FromRoute] int id, [FromBody] int offerID)
-        {
-            repository.AddOffer(id, offerID);
-            return Ok();
-        }
     }
 }
