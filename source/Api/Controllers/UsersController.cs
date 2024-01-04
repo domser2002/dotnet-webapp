@@ -3,6 +3,8 @@ using Domain.Model;
 using Domain.Abstractions;
 using Frontend.Validators.Abstractions;
 using Frontend.Validators;
+using Azure;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Api.Controllers
 {
@@ -34,6 +36,18 @@ namespace Api.Controllers
             var users = repository.GetAll();
             foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
+        }
+
+        // Must have Microsoft.AspNetCore.Mvc.NewtonsoftJson installed
+        // PATCH /api/users/{id}
+        [HttpPatch("{id}")]
+        public ActionResult PatchByID(string id, [FromBody] JsonPatchDocument<User> patchEntity)
+        {
+            var users = repository.GetAll();
+            var entity = users.FirstOrDefault(user => user.Auth0Id == id);
+            if (entity == null) return BadRequest();
+            patchEntity.ApplyTo(entity, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
+            return Ok(entity);
         }
         // GET api/users/count
         [HttpGet("count")]
