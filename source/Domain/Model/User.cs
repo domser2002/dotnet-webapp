@@ -7,6 +7,7 @@ public class User : Base
     public string FullName => $"{FirstName} {LastName}";
     public string CompanyName { get; set; }
     public string Email { get; set; }
+    public string Auth0Id { get; set; }
     public Address Address { get; set; }
     public Address DefaultSourceAddress { get; set; }
     public List<Inquiry> Inquiries { get; set; }

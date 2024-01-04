@@ -29,10 +29,10 @@ namespace Api.Controllers
 
         // GET api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<List<User>> GetByID(int id)
+        public ActionResult<List<User>> GetByID(string id)
         {
             var users = repository.GetAll();
-            foreach (User user in users) if (user.Id == id) return Ok(user);
+            foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
         // POST api/users (dodawanie nowego u¿ytkownika)
