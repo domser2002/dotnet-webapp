@@ -1,0 +1,61 @@
+using Api.Controllers;
+using Frontend.Validators;
+using Infrastructure.FakeRepositories;
+using Domain.Model;
+using Microsoft.AspNetCore.Mvc;
+
+namespace GetControllersUnitTest
+{
+    [TestClass]
+    public class GetUnitTest
+    {
+        [TestMethod]
+        public void GetAllUsersTest()
+        {
+            //Arrange
+            FakeUserRepository repository = new();
+            RegistrationValidator validator = new(1,10);
+            UsersController controller = new(repository,validator);
+            //Act
+            List<User> repository_output = repository.GetAll();
+            var tmp = controller.Get();
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            //Assert
+            Assert.IsNotNull(controller_output);
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetAllOffersTest()
+        {
+            //Arrange
+            FakeUserRepository repository = new();
+            RegistrationValidator validator = new(1, 10);
+            UsersController controller = new(repository, validator);
+            //Act
+            List<User> repository_output = repository.GetAll();
+            var tmp = controller.Get();
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            //Assert
+            Assert.IsNotNull(controller_output);
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetAllContactInformationTest()
+        {
+            //Arrange
+            FakeUserRepository repository = new();
+            RegistrationValidator validator = new(1, 10);
+            UsersController controller = new(repository, validator);
+            //Act
+            List<User> repository_output = repository.GetAll();
+            var tmp = controller.Get();
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            //Assert
+            Assert.IsNotNull(controller_output);
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+    }
+}
