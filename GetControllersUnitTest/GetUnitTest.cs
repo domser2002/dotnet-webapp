@@ -44,14 +44,14 @@ namespace GetControllersUnitTest
         public void GetAllContactInformationTest()
         {
             //Arrange
-            FakeUserRepository repository = new();
-            RegistrationValidator validator = new(1, 10);
-            UsersController controller = new(repository, validator);
+            FakeContactInformationRepository repository = new();
+            ContactInformationValidator validator = new(1, 10);
+            ContactInformationController controller = new(repository, validator);
             //Act
-            List<User> repository_output = repository.GetAll();
+            List<ContactInformation> repository_output = repository.GetAll();
             var tmp = controller.Get();
             var okObjectResult = tmp.Result as OkObjectResult;
-            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            List<ContactInformation>? controller_output = okObjectResult?.Value as List<ContactInformation>;
             //Assert
             Assert.IsNotNull(controller_output);
             CollectionAssert.AreEqual(repository_output, controller_output);
