@@ -29,14 +29,13 @@ namespace GetControllersUnitTest
         public void GetAllOffersTest()
         {
             //Arrange
-            FakeUserRepository repository = new();
-            RegistrationValidator validator = new(1, 10);
-            UsersController controller = new(repository, validator);
+            FakeOfferRepository repository = new();
+            OffersController controller = new(repository);
             //Act
-            List<User> repository_output = repository.GetAll();
+            List<Offer> repository_output = repository.GetAll();
             var tmp = controller.Get();
             var okObjectResult = tmp.Result as OkObjectResult;
-            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            List<Offer>? controller_output = okObjectResult?.Value as List<Offer>;
             //Assert
             Assert.IsNotNull(controller_output);
             CollectionAssert.AreEqual(repository_output, controller_output);
