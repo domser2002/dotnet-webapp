@@ -16,6 +16,7 @@ builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IOfferRepository, OfferRepository>();
 builder.Services.AddSingleton<IInquireRepository, InquireRepository>();
 builder.Services.AddSingleton<IContactInformationRepository, ContactInformationRepository>();
+builder.Services.AddSingleton<IRequestRepository, RequestRepository>();
 int minStringLength = 3;
 int maxStringLength = 15;
 int minDimension = 0;

@@ -23,12 +23,14 @@ namespace Api.Controllers
             return Ok(requests);
         }
         // GET api/requests/{user_id}
+        [HttpGet("{user_id}")]
         public ActionResult<List<Request>> GetByUserID(string userId)
         {
             var requests = repository.GetByOwner(userId);
             return Ok(requests);
         }
         // GET api/requests/{CompanyName}
+        [HttpGet("{CompanyName}")]
         public ActionResult<List<Request>> GetByCompany(string companyName)
         {
             var requests = repository.GetByCompany(companyName);
