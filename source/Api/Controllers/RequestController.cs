@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Model;
 
 namespace Api.Controllers
 {
@@ -10,6 +11,14 @@ namespace Api.Controllers
         public RequestController(IRequestRepository repository)
         {
             this.repository = repository;
+        }
+
+        //GET api/requests
+        [HttpGet]
+        public ActionResult<List<Request>> Get()
+        {
+            var requests = repository.GetAll();
+            return Ok(requests);
         }
     }
 }
