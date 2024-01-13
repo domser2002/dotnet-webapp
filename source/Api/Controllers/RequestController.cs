@@ -46,5 +46,12 @@ namespace Api.Controllers
             repository.Add(request);
             return CreatedAtAction("GetById", new { id = request.Id }, request);
         }
+        // DELETE /api/requests
+        [HttpDelete]
+        public ActionResult DeleteByID(int id)
+        {
+            repository.Delete(id);
+            return Ok();
+        }
     }
 }
