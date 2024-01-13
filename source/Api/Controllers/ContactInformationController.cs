@@ -16,7 +16,14 @@ namespace Api.Controllers
             this.repository = repository;
             this.validator = validator;
         }
+        // GET /api/contacts
+        [HttpGet]
+        public ActionResult<List<ContactInformation>> Get()
+        {
+            var contacts = repository.GetAll();
 
+            return Ok(contacts);
+        }
         // POST api/contacts
         [HttpPost]
         public ActionResult<ContactInformation> Create([FromBody] ContactInformation info)
