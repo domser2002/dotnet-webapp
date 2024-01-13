@@ -22,6 +22,12 @@ namespace Api.Controllers
             var requests = repository.GetAll();
             return Ok(requests);
         }
+        // GET api/requests/{user_id}
+        public ActionResult<List<Request>> GetByUserID(string userId)
+        {
+            var requests = repository.GetByOwner(userId);
+            return Ok(requests);
+        }
         // POST api/requests
         [HttpPost]
         public ActionResult<User> Create([FromBody] Request request)
