@@ -1,6 +1,8 @@
 ﻿using Domain.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
+using Frontend.Validators;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api.Controllers
 {
@@ -19,6 +21,18 @@ namespace Api.Controllers
         {
             var requests = repository.GetAll();
             return Ok(requests);
+        }
+        // POST api/requests
+        [HttpPost]
+        public ActionResult<User> Create([FromBody] Request request)
+        {
+            if (request == null)
+            {
+                return BadRequest();
+            };
+
+            repository.Add(request);
+            return CreatedAtAction("GetById", new { id = request.Id }, request);
         }
     }
 }
