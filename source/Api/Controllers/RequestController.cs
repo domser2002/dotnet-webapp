@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    public class RequestController : Controller
+    [Route("api/requests")]
+    public class RequestController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IRequestRepository repository;
+        public RequestController(IRequestRepository repository)
         {
-            return View();
+            this.repository = repository;
         }
     }
 }
