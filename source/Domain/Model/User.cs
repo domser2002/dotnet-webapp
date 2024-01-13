@@ -10,11 +10,11 @@ public class User : Base
     public string Auth0Id { get; set; }
     public Address Address { get; set; }
     public Address DefaultSourceAddress { get; set; }
-    public List<Inquiry> Inquiries { get; set; }
+    public List<Request> Requests { get; set; }
 
     public User()
     {
-        Inquiries = new List<Inquiry>();
+        Requests = new List<Request>();
     }
     public object this[string fieldname]
     {

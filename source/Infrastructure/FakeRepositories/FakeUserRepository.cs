@@ -31,5 +31,17 @@ namespace Infrastructure.FakeRepositories
         {
             users.Add(users.Count + 1, user);
         }
+
+        public void AddRequest(string userID, Request request)
+        {
+            foreach (User user in users.Values)
+            {
+                if (user.Auth0Id == userID)
+                {
+                    user.Requests.Add(request);
+                    return;
+                }
+            }
+        }
     }
 }

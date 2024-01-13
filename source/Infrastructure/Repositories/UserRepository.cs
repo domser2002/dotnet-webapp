@@ -7,6 +7,25 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        public void AddRequest(string userID, Request request)
+        {
+            RequestRepository requestRepo = new();
+            Request temp = requestRepo.GetById(request.Id);
+            int id; 
+            if (temp is null) id = requestRepo.Add(request);
+            else id = request.Id;
+            try
+            {
+                using SqlConnection connection = new(Connection.GetConnectionString());
+                string sql = $"UPDATE Requests SET OwnerId={userID} WHERE id={id}";
+                using SqlCommand command = new(sql, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+            catch (SqlException e) { Console.WriteLine(e.ToString()); }
+        }
+
         public void AddUser(User user)
         {
             try
@@ -49,6 +68,7 @@ namespace Infrastructure.Repositories
                 command.ExecuteNonQuery();
             }
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
+            foreach (Request request in user.Requests) AddRequest(user.Auth0Id, request);
         }
 
         public List<User> GetAll()
@@ -58,12 +78,10 @@ namespace Infrastructure.Repositories
             {
                 using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = "SELECT * FROM Users";
-
+                RequestRepository repo = new();
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
-                InquireRepository inquireRepository = new InquireRepository();
-                List<Inquiry> inquiries = inquireRepository.GetAll();
                 while (reader.Read())
                 {
                     Address address = new()
@@ -93,8 +111,7 @@ namespace Infrastructure.Repositories
                         DefaultSourceAddress = defaultAddress,
                         Auth0Id = reader.GetString(15)
                     };
-                    List<Inquiry> usersInquiries = inquiries.Where(c => c.OwnerId == user.Id).ToList();
-                    user.Inquiries = usersInquiries;
+                    user.Requests = repo.GetByOwner(user.Auth0Id).ToList();
                     result.Add(user);
                 }
             }

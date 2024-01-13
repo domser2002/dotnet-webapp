@@ -3,16 +3,13 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using Infrastructure.Repositories;
 using Infrastructure;
+using Infrastructure.FakeRepositories;
 
 namespace DBIntegrationTests
 {
     [TestClass]
     public class DBIntegrationTests
     {
-        private readonly DateTime date1 = new(2025, 3, 1, 7, 0, 0);
-        private readonly DateTime date2 = new(2026, 3, 1, 7, 0, 0);
-        private readonly Address address = new() { City="Bartodzieje", Street="Uliczna", FlatNumber="1", PostalCode="00-000", StreetNumber="1" };
-
         [TestMethod]
         public void ConnectToDatabase()
         {
@@ -37,90 +34,196 @@ namespace DBIntegrationTests
         public void InsertIntoUsers()
         {
             //Arrange
-            User user = new() { FirstName = "Koziołek", LastName="Matołek", Address=address, DefaultSourceAddress=address, CompanyName="Firma", Email="adres@mail.com", Auth0Id = "1" };
-            using var connection = new SqlConnection(Connection.GetConnectionString());
-            string select = "SELECT COUNT(*) FROM Users";
+            DatabaseSeeding.Clear();
+            UserRepository repo = new();
+            SqlConnection connection = new(Connection.GetConnectionString());
+            User user = new FakeUserRepository().GetAll().First();
+            SqlCommand command = new("SELECT COUNT(*) FROM Users", connection);
 
             //Act
-            SqlCommand command = new(select, connection);
             connection.Open();
-            int amount1 = (int)command.ExecuteScalar();
-            UserRepository repo = new();
             repo.AddUser(user);
-            int amount2 = (int)command.ExecuteScalar();
+            int amount = (int)command.ExecuteScalar();
             connection.Close();
 
             //Assert
-            Assert.AreEqual(amount1, amount2 - 1, "The number of Users in the database should increase by 1");
-
+            Assert.AreEqual(1, amount, "The number of Users in the database should increase by 1");
         }
 
         [TestMethod]
         public void InsertIntoContactInformation()
         {
             //Arrange
-            ContactInformation contactInformation = new() { Address=address, Email= "adres@mail.com", PersonalData="XXX" };
-            using var connection = new SqlConnection(Connection.GetConnectionString());
-            string select = "SELECT COUNT(*) FROM ContactInformation";
-
-            //Act
-            SqlCommand command = new(select, connection);
-            connection.Open();
-            int amount1 = (int)command.ExecuteScalar();
+            DatabaseSeeding.Clear();
             ContactInformationRepository repo = new();
-            repo.AddContactInformation(contactInformation);
-            int amount2 = (int)command.ExecuteScalar();
-            connection.Close();
-
-            //Assert
-            Assert.AreEqual(amount1, amount2 - 1, "The number of entries in the ContactInformation database should increase by 1");
-        }
-
-        [TestMethod]
-        public void InsertIntoInquiries()
-        {
-            //Arrange
-            UserRepository userRepo = new();
-            List<User> users = userRepo.GetAll();
-            int owner = users[0].Id;
-            Package package = new() { Length=1, Weight=1, Height=1, Width=1 };
-            Inquiry inquiry = new() { Active=true, DeliveryAtWeekend=true, DeliveryDate=date2, PickupDate=date1, DestinationAddress=address, SourceAddress=address, 
-                Priority=Priority.Low, Package=package, OwnerId = owner };
-            using var connection = new SqlConnection(Connection.GetConnectionString());
-            string select = "SELECT COUNT(*) FROM Inquiries";
+            SqlConnection connection = new(Connection.GetConnectionString());
+            ContactInformation contactInformation = new FakeContactInformationRepository().GetAll().First();
+            SqlCommand command = new("SELECT COUNT(*) FROM ContactInformation", connection);
 
             //Act
-            SqlCommand command = new(select, connection);
             connection.Open();
-            int amount1 = (int)command.ExecuteScalar();
-            InquireRepository repo = new();
-            repo.AddInquiry(inquiry);
-            int amount2 = (int)command.ExecuteScalar();
+            repo.AddContactInformation(contactInformation);
+            int amount = (int)command.ExecuteScalar();
             connection.Close();
 
             //Assert
-            Assert.AreEqual(amount1, amount2 - 1, "The number of inquiries in the database should increase by 1");
+            Assert.AreEqual(1, amount, "The number of entries in the ContactInformation database should increase by 1");
         }
 
         [TestMethod]
         public void InsertIntoOffers()
         {
             //Arrange
-            Offer offer = new() { Active=true, Begins=date1, Ends=date2, CompanyName="Firm", DeliveryTime=1, MaxDimension=10, MaxWeight=10, MinDimension=1, MinWeight=1, Price=1 };
-            using var connection = new SqlConnection(Connection.GetConnectionString());
-            string select = "SELECT COUNT(*) FROM Offers";
+            DatabaseSeeding.Clear();
+            OfferRepository repo = new();
+            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            Offer offer = new FakeOfferRepository().GetAll().First();
+            SqlCommand command = new("SELECT COUNT(*) FROM Offers", connection);
 
             //Act
-            SqlCommand command = new(select, connection);
             connection.Open();
-            int amount1 = (int)command.ExecuteScalar();
-            OfferRepository repo = new();
             repo.AddOffer(offer);
-            int amount2 = (int)command.ExecuteScalar();
+            int amount = (int)command.ExecuteScalar();
             connection.Close();
 
             //Assert
-            Assert.AreEqual(amount1, amount2 - 1, "The number of offers in the database should increase by 1");
+            Assert.AreEqual(1, amount, "The number of offers in the database should increase by 1");
+        }
+
+        [TestMethod]
+        public void InsertIntoRequests()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            RequestRepository repo = new();
+            ContactInformation owner = new FakeContactInformationRepository().GetAll().First();
+            ContactInformationRepository infoRepo = new();
+            infoRepo.AddContactInformation(owner);
+            owner = infoRepo.GetAll().First();
+            Request request = new FakeRequestRepository().GetAll().First();
+            request.Owner = owner;
+            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            SqlCommand command = new("SELECT COUNT(*) FROM Requests", connection);
+
+            //Act
+            connection.Open();
+            repo.Add(request);
+            int amount = (int)command.ExecuteScalar();
+            connection.Close();
+
+            //Assert
+            Assert.AreEqual(1, amount, "The number of requests in the database should increase by 1");
+        }
+
+
+        [TestMethod]
+        public void DaleteFromRequests()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            RequestRepository repo = new();
+            int index = repo.Add(new FakeRequestRepository().GetAll().First());
+            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            SqlCommand command = new("SELECT COUNT(*) FROM Requests", connection);
+
+            //Act
+            connection.Open();
+            repo.Delete(index);
+            int amount = (int)command.ExecuteScalar();
+            connection.Close();
+
+            //Assert
+            Assert.AreEqual(0, amount, "The number of requests in the database should decrease by 1");
+        }
+
+        [TestMethod]
+        public void AssignNewRequestToUser()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            UserRepository userRepo = new();
+            User user = new FakeUserRepository().GetAll().First();
+            user.Requests = new();
+            userRepo.AddUser(user);
+            ContactInformationRepository infoRepo = new();
+            infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
+            ContactInformation owner = infoRepo.GetAll().First();
+            Request request = new FakeRequestRepository().GetAll().First();
+            request.Id = 0;
+            request.Owner = owner;
+
+            //Act
+            new UserRepository().AddRequest(user.Auth0Id, request);
+            int amount = new RequestRepository().GetByOwner(user.Auth0Id).Count;
+
+            //Assert
+            Assert.AreEqual(1, amount, "The number of requests assigned to the user should increase by 1");
+        }
+
+        [TestMethod]
+        public void AssignExistingRequestToUser()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            UserRepository userRepo = new();
+            User user = new FakeUserRepository().GetAll().First();
+            user.Requests = new();
+            userRepo.AddUser(user);
+            ContactInformationRepository infoRepo = new();
+            infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
+            ContactInformation owner = infoRepo.GetAll().First();
+            Request request = new FakeRequestRepository().GetAll().First();
+            request.Owner = owner;
+            RequestRepository requestRepo = new();
+            int index = requestRepo.Add(request);
+            request.Id = index;
+
+            //Act
+            new UserRepository().AddRequest(user.Auth0Id, request);
+            int amount = requestRepo.GetByOwner(user.Auth0Id).Count;
+
+            //Assert
+            Assert.AreEqual(1, amount, "The number of requests assigned to the user should increase by 1");
+        }
+
+        [TestMethod]
+        public void DeactivateOffer()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            Offer offer = new FakeOfferRepository().GetAll().First();
+            offer.Active = true;
+            OfferRepository repo = new();
+            repo.AddOffer(offer);
+            int index = repo.GetAll().First().Id;
+
+            //Act
+            repo.Deactivate(index);
+
+            //Assert
+            Assert.IsFalse(repo.GetByID(index).Active, "Offer should be deactivated");
+        }
+
+        [TestMethod]
+        public void ChangeRequestStatus()
+        {
+            //Arrange
+            DatabaseSeeding.Clear();
+            RequestRepository repo = new();
+            ContactInformationRepository infoRepo = new();
+            infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
+            ContactInformation owner = infoRepo.GetAll().First();
+            Request request = new FakeRequestRepository().GetAll().First();
+            request.Owner = owner;
+            request.Status = RequestStatus.Idle;
+            int index = repo.Add(request);
+
+            //Act
+            repo.ChangeStatus(index, RequestStatus.Cancelled);
+            request = repo.GetById(index);
+
+            //Assert
+            Assert.AreEqual(RequestStatus.Cancelled, request.Status, "Request status should change.");
         }
     }
 }

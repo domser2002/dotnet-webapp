@@ -25,6 +25,7 @@ namespace Domain.Model
         public string CompanyName { get; set; }
         public decimal Price { get; set; }
         public RequestStatus Status { get; set; }
+        public ContactInformation Owner { get; set; }
         public Request(Offer offer,Inquiry inquiry)
         {
             Package = inquiry.Package;
@@ -36,5 +37,6 @@ namespace Domain.Model
             Price = offer.Price;
             Status = RequestStatus.Idle;
         }
+        public Request() { }
     }
 }

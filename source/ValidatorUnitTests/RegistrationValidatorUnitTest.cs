@@ -29,7 +29,7 @@ namespace ValidatorUnitTests
                 CompanyName = "aaaa",
                 DefaultSourceAddress = ValidAddress(),
                 Address = ValidAddress(),
-                Inquiries = new()
+                Requests = new()
             };
         }
         [TestMethod]
