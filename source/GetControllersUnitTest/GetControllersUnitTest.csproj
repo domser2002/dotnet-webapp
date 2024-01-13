@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\source\Api\Api.csproj" />
-    <ProjectReference Include="..\source\Domain\Domain.csproj" />
-    <ProjectReference Include="..\source\Frontend\Frontend.csproj" />
-    <ProjectReference Include="..\source\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Api\Api.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Frontend\Frontend.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
