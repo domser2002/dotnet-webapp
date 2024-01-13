@@ -28,6 +28,12 @@ namespace Api.Controllers
             var requests = repository.GetByOwner(userId);
             return Ok(requests);
         }
+        // GET api/requests/{CompanyName}
+        public ActionResult<List<Request>> GetByCompany(string companyName)
+        {
+            var requests = repository.GetByCompany(companyName);
+            return Ok(requests);
+        }
         // POST api/requests
         [HttpPost]
         public ActionResult<User> Create([FromBody] Request request)
