@@ -1,5 +1,6 @@
 ﻿﻿using Domain.Abstractions;
 using Domain.Model;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -117,6 +118,26 @@ namespace Infrastructure.Repositories
             }
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
             return result;
+        }
+        
+        private void DeleteByID(string id)
+        {
+            try
+            {
+                using SqlConnection connection = new(Connection.GetConnectionString());
+                string sql = $"DELETE FROM Users WHERE Auth0Id=@Auth0Id";
+                using SqlCommand command = new(sql, connection);
+                command.Parameters.Add("@Auth0Id", SqlDbType.VarChar);
+                command.Parameters["Auth0Id"].Value = id;
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException e) { Console.WriteLine(e.ToString()); }
+        }
+
+        public void PatchByID(string userID, UserPatchModel userDocument)
+        {
+            
         }
     }
 }

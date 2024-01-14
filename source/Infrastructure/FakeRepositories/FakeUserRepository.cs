@@ -1,5 +1,6 @@
 using Domain.Model;
 using Domain.Abstractions;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Infrastructure.FakeRepositories
 {
@@ -42,6 +43,11 @@ namespace Infrastructure.FakeRepositories
                     return;
                 }
             }
+        }
+
+        public void PatchByID(string userID, UserPatchModel user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
