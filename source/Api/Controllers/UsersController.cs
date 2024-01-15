@@ -41,13 +41,45 @@ namespace Api.Controllers
         // Must have Microsoft.AspNetCore.Mvc.NewtonsoftJson installed
         // PATCH /api/users/{id}
         [HttpPatch("{id}")]
-        public ActionResult PatchByID(string id, [FromBody] JsonPatchDocument<User> patchEntity)
+        public ActionResult PatchByID(string id, [FromBody] UserPatchModel userPatch)
         {
+            if (userPatch == null)
+            {
+                return BadRequest("Invalid request parameters");
+            }
+            User? existingUser = null;
             var users = repository.GetAll();
-            var entity = users.FirstOrDefault(user => user.Auth0Id == id);
-            if (entity == null) return BadRequest();
-            patchEntity.ApplyTo(entity, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
-            return Ok(entity);
+            foreach (User user in users) if (user.Auth0Id == id) existingUser = user;
+            if (existingUser == null)
+            {
+                return NotFound("User not found");
+            }
+            if (!string.IsNullOrEmpty(userPatch.FirstName))
+            {
+                existingUser.FirstName = userPatch.FirstName;
+            }
+            if (!string.IsNullOrEmpty(userPatch.LastName))
+            {
+                existingUser.LastName = userPatch.LastName;
+            }
+            if(!string.IsNullOrEmpty(userPatch.Email))
+            {
+                existingUser.Email = userPatch.Email;
+            }
+            if(!string.IsNullOrEmpty(userPatch.CompanyName))
+            {
+                existingUser.CompanyName = userPatch.CompanyName;
+            }
+            if(userPatch.Address != null)
+            {
+                existingUser.Address = userPatch.Address;
+            }
+            if (userPatch.DefaultSourceAddress != null)
+            {
+                existingUser.DefaultSourceAddress = userPatch.DefaultSourceAddress;
+            }
+            repository.Update(existingUser);
+            return Ok(existingUser);
         }
         // GET api/users/count
         [HttpGet("count")]
