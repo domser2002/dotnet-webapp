@@ -14,8 +14,8 @@ namespace GetControllersUnitTest
         {
             //Arrange
             FakeUserRepository repository = new();
-            RegistrationValidator validator = new(1,10);
-            UsersController controller = new(repository,validator);
+            RegistrationValidator validator = new(1, 10);
+            UsersController controller = new(repository, validator);
             //Act
             List<User> repository_output = repository.GetAll();
             var tmp = controller.Get();
@@ -54,6 +54,21 @@ namespace GetControllersUnitTest
             //Assert
             Assert.IsNotNull(controller_output);
             CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetOfferByIDTest()
+        {
+            //Arrange
+            FakeOfferRepository repository = new();
+            RegistrationValidator validator = new(1, 10);
+            OffersController controller = new(repository);
+            //Act
+            Offer? repository_output = repository.GetByID(1);
+            var tmp = controller.GetByID(1);
+            var okObjectResult = tmp.Result as OkObjectResult;
+            Offer? controller_output = okObjectResult?.Value as Offer;
+            //Assert
+            Assert.AreEqual(repository_output, controller_output);
         }
         [TestMethod]
         public void GetAllContactInformationTest()
