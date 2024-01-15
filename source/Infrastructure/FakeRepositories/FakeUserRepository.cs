@@ -49,5 +49,13 @@ namespace Infrastructure.FakeRepositories
         {
             users[user.Id] = user;
         }
+
+        public User? GetById(string Auth0Id)
+        {
+            foreach(User user in users.Values) 
+                if(user.Auth0Id==Auth0Id)
+                    return user;
+            return null;
+        }
     }
 }

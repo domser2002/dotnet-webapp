@@ -31,7 +31,7 @@ namespace Api.Controllers
 
         // GET api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<List<User>> GetByID(string id)
+        public ActionResult<User> GetByID(string id)
         {
             var users = repository.GetAll();
             foreach (User user in users) if (user.Auth0Id == id) return Ok(user);

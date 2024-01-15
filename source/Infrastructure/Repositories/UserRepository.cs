@@ -1,4 +1,4 @@
-﻿﻿using Domain.Abstractions;
+﻿using Domain.Abstractions;
 using Domain.Model;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
         {
             RequestRepository requestRepo = new();
             Request temp = requestRepo.GetById(request.Id);
-            int id; 
+            int id;
             if (temp is null) id = requestRepo.Add(request);
             else id = request.Id;
             try
@@ -118,6 +118,51 @@ namespace Infrastructure.Repositories
             }
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
             return result;
+        }
+
+        public User? GetById(string Auth0Id)
+        {
+            try
+            {
+                using SqlConnection connection = new(Connection.GetConnectionString());
+                string sql = "SELECT * FROM Users WHERE AuthId = @AuthId";
+                RequestRepository repo = new();
+                using SqlCommand command = new(sql, connection);
+                command.Parameters.AddWithValue("@AuthId", Auth0Id);
+                connection.Open();
+                using SqlDataReader reader = command.ExecuteReader();
+                if (!reader.Read()) { return null; }
+                Address address = new()
+                {
+                    Street = reader.GetString(5),
+                    StreetNumber = reader.GetString(6),
+                    FlatNumber = reader.GetString(7),
+                    PostalCode = reader.GetString(8),
+                    City = reader.GetString(9)
+                };
+                Address defaultAddress = new()
+                {
+                    Street = reader.GetString(10),
+                    StreetNumber = reader.GetString(11),
+                    FlatNumber = reader.GetString(12),
+                    PostalCode = reader.GetString(13),
+                    City = reader.GetString(14)
+                };
+                User user = new()
+                {
+                    Id = reader.GetInt32(0),
+                    FirstName = reader.GetString(1),
+                    LastName = reader.GetString(2),
+                    CompanyName = reader.GetString(3),
+                    Email = reader.GetString(4),
+                    Address = address,
+                    DefaultSourceAddress = defaultAddress,
+                    Auth0Id = reader.GetString(15)
+                };
+                user.Requests = repo.GetByOwner(user.Auth0Id).ToList();
+                return user;
+            }
+            catch (SqlException e) { Console.WriteLine(e.ToString()); return null; }
         }
 
         public void Update(User user)
