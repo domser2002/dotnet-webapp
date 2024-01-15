@@ -33,13 +33,12 @@ namespace GetControllersUnitTest
             RegistrationValidator validator = new(1, 10);
             UsersController controller = new(repository, validator);
             //Act
-            List<User> repository_output = repository.GetAll();
+            User? repository_output = repository.GetById("1");
             var tmp = controller.GetByID("1");
             var okObjectResult = tmp.Result as OkObjectResult;
-            List<User>? controller_output = okObjectResult?.Value as List<User>;
+            User? controller_output = okObjectResult?.Value as User;
             //Assert
-            Assert.IsNotNull(controller_output);
-            CollectionAssert.AreEqual(repository_output, controller_output);
+            Assert.AreEqual(repository_output, controller_output);
         }
         [TestMethod]
         public void GetAllOffersTest()
