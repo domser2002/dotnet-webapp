@@ -78,6 +78,11 @@ namespace Api.Controllers
             {
                 existingUser.DefaultSourceAddress = userPatch.DefaultSourceAddress;
             }
+            ValidationResults validationResults = validator.Validate(existingUser);
+            if (validationResults == null)
+                return BadRequest("could not validate");
+            if (!validationResults.Success)
+                return BadRequest(validationResults.Message);
             repository.Update(existingUser);
             return Ok(existingUser);
         }
@@ -86,10 +91,7 @@ namespace Api.Controllers
         public ActionResult<int> GetUserCount()
         {
             var users = repository.GetAll();
-
-            int count = users.Count();
-
-
+            int count = users.Count;
             return Ok(count);
         }
         // POST api/users (dodawanie nowego u�ytkownika)
@@ -104,7 +106,7 @@ namespace Api.Controllers
             ValidationResults validationResults = validator.Validate(user);
             if (validationResults == null)
                 return BadRequest("could not validate");
-            if (!validationResults.Success && validationResults.Message != "Enter a proper email address.")
+            if (!validationResults.Success)
                 return BadRequest(validationResults.Message);
 
             repository.AddUser(user);
