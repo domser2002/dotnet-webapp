@@ -33,8 +33,8 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<User> GetByID(string id)
         {
-            var users = repository.GetAll();
-            foreach (User user in users) if (user.Auth0Id == id) return Ok(user);
+            var user = repository.GetById(id);
+            if (user != null) return Ok(user);
             return BadRequest($"User with id {id} does not exist in the database.");
         }
 
