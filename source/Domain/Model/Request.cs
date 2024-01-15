@@ -47,6 +47,5 @@ namespace Domain.Model
         public DateTime DeliveryDate { get; set; }
         public DateTime CancelDate { get; set; }    
         public RequestStatus Status { get; set; }
-        public ContactInformation Owner { get; set; }
     }
 }

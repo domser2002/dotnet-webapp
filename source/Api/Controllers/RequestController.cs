@@ -95,10 +95,6 @@ namespace Api.Controllers
             {
                 existingRequest.Status = requestPatch.Status;
             }
-            if(requestPatch.Owner != null)
-            {
-                existingRequest.Owner = requestPatch.Owner;
-            }
             repository.Update(existingRequest);
             return Ok(existingRequest);
         }
