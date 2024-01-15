@@ -55,5 +55,52 @@ namespace Api.Controllers
             repository.Delete(id);
             return Ok();
         }
+
+        // PATCH /api/requests/{id}
+        [HttpPatch("{id}")]
+        public ActionResult PatchByID(int id, [FromBody] RequestPatchModel requestPatch)
+        {
+            if (requestPatch == null)
+            {
+                return BadRequest("Invalid request parameters");
+            }
+            Request? existingRequest = null;
+            var requests = repository.GetAll();
+            foreach (Request request in requests) if (request.Id == id) existingRequest = request;
+            if (existingRequest == null)
+            {
+                return NotFound("Request not found");
+            }
+            if (requestPatch.SourceAddress != null)
+            {
+                existingRequest.SourceAddress = requestPatch.SourceAddress;
+            }
+            if (requestPatch.DestinationAddress != null)
+            {
+                existingRequest.DestinationAddress = requestPatch.DestinationAddress;
+            }
+            if (requestPatch.PickupDate != new DateTime())
+            {
+                existingRequest.PickupDate = requestPatch.PickupDate;
+            }
+            if (requestPatch.DeliveryDate != new DateTime())
+            {
+                existingRequest.DeliveryDate = requestPatch.DeliveryDate;
+            }
+            if (requestPatch.CancelDate != new DateTime())
+            {
+                existingRequest.CancelDate = requestPatch.CancelDate;
+            }
+            if(requestPatch.Status != RequestStatus.Idle)
+            {
+                existingRequest.Status = requestPatch.Status;
+            }
+            if(requestPatch.Owner != null)
+            {
+                existingRequest.Owner = requestPatch.Owner;
+            }
+            repository.Update(existingRequest);
+            return Ok(existingRequest);
+        }
     }
 }
