@@ -71,6 +71,6 @@ public class FakeRequestRepository : IRequestRepository
 
     public void Update(Request request)
     {
-        throw new NotImplementedException();
+        requests[request.Id] = request;
     }
 }
