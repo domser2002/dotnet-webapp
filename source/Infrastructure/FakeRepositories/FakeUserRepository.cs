@@ -45,9 +45,9 @@ namespace Infrastructure.FakeRepositories
             }
         }
 
-        public void PatchByID(string userID, UserPatchModel user)
+        public void Update(User user)
         {
-            throw new NotImplementedException();
+            users[user.Id] = user;
         }
     }
 }
