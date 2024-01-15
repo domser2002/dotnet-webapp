@@ -68,4 +68,9 @@ public class FakeRequestRepository : IRequestRepository
         if (users.Count == 1) return users[0].Requests;
         return new();
     }
+
+    public void Update(Request request)
+    {
+        throw new NotImplementedException();
+    }
 }

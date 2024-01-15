@@ -128,6 +128,11 @@ public class RequestRepository : IRequestRepository
         return ReadFromDatabase($"SELECT * FROM Requests WHERE OwnerId={ownerId}");
     }
 
+    public void Update(Request request)
+    {
+        throw new NotImplementedException();
+    }
+
     private List<Request> ReadFromDatabase(string query)
     {
         List<Request> result = new();

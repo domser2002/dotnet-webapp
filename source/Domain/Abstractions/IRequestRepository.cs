@@ -11,4 +11,5 @@ public interface IRequestRepository
     void Delete(int id);
     void ChangeStatus(int id, RequestStatus status);
     Request GetById(int id);
+    public void Update(Request request);
 }
