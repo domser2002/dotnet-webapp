@@ -8,6 +8,6 @@ namespace Domain.Abstractions
         List<User> GetAll();
         void AddUser(User user);
         void AddRequest(string userID, Request request);
-        void PatchByID(string userID, UserPatchModel user);
+        void Update(User user);
     }
 }

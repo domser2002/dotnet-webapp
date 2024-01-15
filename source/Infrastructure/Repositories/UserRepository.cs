@@ -135,9 +135,36 @@ namespace Infrastructure.Repositories
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
         }
 
-        public void PatchByID(string userID, UserPatchModel userDocument)
+        public void Update(User user)
         {
-            
+            try
+            {
+                using SqlConnection connection = new(Connection.GetConnectionString());
+                var command = new SqlCommand("UPDATE Users SET FirstName = @FirstName, LastName = @LastName, CompanyName = @CompanyName," +
+                    "Email = @Email, Street = @Street, StreetNumber = @StreetNumber, FlatNumber = @FlatNumber," +
+                    "PostalCode = @PostalCode, City = @City, DefaultStreet = @DefaultStreet, " +
+                    "DefaultStreetNumber = @DefaultStreetnumber, DefaultFlatNumber = @DefaultFlatNumber," +
+                    "DefaultPostalCode = @DefaultPostalCode, DefaultCity = @DefaultCity  WHERE AuthId = @AuthId", connection);
+                command.Parameters.AddWithValue("@AuthId", user.Auth0Id);
+                command.Parameters.AddWithValue("@FirstName", user.FirstName);
+                command.Parameters.AddWithValue("@LastName", user.LastName);
+                command.Parameters.AddWithValue("@CompanyName", user.CompanyName);
+                command.Parameters.AddWithValue("@Email", user.Email);
+                command.Parameters.AddWithValue("@Street", user.Address.Street);
+                command.Parameters.AddWithValue("@StreetNumber", user.Address.StreetNumber);
+                command.Parameters.AddWithValue("@FlatNumber", user.Address.FlatNumber);
+                command.Parameters.AddWithValue("@PostalCode", user.Address.PostalCode);
+                command.Parameters.AddWithValue("@City", user.Address.City);
+                command.Parameters.AddWithValue("@DefaultStreet", user.DefaultSourceAddress.Street);
+                command.Parameters.AddWithValue("@DefaultStreetNumber", user.DefaultSourceAddress.StreetNumber);
+                command.Parameters.AddWithValue("@DefaultFlatNumber", user.DefaultSourceAddress.FlatNumber);
+                command.Parameters.AddWithValue("@DefaultPostalCode", user.DefaultSourceAddress.PostalCode);
+                command.Parameters.AddWithValue("@DefaultCity", user.DefaultSourceAddress.City);
+                // Add other parameters as needed for additional properties
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException e) { Console.WriteLine(e.ToString()); }
         }
     }
 }
