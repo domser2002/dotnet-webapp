@@ -142,9 +142,9 @@ namespace Infrastructure.Repositories
                 using SqlConnection connection = new(Connection.GetConnectionString());
                 var command = new SqlCommand("UPDATE Users SET FirstName = @FirstName, LastName = @LastName, CompanyName = @CompanyName," +
                     "Email = @Email, Street = @Street, StreetNumber = @StreetNumber, FlatNumber = @FlatNumber," +
-                    "PostalCode = @PostalCode, City = @City, DefaultStreet = @DefaultStreet, " +
-                    "DefaultStreetNumber = @DefaultStreetnumber, DefaultFlatNumber = @DefaultFlatNumber," +
-                    "DefaultPostalCode = @DefaultPostalCode, DefaultCity = @DefaultCity  WHERE AuthId = @AuthId", connection);
+                    "PostalCode = @PostalCode, City = @City, DefaultAddressStreet = @DefaultStreet, " +
+                    "DefaultAddressStreetNumber = @DefaultStreetnumber, DefaultAddressFlatNumber = @DefaultFlatNumber," +
+                    "DefaultAddressPostalCode = @DefaultPostalCode, DefaultAddressCity = @DefaultCity  WHERE AuthId = @AuthId", connection);
                 command.Parameters.AddWithValue("@AuthId", user.Auth0Id);
                 command.Parameters.AddWithValue("@FirstName", user.FirstName);
                 command.Parameters.AddWithValue("@LastName", user.LastName);
