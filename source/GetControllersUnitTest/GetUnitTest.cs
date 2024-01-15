@@ -60,7 +60,6 @@ namespace GetControllersUnitTest
         {
             //Arrange
             FakeOfferRepository repository = new();
-            RegistrationValidator validator = new(1, 10);
             OffersController controller = new(repository);
             //Act
             Offer? repository_output = repository.GetByID(1);
@@ -84,6 +83,63 @@ namespace GetControllersUnitTest
             List<ContactInformation>? controller_output = okObjectResult?.Value as List<ContactInformation>;
             //Assert
             Assert.IsNotNull(controller_output);
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetAllRequestsTest()
+        {
+            //Arrange
+            FakeRequestRepository repository = new();
+            RequestController controller = new(repository);
+            //Act
+            List<Request> repository_output = repository.GetAll();
+            var tmp = controller.Get();
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<Request>? controller_output = okObjectResult?.Value as List<Request>;
+            //Assert
+            Assert.IsNotNull(controller_output);
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetRequestByIDTest()
+        {
+            //Arrange
+            FakeRequestRepository repository = new();
+            RequestController controller = new(repository);
+            //Act
+            Request? repository_output = repository.GetById(1);
+            var tmp = controller.GetByID(1);
+            var okObjectResult = tmp.Result as OkObjectResult;
+            Request? controller_output = okObjectResult?.Value as Request;
+            //Assert
+            Assert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetRequestsByCompanyTest()
+        {
+            //Arrange
+            FakeRequestRepository repository = new();
+            RequestController controller = new(repository);
+            //Act
+            List<Request> repository_output = repository.GetByCompany("Najlepsza firma");
+            var tmp = controller.GetByCompany("Najlepsza firma");
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<Request>? controller_output = okObjectResult?.Value as List<Request>;
+            //Assert
+            CollectionAssert.AreEqual(repository_output, controller_output);
+        }
+        [TestMethod]
+        public void GetRequestsByUserIdTest()
+        {
+            //Arrange
+            FakeRequestRepository repository = new();
+            RequestController controller = new(repository);
+            //Act
+            List<Request> repository_output = repository.GetByOwner("1");
+            var tmp = controller.GetByUserID("1");
+            var okObjectResult = tmp.Result as OkObjectResult;
+            List<Request>? controller_output = okObjectResult?.Value as List<Request>;
+            //Assert
             CollectionAssert.AreEqual(repository_output, controller_output);
         }
     }

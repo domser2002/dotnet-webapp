@@ -22,6 +22,14 @@ namespace Api.Controllers
             var requests = repository.GetAll();
             return Ok(requests);
         }
+        // GET api/requests/{id}
+        [HttpGet("{id")]
+        public ActionResult<Request> GetByID(int id)
+        {
+            var request = repository.GetById(id);
+            if(request == null) { return BadRequest("Request not found."); }
+            return Ok(request);
+        }
         // GET api/requests/{user_id}
         [HttpGet("{user_id}")]
         public ActionResult<List<Request>> GetByUserID(string userId)
