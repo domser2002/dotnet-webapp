@@ -119,21 +119,6 @@ namespace Infrastructure.Repositories
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
             return result;
         }
-        
-        private void DeleteByID(string id)
-        {
-            try
-            {
-                using SqlConnection connection = new(Connection.GetConnectionString());
-                string sql = $"DELETE FROM Users WHERE Auth0Id=@Auth0Id";
-                using SqlCommand command = new(sql, connection);
-                command.Parameters.Add("@Auth0Id", SqlDbType.VarChar);
-                command.Parameters["Auth0Id"].Value = id;
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
-            catch (SqlException e) { Console.WriteLine(e.ToString()); }
-        }
 
         public void Update(User user)
         {
