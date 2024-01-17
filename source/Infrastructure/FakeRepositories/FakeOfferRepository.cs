@@ -23,7 +23,7 @@ namespace Infrastructure.FakeRepositories
 
         public List<Offer> GetAll()
         {
-            return offers.Values.Where(obiekt => obiekt.Active == true).ToList();
+            return offers.Values.ToList();
         }
 
         public void AddOffer(Offer offer)
