@@ -15,7 +15,7 @@ public class Mailer : IMailer
             FullName = request.Owner.PersonalData,
             RequestID = request.Id,
             CourierFullname = courier.FullName,
-            Company = courier.Company,
+            Company = courier.CompanyName,
             Date = request.DeliveryDate,
             Reason = reason
         };

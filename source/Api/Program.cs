@@ -2,8 +2,8 @@ using Domain.Abstractions;
 using Frontend.Validators;
 using Frontend.Validators.Abstractions;
 using Infrastructure.Repositories;
+using Infrastructure.FakeRepositories;
 using Infrastructure;
-using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IOfferRepository, OfferRepository>();
 builder.Services.AddSingleton<IInquireRepository, InquireRepository>();
 builder.Services.AddSingleton<IContactInformationRepository, ContactInformationRepository>();
+builder.Services.AddSingleton<IRequestRepository, RequestRepository>();
 int minStringLength = 3;
 int maxStringLength = 15;
 int minDimension = 0;

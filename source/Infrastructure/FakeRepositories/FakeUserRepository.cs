@@ -1,5 +1,6 @@
 using Domain.Model;
 using Domain.Abstractions;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Infrastructure.FakeRepositories
 {
@@ -42,6 +43,19 @@ namespace Infrastructure.FakeRepositories
                     return;
                 }
             }
+        }
+
+        public void Update(User user)
+        {
+            users[user.Id] = user;
+        }
+
+        public User? GetById(string Auth0Id)
+        {
+            foreach(User user in users.Values) 
+                if(user.Auth0Id==Auth0Id)
+                    return user;
+            return null;
         }
     }
 }

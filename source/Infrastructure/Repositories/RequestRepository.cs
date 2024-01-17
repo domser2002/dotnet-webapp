@@ -128,6 +128,39 @@ public class RequestRepository : IRequestRepository
         return ReadFromDatabase($"SELECT * FROM Requests WHERE OwnerId={ownerId}");
     }
 
+    public void Update(Request request)
+    {
+        try
+        {
+            using SqlConnection connection = new(Connection.GetConnectionString());
+            var command = new SqlCommand("UPDATE Requests SET SourceAddressStreet = @SourceAddressStreet" +
+                "SourceAddressStreetNumber = @SourceAddressStreetNumber, SourceAddressFlatNumber = " +
+                "@SourceAddressFlatNumber, SourceAddressPostalCode = @SourceAddressPostalCode," +
+                "SourceAddressCity = @SourceAddressCity, DestinationAddressStreet = @DestinationAddressStreet," +
+                "DestinationAddressStreetNumber = @DestinationAddressStreetNumber, " +
+                "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode" +
+                "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate," +
+                "DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus", connection);
+            command.Parameters.AddWithValue("@SourceAddressStreet", request.SourceAddress.Street);
+            command.Parameters.AddWithValue("@SourceAddressStreetNumber", request.SourceAddress.StreetNumber);
+            command.Parameters.AddWithValue("@SourceAddressFlatNumber", request.SourceAddress.FlatNumber);
+            command.Parameters.AddWithValue("@SourceAddressPostalCode", request.SourceAddress.PostalCode);
+            command.Parameters.AddWithValue("@SourceAddressCity", request.SourceAddress.City);
+            command.Parameters.AddWithValue("@DestinationAddressStreet", request.DestinationAddress.Street);
+            command.Parameters.AddWithValue("@DestinationAddressStreetNumber", request.DestinationAddress.StreetNumber);
+            command.Parameters.AddWithValue("@DestinationAddressFlatNumber", request.DestinationAddress.FlatNumber);
+            command.Parameters.AddWithValue("@DestinationAddressPostalCode", request.DestinationAddress.PostalCode);
+            command.Parameters.AddWithValue("@DestinationAddressCity", request.DestinationAddress.City);
+            command.Parameters.AddWithValue("@PickupDate", request.PickupDate);
+            command.Parameters.AddWithValue("@DeliveryDate", request.DeliveryDate);
+            command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
+            command.Parameters.AddWithValue("@RequestStatus", request.Status);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+        catch (SqlException e) { Console.WriteLine(e.ToString()); }
+    }
+
     private List<Request> ReadFromDatabase(string query)
     {
         List<Request> result = new();

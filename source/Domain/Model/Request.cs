@@ -39,4 +39,13 @@ namespace Domain.Model
         }
         public Request() { }
     }
+    public class RequestPatchModel
+    {
+        public Address SourceAddress { get; set; }
+        public Address DestinationAddress { get; set; }
+        public DateTime PickupDate { get;set; }
+        public DateTime DeliveryDate { get; set; }
+        public DateTime CancelDate { get; set; }    
+        public RequestStatus Status { get; set; }
+    }
 }
