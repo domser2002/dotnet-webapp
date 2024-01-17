@@ -2,7 +2,6 @@
 using SendGrid;
 using Domain.Model;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 
 namespace Mailer;
 
@@ -12,7 +11,7 @@ public class Mailer : IMailer
     {
         var dynamicTemplateData = new
         {
-            FullName = request.Owner.PersonalData,
+            Fullname = request.Owner.PersonalData,
             RequestID = request.Id,
             CourierFullname = courier.FullName,
             Company = courier.CompanyName,
@@ -26,7 +25,7 @@ public class Mailer : IMailer
     {
         var dynamicTemplateData = new
         {
-            FullName = request.Owner.PersonalData,
+            Fullname = request.Owner.PersonalData,
             RequestID = request.Id
         };
         Send(request.Owner, "d-8f3249680fb647b889ccb89a0dc47a96", dynamicTemplateData, null).Wait();
@@ -36,7 +35,7 @@ public class Mailer : IMailer
     {
         var dynamicTemplateData = new
         {
-            FullName = request.Owner.PersonalData,
+            Fullname = request.Owner.PersonalData,
             RequestID = request.Id
         };
         Send(request.Owner, "d-38c86f8883b24899a02111eb7de14515", dynamicTemplateData, null).Wait();
@@ -44,7 +43,7 @@ public class Mailer : IMailer
 
     public void SendRegistrationMail(User to)
     {
-        var dynamicTemplateData = new { FullName = to.FullName };
+        var dynamicTemplateData = new { Fullname = to.FullName };
         Send(new(to), "d-2167d74376524c39bfd641be531abd92", dynamicTemplateData, null).Wait();
     }
 
@@ -52,7 +51,7 @@ public class Mailer : IMailer
     {
         var dynamicTemplateData = new
         {
-            FullName = request.Owner.PersonalData,
+            Fullname = request.Owner.PersonalData,
             RequestID = request.Id
         };
         (string, string)[] attachments = new (string, string)[] { ("agreement", agreement), ("receipt", recepit) };
@@ -69,21 +68,23 @@ public class Mailer : IMailer
         msg.SetTemplateData(templateData);
         if (attachments is not null)
         {
+            BlobServiceClient blobServiceClient = new("DefaultEndpointsProtocol=https;AccountName=dotnetwebapp;" +
+            "AccountKey=l8YwfKHD9jI0GRpxzKfJrhbJHpiavg5hQvN0MXhRmAB0BLOoqZY6+dG+xMApvt0w2YNXvTtxdzo++ASt0zLpNg==;EndpointSuffix=core.windows.net");
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("container");
             foreach ((string, string) attachment in attachments)
             {
-                BlobServiceClient blobServiceClient = new("DefaultEndpointsProtocol=https;AccountName=dotnetwebapp;" +
-                    "AccountKey=l8YwfKHD9jI0GRpxzKfJrhbJHpiavg5hQvN0MXhRmAB0BLOoqZY6+dG+xMApvt0w2YNXvTtxdzo++ASt0zLpNg==;EndpointSuffix=core.windows.net");
-                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("container");
                 BlobClient blobClient = containerClient.GetBlobClient(attachment.Item2);
                 if (blobClient.ExistsAsync().Result)
                 {
                     using var ms = new MemoryStream();
                     blobClient.DownloadTo(ms);
+                    ms.Seek(0, SeekOrigin.Begin);
                     var file = Convert.ToBase64String(ms.ToArray());
                     msg.AddAttachment($"{attachment.Item1}.pdf", file);
                 }
             }
         }
-        await client.SendEmailAsync(msg);
+        var response = await client.SendEmailAsync(msg);
+        if (response.StatusCode != System.Net.HttpStatusCode.Accepted) throw new Exception("Email could not be delivered.");
     }
 }
