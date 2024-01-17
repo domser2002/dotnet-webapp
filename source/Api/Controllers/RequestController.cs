@@ -23,7 +23,7 @@ namespace Api.Controllers
             return Ok(requests);
         }
         // GET api/requests/{id}
-        [HttpGet("{id")]
+        [HttpGet("{id}")]
         public ActionResult<Request> GetByID(int id)
         {
             var request = repository.GetById(id);
