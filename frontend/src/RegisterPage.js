@@ -6,91 +6,85 @@ import { useNavigate } from 'react-router-dom';
 
 
 export function RegisterPage() {
+
     const navigate = useNavigate();
 
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
     const [profileId, setProfileId] = useState();
-    const [userInDb, setUserInDb] = useState(true);
-    //const [user, setUser] = useState();
+    const [userInDb, setUserInDb] = useState(false);
+    const [onErrorMessage, setOnErrorMessage] = useState("");
+
+    const [FirstName, setFirstName] = useState("");
+    const [LastName, setLastName] = useState("");
+    const [Email, setEmail] = useState("");
+    const [Company, setCompany] = useState("");
+
+    const [SourceStreet, setSourceStreet] = useState("");
+    const [SourceStreetNumber, setSourceStreetNumber] = useState("");
+    const [SourceFlatNumber, setSourceFlatNumber] = useState("");
+    const [SourcePostalCode, setSourcePostalCode] = useState("");
+    const [SourceCity, setSourceCity] = useState("");
+
+    const [DefaultSourceStreet, setDefaultSourceStreet] = useState("");
+    const [DefaultSourceStreetNumber, setDefaultSourceStreetNumber] = useState("");
+    const [DefaultSourceFlatNumber, setDefaultSourceFlatNumber] = useState("");
+    const [DefaultSourcePostalCode, setDefaultSourcePostalCode] = useState("");
+    const [DefaultSourceCity, setDefaultSourceCity] = useState("");
+
+    const [hiddenFirstName, setHiddenFirstName] = useState(false);
+    const [hiddenLastName, setHiddenLastName] = useState(false);
+    const [hiddenEmail, setHiddenEmail] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
+      setIsLoading(true);
         const getIdFromToken = async () => {
           try {
             if (isAuthenticated) {
-              const accessToken = await getIdTokenClaims();
-    
-              const newProfileId = accessToken["sub"].split('|')[1].slice(-2);
-              setProfileId(newProfileId);
-    
-              // Przenieś resztę logiki do bloku then
-              const resp = await getUserById(25);
+              const claims = await getIdTokenClaims();
+
+              setProfileId(claims["sub"].split('|')[1]);
+
+              const resp = await getUserById(claims["sub"].split('|')[1]);
               if (resp) {
-                // Zrób coś, jeśli użytkownik istnieje
+                setUserInDb(true);
+                
               } else {
-                //await handleSaveUser(newProfileId);
+                setFirstName(claims["given_name"]);
+                setLastName(claims["family_name"]);
+                setEmail(claims["email"]);
+
+                setHiddenFirstName(true);
+                setHiddenLastName(true);
+                setHiddenEmail(true);
               }
             }
+            setIsLoading(false);
           } catch (error) {
             console.error('Error while decoding token:', error);
+            setIsLoading(false);
           }
         };
     
         const getUserById = async (id) => {
           try {
-            const response = await fetch(`https://localhost:7160/api/users/${id}`);
+            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
             if(response.status === 200)
             {
-              setUserInDb(true);
               return true;
             }
-
+            if(response.status === 404)
+            {
+              return false;
+            }
           } catch (error) {
-            console.error('Error fetching user:', error);
             return false;
           }
         };
-    
-        // const handleSaveUser = async (id) => {
-        //   try {
-        //     const response = await fetch(`https://localhost:7160/api/users`, {
-        //       method: 'POST',
-        //       headers: {
-        //         'Content-Type': 'application/json',
-        //       },
-        //       body: JSON.stringify({
-        //         Id: id,
-        //         FirstName: "aaaa",
-        //         LastName: "aaaa",
-        //         CompanyName: "cccccc",
-        //         Email: "mdp.ch3@gmail.com",
-        //         Address: {
-        //             Street: "SourceStreet", 
-        //             StreetNumber: "0", 
-        //             FlatNumber: "0", 
-        //             PostalCode: "26-706", 
-        //             City: "SourceCity"},
-        //           DefaultSourceAddress: {
-        //             Street: "SourceStreet", 
-        //             StreetNumber: "0", 
-        //             FlatNumber: "0", 
-        //             PostalCode: "26-706", 
-        //             City: "SourceCity"},
-        //       }),
-        //     });
-    
-        //     if (response.ok) {
-        //       console.log('User created successfully');
-        //       // Tutaj możesz dodać dodatkową logikę po zapisaniu użytkownika
-        //     } else {
-        //       console.error('Failed to create user:', response.statusText);
-        //     }
-        //   } catch (error) {
-        //     console.error('Error while creating user:', error);
-        //   }
-        // };
-    
+
         getIdFromToken();
-    
-      }, [getIdTokenClaims, isAuthenticated]);
+      }, [getIdTokenClaims, isAuthenticated, navigate]);
 
 
     const handleSubmit = async () => {
@@ -101,11 +95,11 @@ export function RegisterPage() {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                Id: profileId,
                 FirstName: FirstName,
                 LastName: LastName,
                 CompanyName: Company,
                 Email: Email,
+                Auth0Id: profileId,
                 Address: {
                   Street: SourceStreet, 
                   StreetNumber: SourceStreetNumber, 
@@ -120,52 +114,38 @@ export function RegisterPage() {
                     City: DefaultSourceCity}}),
           });
 
-          if (response.ok) {
+          const responseData = await response.text();
+
+          const responseStatus = response.status;
+
+          if (responseStatus === 201) {
               console.log('Pomyślnie wysłano żądanie POST do API');
-              navigate('/landingPage');
-          } else {
-              console.error('Błąd podczas wysyłania żądania POST do API');
+              navigate('/');
+          }
+          else {
+            console.log(JSON.stringify(responseData));
+            setOnErrorMessage(`Provided data is invalid ${responseData}`);
           }
       } catch (error) {
           console.error('Błąd:', error);
       }
   }
-  // const handleTogglePasswordVisibility = () => {
-  //   setShowPassword(!showPassword);
-  // };
-    //const [showPassword, setShowPassword] = useState(false);
-    const [FirstName, setFisrtName] = useState("");
-    const [LastName, setLastName] = useState("");
-    const [Email, setEmail] = useState("");
-    const [Company, setCompany] = useState("");
-    //const [Password, setPassword] = useState("");
-
-    const [SourceStreet, setSourceStreet] = useState("");
-    const [SourceStreetNumber, setSourceStreetNumber] = useState("");
-    const [SourceFlatNumber, setSourceFlatNumber] = useState("");
-    const [SourcePostalCode, setSourcePostalCode] = useState("");
-    const [SourceCity, setSourceCity] = useState("");
-
-    const [DefaultSourceStreet, setDefaultSourceStreet] = useState("");
-    const [DefaultSourceStreetNumber, setDefaultSourceStreetNumber] = useState("");
-    const [DefaultSourceFlatNumber, setDefaultSourceFlatNumber] = useState("");
-    const [DefaultSourcePostalCode, setDefaultSourcePostalCode] = useState("");
-    const [DefaultSourceCity, setDefaultSourceCity] = useState("");
 
     if(userInDb)
     {
-      return (
-        <div className="App-header">
-          <Typography variant="h2" color="primary" gutterBottom>
-            Hello user of id:{profileId}
-          </Typography>
-        </div>
+      navigate("./profile");
+    }
+
+    if(isLoading)
+    {
+      return(
+        <label>Loading...</label>
       );
     }
 
     return (
       <div className="App-header">
-        <form onSubmit={handleSubmit}>
+        <form>
         <FormControl fullWidth>
             <Grid container spacing={2}>
                 <Grid item>
@@ -179,7 +159,8 @@ export function RegisterPage() {
                             fullWidth
                             required
                             value={FirstName}
-                            onChange={(e)=>setFisrtName(e.target.value)}
+                            disabled={hiddenFirstName}
+                            onChange={(e)=>setFirstName(e.target.value)}
                             />
                             <TextField
                             label="Last name"
@@ -188,6 +169,7 @@ export function RegisterPage() {
                             fullWidth
                             required
                             value={LastName}
+                            disabled={hiddenLastName}
                             onChange={(e)=>setLastName(e.target.value)}
                             />
                             <TextField
@@ -206,28 +188,9 @@ export function RegisterPage() {
                             fullWidth
                             required
                             value={Email}
+                            disabled={hiddenEmail}
                             onChange={(e)=>setEmail(e.target.value)}
                             />
-                            {/* <TextField
-                            label="Password"
-                            variant="outlined"
-                            margin="normal"
-                            type={showPassword ? 'text' : 'password'}
-                            fullWidth
-                            required
-                            value={Password}
-                            onChange={(e)=>setPassword(e.target.value)}
-
-                            InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton onClick={handleTogglePasswordVisibility}>
-                                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            /> */}
                         </FormControl>
                     </Box>
                 </Grid>
@@ -337,7 +300,13 @@ export function RegisterPage() {
                 </Grid>
             </Grid>
 
-            <Button type="submit" variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Register</Button>
+
+            {onErrorMessage &&           
+              <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%', marginLeft: 'auto', marginRight: 'auto'}}>
+                <Typography variant="h6" color="textSecondary">{onErrorMessage}</Typography>
+              </Box>}
+
+            <Button type="button" onClick={handleSubmit} variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Register</Button>
           
         </FormControl>
       </form>

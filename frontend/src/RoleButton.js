@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
+//import {ContentPasteSearchIcon} from '@mui/icons-material/ContentPasteSearch';
 
 export const RoleButton = () => {
     const { isAuthenticated, getIdTokenClaims } = useAuth0();

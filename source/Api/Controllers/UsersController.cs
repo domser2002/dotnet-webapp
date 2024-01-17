@@ -30,7 +30,7 @@ namespace Api.Controllers
         }
 
         // GET api/users/{id}
-        [HttpGet("{id}")]
+        [HttpGet("subs/{id}")]
         public ActionResult<User> GetByID(string id)
         {
             var user = repository.GetById(id);
@@ -39,8 +39,8 @@ namespace Api.Controllers
         }
 
         // Must have Microsoft.AspNetCore.Mvc.NewtonsoftJson installed
-        // PATCH /api/users/{id}
-        [HttpPatch("{id}")]
+        // PATCH /api/users/subs/{id}
+        [HttpPatch("/subs/{id}")]
         public ActionResult PatchByID(string id, [FromBody] UserPatchModel userPatch)
         {
             if (userPatch == null)
@@ -94,7 +94,7 @@ namespace Api.Controllers
             int count = users.Count;
             return Ok(count);
         }
-        // POST api/users (dodawanie nowego u�ytkownika)
+        // POST api/users (dodawanie nowego uzytkownika)
         [HttpPost]
         public ActionResult<User> Create([FromBody] User user)
         {

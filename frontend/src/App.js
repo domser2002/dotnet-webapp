@@ -20,6 +20,7 @@ import { CourierLandingPage } from "./CourierLandingPage.js"
 import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
 //import { ProfilePage } from "./ProfilePage.js";
 import { SummaryPage } from "./SummaryPage.js";
+import { ProfilePage } from "./ProfilePage.js";
 
   function App() {
 
@@ -126,6 +127,10 @@ import { SummaryPage } from "./SummaryPage.js";
           },
           {
             path: "/profile",
+            element: <ProfilePage />,
+          },
+          {
+            path: "/register",
             element: <RegisterPage />,
           },
           {

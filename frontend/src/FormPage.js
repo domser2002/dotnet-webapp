@@ -1,9 +1,10 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function FormPage() {
     const navigate = useNavigate();
@@ -35,6 +36,66 @@ export function FormPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [onErrorMessage, setOnErrorMessage] = useState("");
+
+    const {getIdTokenClaims, isAuthenticated} = useAuth0();
+
+    const [hiddenSourceStreet, setHiddenSourceStreet] = useState(false);
+    const [hiddenSourceStreetNumber, setHiddenSourceStreetNumber] = useState(false);
+    const [hiddenSourceFlatNumber, setHiddenSourceFlatNumber] = useState(false);
+    const [hiddenSourcePostalCode, setHiddenSourcePostalCode] = useState(false);
+    const [hiddenSourceCity, setHiddenSourceCity] = useState(false);
+
+    const [user, setUser] = useState();
+
+    useEffect(() => {
+      setIsLoading(true);
+        const getIdFromToken = async () => {
+          try {
+            if (isAuthenticated) {
+              const claims = await getIdTokenClaims();
+
+              const resp = await getUserById(claims["sub"].split('|')[1]);
+            }
+            setIsLoading(false);
+          } catch (error) {
+            console.error('Error while decoding token:', error);
+            setIsLoading(false);
+          }
+        };
+    
+        const getUserById = async (id) => {
+          try {
+            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+            if(response.status === 200)
+            {
+              const body = await response.json();
+              setUser(body);
+              setSourceStreet(body["defaultSourceAddress"]["street"]);
+              setSourceStreetNumber(body["defaultSourceAddress"]["streetNumber"]);
+              setSourceFlatNumber(body["defaultSourceAddress"]["flatNumber"]);
+              setSourcePostalCode(body["defaultSourceAddress"]["postalCode"]);
+              setSourceCity(body["defaultSourceAddress"]["city"]);
+              
+              setHiddenSourceStreet(true);
+              setHiddenSourceStreetNumber(true);
+              setHiddenSourceFlatNumber(true);
+              setHiddenSourcePostalCode(true);
+              setHiddenSourceCity(true);
+              return true;
+            }
+            if(response.status === 404)
+            {
+              return false;
+            }
+          } catch (error) {
+            return false;
+          }
+        };
+
+        getIdFromToken();
+      }, [getIdTokenClaims, isAuthenticated]);
+
+
 
     const handleSubmit = async () => {
       setIsLoading(true);
@@ -87,6 +148,13 @@ export function FormPage() {
       }
       setIsLoading(false);
   }
+
+if(isLoading)
+{
+  return (
+    <label>Loading...</label>
+  );
+}
 
     return (
       <div>
@@ -151,6 +219,7 @@ export function FormPage() {
               fullWidth
               required
               value={SourceStreet}
+              disabled={hiddenSourceStreet}
               onChange={(e)=>setSourceStreet(e.target.value)}
             />
             <TextField
@@ -160,6 +229,7 @@ export function FormPage() {
               fullWidth
               required
               value={SourceStreetNumber}
+              disabled={hiddenSourceStreetNumber}
               onChange={(e)=>setSourceStreetNumber(e.target.value)}
             />
             <TextField
@@ -169,6 +239,7 @@ export function FormPage() {
               fullWidth
               required
               value={SourceFlatNumber}
+              disabled={hiddenSourceFlatNumber}
               onChange={(e)=>setSourceFlatNumber(e.target.value)}
             />
             <TextField
@@ -178,6 +249,7 @@ export function FormPage() {
               fullWidth
               required
               value={SourcePostalCode}
+              disabled={hiddenSourcePostalCode}
               onChange={(e)=>setSourcePostalCode(e.target.value)}
             />
             <TextField
@@ -187,6 +259,7 @@ export function FormPage() {
               fullWidth
               required
               value={SourceCity}
+              disabled={hiddenSourceCity}
               onChange={(e)=>setSourceCity(e.target.value)}
             />
           </FormControl>
@@ -283,8 +356,8 @@ export function FormPage() {
               </Select>
             </FormControl>
           </Box>
-          {onErrorMessage &&           <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%',
-                              marginLeft: 'auto', marginRight: 'auto'}}>
+          {onErrorMessage &&
+            <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%', marginLeft: 'auto', marginRight: 'auto'}}>
             <Typography variant="h6" color="textSecondary">
               {onErrorMessage}
             </Typography>
