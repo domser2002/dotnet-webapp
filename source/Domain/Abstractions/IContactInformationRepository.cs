@@ -5,6 +5,6 @@ namespace Domain.Abstractions
     public interface IContactInformationRepository
     {
         List<ContactInformation> GetAll();  
-        void AddContactInformation(ContactInformation contactInformation);
+        int AddContactInformation(ContactInformation contactInformation);
     }
 }
