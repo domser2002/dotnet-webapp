@@ -1,26 +1,18 @@
-﻿using Domain.Abstractions;
+﻿﻿using Domain.Abstractions;
 using Domain.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Api.Infrastructure
+namespace Infrastructure.Repositories
 {
     public class ContactInformationRepository : IContactInformationRepository
     {
-        private readonly SqlConnectionStringBuilder builder = new()
-        {
-            DataSource = "dot-net-webapp.database.windows.net",
-            UserID = "database_admin",
-            Password = "dawid_to_koks1234",
-            InitialCatalog = "NET"
-        };
-
         public void AddContactInformation(ContactInformation contactInformation)
         {
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
-                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City";
+                using SqlConnection connection = new(Connection.GetConnectionString());
+                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@PersonalData", SqlDbType.VarChar);
                 command.Parameters["@PersonalData"].Value = contactInformation.PersonalData;
@@ -47,7 +39,7 @@ namespace Api.Infrastructure
             List<ContactInformation> result = new();
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = "SELECT * FROM ContactInformation";
 
                 using SqlCommand command = new(sql, connection);

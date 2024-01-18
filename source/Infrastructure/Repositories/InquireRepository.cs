@@ -1,25 +1,17 @@
-﻿using Domain.Abstractions;
+﻿﻿using Domain.Abstractions;
 using Domain.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Api.Infrastructure
+namespace Infrastructure.Repositories
 {
     public class InquireRepository : IInquireRepository
     {
-        private readonly SqlConnectionStringBuilder builder = new()
-        {
-            DataSource = "dot-net-webapp.database.windows.net",
-            UserID = "database_admin",
-            Password = "dawid_to_koks1234",
-            InitialCatalog = "NET"
-        };
-
         public void AddInquiry(Inquiry inquiry)
         {
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = $"INSERT INTO Inquiries VALUES (@OwnerId, @Length, @Width, @Height, @Weight, @PickupDate, @DeliveryDate, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
                     $"@DestinationStreet, @DestinationStreetnumber, @DestinationFlatNumber, @DestinationPostalCode, @DestinationCity, @Priority, @Weekend, @Active)";
                 using SqlCommand command = new(sql, connection);
@@ -74,7 +66,7 @@ namespace Api.Infrastructure
             List<Inquiry> result = new();
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = "SELECT * FROM Inquiries";
 
                 using SqlCommand command = new(sql, connection);

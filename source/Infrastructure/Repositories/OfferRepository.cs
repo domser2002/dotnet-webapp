@@ -3,23 +3,15 @@ using Domain.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Api.Infrastructure
+namespace Infrastructure.Repositories
 {
     public class OfferRepository : IOfferRepository
     {
-        private readonly SqlConnectionStringBuilder builder = new()
-        {
-            DataSource = "dot-net-webapp.database.windows.net",
-            UserID = "database_admin",
-            Password = "dawid_to_koks1234",
-            InitialCatalog = "NET"
-        };
-
         public void AddOffer(Offer offer)
         {
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = "INSERT INTO Offers VALUES (@CompanyName, @Price, @DeliveryTime, @Begins, @Ends, @MinDimension, @MaxDimension, @MinWeight, @MaxWeight, @Active)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@CompanyName", SqlDbType.VarChar);
@@ -52,7 +44,7 @@ namespace Api.Infrastructure
         {
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = $"UPDATE Offers SET Active=0 WHERE id={id}";
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
@@ -66,7 +58,7 @@ namespace Api.Infrastructure
             List<Offer> result = new();
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = "SELECT * FROM Offers";
 
                 using SqlCommand command = new(sql, connection);
@@ -100,8 +92,9 @@ namespace Api.Infrastructure
             Offer result = new();
             try
             {
-                using SqlConnection connection = new(builder.ConnectionString);
+                using SqlConnection connection = new(Connection.GetConnectionString());
                 string sql = $"SELECT * FROM Offers WHERE id={id}";
+
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
