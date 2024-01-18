@@ -21,6 +21,7 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
 //import { ProfilePage } from "./ProfilePage.js";
 import { SummaryPage } from "./SummaryPage.js";
 import { ProfilePage } from "./ProfilePage.js";
+import { RequestDetails } from "./RequestDetails.js"
 
   function App() {
 
@@ -132,6 +133,10 @@ import { ProfilePage } from "./ProfilePage.js";
           {
             path: "/register",
             element: <RegisterPage />,
+          },
+          {
+            path: "/officeWorkerPanel/requestDetails",
+            element: <RequestDetails />,
           },
           {
             path: "*",

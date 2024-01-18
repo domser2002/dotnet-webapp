@@ -1,7 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper} from "@mui/material";
 
 import './App.css';
 import './ProfilePage.css';
@@ -10,7 +9,6 @@ export const ProfilePage = () =>
 {
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
     const [profile, setProfile] = useState();
-    const navigate = useNavigate();
 
     const [role, setRole] = useState();
 
@@ -35,8 +33,7 @@ export const ProfilePage = () =>
                 const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
 
               if (response.ok) {
-                const data = await response.json();
-                setProfile(data); // Assuming user data is in the response
+
               } else {
                 console.error('Error while fetching user data:', response.statusText);
               }
@@ -57,7 +54,7 @@ export const ProfilePage = () =>
             return(
                 <div className="Profile-header">
                     <Box mt={4} ml={4} p={3} component={Paper} elevation={3} sx={{ backgroundColor: '#e3f2fd' }}>
-                    <Typography variant="h4" gutterBottom>
+                    {/* <Typography variant="h4" gutterBottom>
                         Witaj, {profile?.fullName || 'Użytkowniku'}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
@@ -65,7 +62,7 @@ export const ProfilePage = () =>
                     </Typography>
                     <Typography variant="body1" gutterBottom>
                         Company name: {profile?.companyName}
-                    </Typography>
+                    </Typography> */}
 
                     {/* <Typography variant="body1" gutterBottom>
                         Company name: {profile["Address"]["Street"]}

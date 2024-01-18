@@ -122,7 +122,7 @@ public class RequestRepository : IRequestRepository
 
     public List<Request> GetByCompany(string company)
     {
-        return ReadFromDatabase($"SELECT * FROM Requests WHERE Companyname={company}");
+        return ReadFromDatabase($"SELECT * FROM Requests WHERE CompanyName='{company}'");
     }
 
     public Request GetById(int id)

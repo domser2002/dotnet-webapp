@@ -38,6 +38,9 @@ export const useStore = create((set) => ({
     OwnerSourcePostalCode: "",
     OwnerSourceCity: "",
 
+
+    RequestId: 0,
+
     setSourceStreet: (newValue) => set({ SourceStreet: newValue }),
     setSourceStreetNumber: (newValue) => set({ SourceStreetNumber: newValue }),
     setSourceFlatNumber: (newValue) => set({ SourceFlatNumber: newValue }),
@@ -66,4 +69,6 @@ export const useStore = create((set) => ({
     setOwnerSourceFlatNumber: (newValue) => set({ OwnerSourceFlatNumber: newValue }),
     setOwnerSourcePostalCode: (newValue) => set({ OwnerSourcePostalCode: newValue }),
     setOwnerSourceCity: (newValue) => set({ OwnerSourceCity: newValue }),
+
+    setRequestId: (newValue) => set({ RequestId: newValue }),
 }));

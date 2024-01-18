@@ -9,6 +9,7 @@ namespace Domain.Model
     public enum RequestStatus
     {
         Idle,
+        Accepted,
         Received,
         Delivered,
         CannotDeliver,

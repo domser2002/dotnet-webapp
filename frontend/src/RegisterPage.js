@@ -1,9 +1,10 @@
-import './App.css';
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LoadingPage } from './LoadingPage';
+
+import './App.css';
 
 
 export function RegisterPage() {
@@ -32,9 +33,13 @@ export function RegisterPage() {
     const [DefaultSourcePostalCode, setDefaultSourcePostalCode] = useState("");
     const [DefaultSourceCity, setDefaultSourceCity] = useState("");
 
-    const [hiddenFirstName, setHiddenFirstName] = useState(false);
-    const [hiddenLastName, setHiddenLastName] = useState(false);
-    const [hiddenEmail, setHiddenEmail] = useState(false);
+    // const [hiddenFirstName, setHiddenFirstName] = useState(false);
+    // const [hiddenLastName, setHiddenLastName] = useState(false);
+    // const [hiddenEmail, setHiddenEmail] = useState(false);
+
+    const [hiddenFirstName] = useState(false);
+    const [hiddenLastName] = useState(false);
+    const [hiddenEmail] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -56,9 +61,9 @@ export function RegisterPage() {
                 setLastName(claims["family_name"]);
                 setEmail(claims["email"]);
 
-                setHiddenFirstName(true);
-                setHiddenLastName(true);
-                setHiddenEmail(true);
+                // setHiddenFirstName(true);
+                // setHiddenLastName(true);
+                // setHiddenEmail(true);
               }
             }
             setIsLoading(false);

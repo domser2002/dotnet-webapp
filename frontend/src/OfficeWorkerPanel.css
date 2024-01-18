@@ -1,0 +1,41 @@
+.Panel-header-officeWorker {
+    background: linear-gradient( #fffc00, #ffffff);
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+
+
+.list-container {
+    padding: 16px;
+
+  }
+  
+  .list-item {
+    margin-bottom: 16px;
+    border: 1px solid #ccc; /* Kolor obramowania */
+    border-radius: 16px; /* Zaokrąglenie rogów */
+    padding: 16px;
+
+  }
+  
+  .list-item-text {
+    color: #333; /* Kolor tekstu */
+  }
+  
+  .list-item-button {
+    background-color: #0d10a6;
+    color: white;
+    border-radius: 8px; /* Zaokrąglenie rogów */
+    margin-right: 8px; /* Odstęp między przyciskami */
+  }
+
+  .gray-text {
+    color: #555;
+  }

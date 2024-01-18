@@ -39,7 +39,7 @@ namespace Api.Controllers
         }
         // GET api/requests/companies/{CompanyName}
         [HttpGet("/companies/{CompanyName}")]
-        public ActionResult<List<Request>> GetByCompany(string companyName)
+        public ActionResult<List<Request>> GetByCompany([FromRoute] string companyName)
         {
             var requests = repository.GetByCompany(companyName);
             return Ok(requests);
@@ -66,7 +66,7 @@ namespace Api.Controllers
 
         // PATCH /api/requests/{id}
         [HttpPatch("{id}")]
-        public ActionResult PatchByID(int id, [FromBody] RequestPatchModel requestPatch)
+        public ActionResult PatchByID([FromRoute] int id, [FromBody] RequestPatchModel requestPatch)
         {
             if (requestPatch == null)
             {

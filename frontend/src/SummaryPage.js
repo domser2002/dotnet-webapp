@@ -2,11 +2,13 @@ import React from 'react';
 import { useStore } from './store'; // Ustaw właściwą ścieżkę
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import './SummaryPage.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LoadingPage } from './LoadingPage';
+
+import './SummaryPage.css';
+
 
 export const SummaryPage = () => {
   const {
@@ -90,7 +92,7 @@ export const SummaryPage = () => {
                 City: DestinationCity},
               PickupDate: DateFrom.toISOString(),
               DeliveryDate: DateTo.toISOString(),
-              CompanyName: CompanyName,
+              CompanyName: offerData["companyName"],
               Price: offerData["price"],
               Status: 0,
               Owner: {
@@ -106,17 +108,11 @@ export const SummaryPage = () => {
             }),
         });
 
-        const responseData = await response.text();
-
         const responseStatus = response.status;
         
         if(responseStatus === 201)
         {
           navigate('/profile');
-        }
-        else
-        {
-
         }
 
     } catch (error) {
@@ -124,8 +120,6 @@ export const SummaryPage = () => {
     }
     setIsLoading(false);
 }
-
-
 
   if(isLoading)
   {
