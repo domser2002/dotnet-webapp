@@ -7,11 +7,16 @@ namespace Infrastructure.Repositories
 {
     public class OfferRepository : IOfferRepository
     {
+        private readonly string connectionString;
+
+        public OfferRepository() { connectionString = Connection.GetConnectionString(); }
+        public OfferRepository(string connection) { connectionString = connection; }
+
         public void AddOffer(Offer offer)
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "INSERT INTO Offers VALUES (@CompanyName, @Price, @DeliveryTime, @Begins, @Ends, @MinDimension, @MaxDimension, @MinWeight, @MaxWeight, @Active)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@CompanyName", SqlDbType.VarChar);
@@ -44,7 +49,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = $"UPDATE Offers SET Active=0 WHERE id={id}";
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
@@ -58,7 +63,7 @@ namespace Infrastructure.Repositories
             List<Offer> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "SELECT * FROM Offers";
 
                 using SqlCommand command = new(sql, connection);
@@ -92,7 +97,7 @@ namespace Infrastructure.Repositories
             Offer result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = $"SELECT * FROM Offers WHERE id={id}";
 
                 using SqlCommand command = new(sql, connection);

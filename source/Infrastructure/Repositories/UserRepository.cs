@@ -8,16 +8,21 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        private readonly string connectionString;
+
+        public UserRepository() { connectionString = Connection.GetConnectionString(); }
+        public UserRepository(string connection) { connectionString = connection; }
+
         public void AddRequest(string userID, Request request)
         {
-            RequestRepository requestRepo = new();
+            RequestRepository requestRepo = new(connectionString);
             Request temp = requestRepo.GetById(request.Id);
             int id;
             if (temp is null) id = requestRepo.Add(request);
             else id = request.Id;
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = $"UPDATE Requests SET OwnerId={userID} WHERE id={id}";
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
@@ -31,7 +36,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = $"INSERT INTO Users VALUES (@FirstName, @LastName, @CompanyName, @Email, @Street, @StreetNumber, @FlatNumber, @PostalCode, @City, " +
                     $"@DefaultStreet, @DefaultStreetnumber, @DefaultFlatNumber, @DefaultPostalCode, @DefaultCity, @AuthId)";
                 using SqlCommand command = new(sql, connection);
@@ -77,9 +82,9 @@ namespace Infrastructure.Repositories
             List<User> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "SELECT * FROM Users";
-                RequestRepository repo = new();
+                RequestRepository repo = new(connectionString);
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
@@ -124,9 +129,9 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "SELECT * FROM Users WHERE AuthId = @AuthId";
-                RequestRepository repo = new();
+                RequestRepository repo = new(connectionString);
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.AddWithValue("@AuthId", Auth0Id);
                 connection.Open();
@@ -169,7 +174,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 var command = new SqlCommand("UPDATE Users SET FirstName = @FirstName, LastName = @LastName, CompanyName = @CompanyName," +
                     "Email = @Email, Street = @Street, StreetNumber = @StreetNumber, FlatNumber = @FlatNumber," +
                     "PostalCode = @PostalCode, City = @City, DefaultAddressStreet = @DefaultStreet, " +

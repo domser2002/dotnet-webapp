@@ -7,11 +7,16 @@ namespace Infrastructure.Repositories
 {
     public class ContactInformationRepository : IContactInformationRepository
     {
+        private readonly string connectionString;
+
+        public ContactInformationRepository() { connectionString = Connection.GetConnectionString(); }
+        public ContactInformationRepository(string connection) { connectionString = connection; }
+
         public void AddContactInformation(ContactInformation contactInformation)
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City)";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@PersonalData", SqlDbType.VarChar);
@@ -39,7 +44,7 @@ namespace Infrastructure.Repositories
             List<ContactInformation> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "SELECT * FROM ContactInformation";
 
                 using SqlCommand command = new(sql, connection);
