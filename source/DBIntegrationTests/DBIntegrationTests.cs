@@ -10,11 +10,13 @@ namespace DBIntegrationTests
     [TestClass]
     public class DBIntegrationTests
     {
+        private readonly string con = FakeConnection.GetConnectionString();
+
         [TestMethod]
         public void ConnectToDatabase()
         {
             //Arrange
-            using var connection = new SqlConnection(Connection.GetConnectionString());
+            using var connection = new SqlConnection(con);
 
             // Act
             try
@@ -34,9 +36,9 @@ namespace DBIntegrationTests
         public void InsertIntoUsers()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            UserRepository repo = new();
-            SqlConnection connection = new(Connection.GetConnectionString());
+            DatabaseSeeding.Clear(con);
+            UserRepository repo = new(con);
+            SqlConnection connection = new(con);
             User user = new FakeUserRepository().GetAll().First();
             SqlCommand command = new("SELECT COUNT(*) FROM Users", connection);
 
@@ -54,9 +56,9 @@ namespace DBIntegrationTests
         public void InsertIntoContactInformation()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            ContactInformationRepository repo = new();
-            SqlConnection connection = new(Connection.GetConnectionString());
+            DatabaseSeeding.Clear(con);
+            ContactInformationRepository repo = new(con);
+            SqlConnection connection = new(con);
             ContactInformation contactInformation = new FakeContactInformationRepository().GetAll().First();
             SqlCommand command = new("SELECT COUNT(*) FROM ContactInformation", connection);
 
@@ -74,9 +76,9 @@ namespace DBIntegrationTests
         public void InsertIntoOffers()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            OfferRepository repo = new();
-            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            DatabaseSeeding.Clear(con);
+            OfferRepository repo = new(con);
+            SqlConnection connection = new SqlConnection(con);
             Offer offer = new FakeOfferRepository().GetAll().First();
             SqlCommand command = new("SELECT COUNT(*) FROM Offers", connection);
 
@@ -94,15 +96,15 @@ namespace DBIntegrationTests
         public void InsertIntoRequests()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            RequestRepository repo = new();
+            DatabaseSeeding.Clear(con);
+            RequestRepository repo = new(con);
             ContactInformation owner = new FakeContactInformationRepository().GetAll().First();
-            ContactInformationRepository infoRepo = new();
+            ContactInformationRepository infoRepo = new(con);
             infoRepo.AddContactInformation(owner);
             owner = infoRepo.GetAll().First();
             Request request = new FakeRequestRepository().GetAll().First();
             request.Owner = owner;
-            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            SqlConnection connection = new SqlConnection(con);
             SqlCommand command = new("SELECT COUNT(*) FROM Requests", connection);
 
             //Act
@@ -120,10 +122,10 @@ namespace DBIntegrationTests
         public void DaleteFromRequests()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            RequestRepository repo = new();
+            DatabaseSeeding.Clear(con);
+            RequestRepository repo = new(con);
             int index = repo.Add(new FakeRequestRepository().GetAll().First());
-            SqlConnection connection = new SqlConnection(Connection.GetConnectionString());
+            SqlConnection connection = new SqlConnection(con);
             SqlCommand command = new("SELECT COUNT(*) FROM Requests", connection);
 
             //Act
@@ -140,12 +142,12 @@ namespace DBIntegrationTests
         public void AssignNewRequestToUser()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            UserRepository userRepo = new();
+            DatabaseSeeding.Clear(con);
+            UserRepository userRepo = new(con);
             User user = new FakeUserRepository().GetAll().First();
             user.Requests = new();
             userRepo.AddUser(user);
-            ContactInformationRepository infoRepo = new();
+            ContactInformationRepository infoRepo = new(con);
             infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
             ContactInformation owner = infoRepo.GetAll().First();
             Request request = new FakeRequestRepository().GetAll().First();
@@ -153,8 +155,8 @@ namespace DBIntegrationTests
             request.Owner = owner;
 
             //Act
-            new UserRepository().AddRequest(user.Auth0Id, request);
-            int amount = new RequestRepository().GetByOwner(user.Auth0Id).Count;
+            userRepo.AddRequest(user.Auth0Id, request);
+            int amount = new RequestRepository(con).GetByOwner(user.Auth0Id).Count;
 
             //Assert
             Assert.AreEqual(1, amount, "The number of requests assigned to the user should increase by 1");
@@ -164,22 +166,22 @@ namespace DBIntegrationTests
         public void AssignExistingRequestToUser()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            UserRepository userRepo = new();
+            DatabaseSeeding.Clear(con);
+            UserRepository userRepo = new(con);
             User user = new FakeUserRepository().GetAll().First();
             user.Requests = new();
             userRepo.AddUser(user);
-            ContactInformationRepository infoRepo = new();
+            ContactInformationRepository infoRepo = new(con);
             infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
             ContactInformation owner = infoRepo.GetAll().First();
             Request request = new FakeRequestRepository().GetAll().First();
             request.Owner = owner;
-            RequestRepository requestRepo = new();
+            RequestRepository requestRepo = new(con);
             int index = requestRepo.Add(request);
             request.Id = index;
 
             //Act
-            new UserRepository().AddRequest(user.Auth0Id, request);
+            userRepo.AddRequest(user.Auth0Id, request);
             int amount = requestRepo.GetByOwner(user.Auth0Id).Count;
 
             //Assert
@@ -190,10 +192,10 @@ namespace DBIntegrationTests
         public void DeactivateOffer()
         {
             //Arrange
-            DatabaseSeeding.Clear();
+            DatabaseSeeding.Clear(con);
             Offer offer = new FakeOfferRepository().GetAll().First();
             offer.Active = true;
-            OfferRepository repo = new();
+            OfferRepository repo = new(con);
             repo.AddOffer(offer);
             int index = repo.GetAll().First().Id;
 
@@ -208,9 +210,9 @@ namespace DBIntegrationTests
         public void ChangeRequestStatus()
         {
             //Arrange
-            DatabaseSeeding.Clear();
-            RequestRepository repo = new();
-            ContactInformationRepository infoRepo = new();
+            DatabaseSeeding.Clear(con);
+            RequestRepository repo = new(con);
+            ContactInformationRepository infoRepo = new(con);
             infoRepo.AddContactInformation(new FakeContactInformationRepository().GetAll().First());
             ContactInformation owner = infoRepo.GetAll().First();
             Request request = new FakeRequestRepository().GetAll().First();
