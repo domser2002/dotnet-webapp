@@ -9,7 +9,6 @@ import { LoadingPage } from './LoadingPage';
 
 import './SummaryPage.css';
 
-
 export const SummaryPage = () => {
   const {
     offerId,
@@ -107,6 +106,8 @@ export const SummaryPage = () => {
               },
             }),
         });
+
+        const responseData = await response.text();
 
         const responseStatus = response.status;
         

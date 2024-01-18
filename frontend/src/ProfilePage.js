@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
-import { Box, Paper} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Paper, Typography } from "@mui/material";
 
 import './App.css';
 import './ProfilePage.css';
@@ -9,6 +10,7 @@ export const ProfilePage = () =>
 {
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
     const [profile, setProfile] = useState();
+    const navigate = useNavigate();
 
     const [role, setRole] = useState();
 
@@ -33,7 +35,8 @@ export const ProfilePage = () =>
                 const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
 
               if (response.ok) {
-
+                const data = await response.json();
+                setProfile(data); // Assuming user data is in the response
               } else {
                 console.error('Error while fetching user data:', response.statusText);
               }
