@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box } from '@mui/material';
 //import { useNavigate } from 'react-router-dom';
+import { LoginButton } from './LoginButton';
 
 export function LoginPage() {
     //const navigate = useNavigate();
@@ -79,9 +80,11 @@ export function LoginPage() {
             </Grid>
 
             <Button type="submit" variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Login</Button>
-          
+
         </FormControl>
+
       </form>
+      <LoginButton/>
       </div>
     );
   }

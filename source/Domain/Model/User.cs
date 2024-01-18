@@ -7,17 +7,18 @@ public class User : Base
     public string FullName => $"{FirstName} {LastName}";
     public string CompanyName { get; set; }
     public string Email { get; set; }
+    public string Auth0Id { get; set; }
     public Address Address { get; set; }
     public Address DefaultSourceAddress { get; set; }
-    public List<Inquiry> Inquiries { get; set; }
+    public List<Request> Requests { get; set; }
 
     public User()
     {
-        Inquiries = new List<Inquiry>();
+        Requests = new List<Request>();
     }
     public object this[string fieldname]
     {
-        set 
+        set
         {
             switch (fieldname)
             {
@@ -28,7 +29,7 @@ public class User : Base
                     this.LastName = (string)value;
                     break;
                 case "CompanyName":
-                    this.CompanyName= (string)value; 
+                    this.CompanyName = (string)value;
                     break;
                 case "Email":
                     this.Email = (string)value;
@@ -38,4 +39,14 @@ public class User : Base
             }
         }
     }
+}
+
+public class UserPatchModel
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string CompanyName { get; set; }
+    public string Email { get; set; }
+    public Address Address { get; set; }
+    public Address DefaultSourceAddress { get; set; }
 }

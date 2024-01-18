@@ -5,6 +5,14 @@ public class ContactInformation : Base
     public string PersonalData { get; set; }
     public string Email { get; set; }
     public Address Address { get; set; }
+    public ContactInformation() { }
+    public ContactInformation(User user)
+    {
+        PersonalData = user.FullName;
+        Email = user.Email;
+        Address = user.Address;
+    }
+
     public object this[string fieldname]
     {
         set
