@@ -1,0 +1,9 @@
+.summary-header {
+    background: linear-gradient( #F3EEEA, #87C4FF);
+    min-height: 100vh;
+    padding: 20px; 
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
+  

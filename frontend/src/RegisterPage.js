@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { LoadingPage } from './LoadingPage';
 
 
 export function RegisterPage() {
@@ -139,7 +140,7 @@ export function RegisterPage() {
     if(isLoading)
     {
       return(
-        <label>Loading...</label>
+        <LoadingPage/>
       );
     }
 

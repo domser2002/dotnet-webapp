@@ -1,0 +1,33 @@
+.Profile-header {
+    background: linear-gradient( #F3EEEA, #87C4FF);
+    
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .Profile-header-courier {
+    background: linear-gradient( #e2a9d8, #FAE7F3);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .Profile-header-officeWorker {
+    background: linear-gradient( #fffc00, #ffffff);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }

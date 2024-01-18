@@ -5,33 +5,84 @@ import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useAuth0 } from '@auth0/auth0-react';
+import {useStore} from './store';
+import { LoadingPage } from './LoadingPage';
 
 export function FormPage() {
     const navigate = useNavigate();
 
-    const [SourceStreet, setSourceStreet] = useState("");
-    const [SourceStreetNumber, setSourceStreetNumber] = useState("");
-    const [SourceFlatNumber, setSourceFlatNumber] = useState("");
-    const [SourcePostalCode, setSourcePostalCode] = useState("");
-    const [SourceCity, setSourceCity] = useState("");
+    const SourceStreet = useStore((state) => state.SourceStreet);
+    const SourceStreetNumber = useStore((state) => state.SourceStreetNumber);
+    const SourceFlatNumber = useStore((state) => state.SourceFlatNumber);
+    const SourcePostalCode = useStore((state) => state.SourcePostalCode);
+    const SourceCity = useStore((state) => state.SourceCity);
+  
+    const DestinationStreet = useStore((state) => state.DestinationStreet);
+    const DestinationStreetNumber = useStore((state) => state.DestinationStreetNumber);
+    const DestinationFlatNumber = useStore((state) => state.DestinationFlatNumber);
+    const DestinationPostalCode = useStore((state) => state.DestinationPostalCode);
+    const DestinationCity = useStore((state) => state.DestinationCity);
+  
+    const DeliveryAtWeekend = useStore((state) => state.DeliveryAtWeekend);
+  
+    const Priority = useStore((state) => state.Priority);
+  
+    const Length = useStore((state) => state.Length);
+    const Width = useStore((state) => state.Width);
+    const Height = useStore((state) => state.Height);
+    const Weight = useStore((state) => state.Weight);
+  
+    const DateFrom = useStore((state) => state.DateFrom);
+    const DateTo = useStore((state) => state.DateTo);
+  
+    const setSourceStreet = useStore((state) => state.setSourceStreet);
+    const setSourceStreetNumber = useStore((state) => state.setSourceStreetNumber);
+    const setSourceFlatNumber = useStore((state) => state.setSourceFlatNumber);
+    const setSourcePostalCode = useStore((state) => state.setSourcePostalCode);
+    const setSourceCity = useStore((state) => state.setSourceCity);
+  
+    const setDestinationStreet = useStore((state) => state.setDestinationStreet);
+    const setDestinationStreetNumber = useStore((state) => state.setDestinationStreetNumber);
+    const setDestinationFlatNumber = useStore((state) => state.setDestinationFlatNumber);
+    const setDestinationPostalCode = useStore((state) => state.setDestinationPostalCode);
+    const setDestinationCity = useStore((state) => state.setDestinationCity);
+  
+    const setDeliveryAtWeekend = useStore((state) => state.setDeliveryAtWeekend);
+  
+    const setPriority = useStore((state) => state.setPriority);
+  
+    const setLength = useStore((state) => state.setLength);
+    const setWidth = useStore((state) => state.setWidth);
+    const setHeight = useStore((state) => state.setHeight);
+    const setWeight = useStore((state) => state.setWeight);
+  
+    const setDateFrom = useStore((state) => state.setDateFrom);
+    const setDateTo = useStore((state) => state.setDateTo);
 
-    const [DestinationStreet, setDestinationStreet] = useState("");
-    const [DestinationStreetNumber, setDestinationStreetNumber] = useState("");
-    const [DestinationFlatNumber, setDestinationFlatNumber] = useState("");
-    const [DestinationPostalCode, setDestinationPostalCode] = useState("");
-    const [DestinationCity, setDestinationCity] = useState("");
 
-    const [DeliveryAtWeekend, setDeliveryAtWeekend] = useState(true);
+    // const [SourceStreet, setSourceStreet] = useState("");
+    // const [SourceStreetNumber, setSourceStreetNumber] = useState("");
+    // const [SourceFlatNumber, setSourceFlatNumber] = useState("");
+    // const [SourcePostalCode, setSourcePostalCode] = useState("");
+    // const [SourceCity, setSourceCity] = useState("");
 
-    const [Priority, setPriority] = useState(0);
+    // const [DestinationStreet, setDestinationStreet] = useState("");
+    // const [DestinationStreetNumber, setDestinationStreetNumber] = useState("");
+    // const [DestinationFlatNumber, setDestinationFlatNumber] = useState("");
+    // const [DestinationPostalCode, setDestinationPostalCode] = useState("");
+    // const [DestinationCity, setDestinationCity] = useState("");
 
-    const [Length, setLength] = useState("");
-    const [Width, setWidth] = useState("");
-    const [Height, setHeight] = useState("");
-    const [Weight, setWeight] = useState("");
+    // const [DeliveryAtWeekend, setDeliveryAtWeekend] = useState(true);
 
-    const [DateFrom, setDateFrom] = useState(null);
-    const [DateTo, setDateTo] = useState(null);
+    // const [Priority, setPriority] = useState(0);
+
+    // const [Length, setLength] = useState("");
+    // const [Width, setWidth] = useState("");
+    // const [Height, setHeight] = useState("");
+    // const [Weight, setWeight] = useState("");
+
+    // const [DateFrom, setDateFrom] = useState(null);
+    // const [DateTo, setDateTo] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -93,7 +144,7 @@ export function FormPage() {
         };
 
         getIdFromToken();
-      }, [getIdTokenClaims, isAuthenticated]);
+      }, [getIdTokenClaims, isAuthenticated, setSourceCity, setSourceFlatNumber, setSourcePostalCode, setSourceStreet, setSourceStreetNumber]);
 
 
 
@@ -152,14 +203,14 @@ export function FormPage() {
 if(isLoading)
 {
   return (
-    <label>Loading...</label>
+    <LoadingPage/>
   );
 }
 
     return (
       <div>
         {isLoading ? (<div>
-        <label>Loading...</label>
+        <LoadingPage/>
         </div>) : (
           <div className="App-header">
         <form onSubmit={handleSubmit}>
@@ -336,7 +387,7 @@ if(isLoading)
               renderInput={(params) => <TextField {...params} /> }/>
             </LocalizationProvider>
             <FormControlLabel control={<Checkbox value={DeliveryAtWeekend} defaultChecked
-              onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} color="textSecondary" label="Delivery at weekend" />
+              onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} sx={{ color: 'text.secondary', fontWeight: 'bold' }} label="Delivery at weekend" />
 
           </FormControl>
           </Box>

@@ -8,49 +8,95 @@ import './CouriersListPage.css';
 import { Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
+import { useStore } from './store';
+import { LoadingPage } from './LoadingPage';
 
 export function CouriersListPage() {
 
+    const {
+      setPersonaData,
+      setEmail,
+      setCompanyName,
+      setOwnerSourceStreet,
+      setOwnerSourceStreetNumber,
+      setOwnerSourceFlatNumber,
+      setOwnerSourcePostalCode,
+      setOwnerSourceCity,
+    } = useStore();
+    const setOfferId = useStore((state) => state.setOfferId);
     const [offers, setOffers] = useState([]);
-    const {isAuthenticated} = useAuth0();
+    const {isAuthenticated, getIdTokenClaims} = useAuth0();
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        fetch('https://localhost:7160/api/offers').then(response => response.json()).then(data => {setOffers(data);})
-        .catch(error => {
-        console.error('GET error:', error);
-        });
-    }, []);
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await fetch('https://localhost:7160/api/offers');
+          const data = await response.json();
+          setOffers(data);
+        } catch (error) {
+          console.error('GET error:', error);
+        }
+      };
+    
+      const fetchUserData = async () => {
+        if (isAuthenticated) {
+          try {
+            const claims = await getIdTokenClaims();
+            const id = claims["sub"].split('|')[1]
+            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+    
+            if (response.ok) {
+              const userData = await response.json();
+    
+              console.log(userData["fullName"]);
+              setPersonaData(userData["fullName"]);
+              setEmail(userData["email"]);
+              setCompanyName(userData["companyName"]);
+              setOwnerSourceStreet(userData["defaultSourceAddress"]["street"]);
+              setOwnerSourceStreetNumber(userData["defaultSourceAddress"]["streetNumber"]);
+              setOwnerSourceFlatNumber(userData["defaultSourceAddress"]["flatNumber"]);
+              setOwnerSourcePostalCode(userData["defaultSourceAddress"]["postalCode"]);
+              setOwnerSourceCity(userData["defaultSourceAddress"]["city"]);
+    
+            } else {
+              console.error('Błąd podczas pobierania danych użytkownika:', response.statusText);
+            }
+          } catch (error) {
+            console.error('Błąd podczas pobierania danych użytkownika:', error.message);
+          }
+        }
+      };
+    
+      fetchData();
+      fetchUserData();
+      setIsLoading(false);
+    }, [isAuthenticated, getIdTokenClaims, setPersonaData, setEmail, setCompanyName,
+       setOwnerSourceStreet, setOwnerSourceStreetNumber, setOwnerSourceFlatNumber, setOwnerSourcePostalCode, setOwnerSourceCity]);
+    
 
     const handleButtonClick = async (id) => 
     {
-      try {
-        const response = await fetch(`https://localhost:7160/api/offers/${id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: null,
-        });
-
-        if (response.status === 200) {
-          if(!isAuthenticated)
-          {
-            navigate("/contactInformation");
-          }
-          else
-          {
-            navigate("/summaryPage");
-          }
-        }
-
-        const data = await response.json();
-        console.log('Pomyślnie zaktualizowano zasób:', data);
-        // Tutaj możesz zaktualizować lokalny stan komponentu lub podjąć inne akcje w zależności od potrzeb
-      } catch (error) {
-        console.error('Błąd podczas aktualizacji zasobu:', error.message);
+      setOfferId(id);
+      if(!isAuthenticated)
+      {
+        navigate("/contactInformation");
       }
+      else
+      {
+        navigate("/summaryPage");
+      }
+
     }
 
+    if(isLoading)
+    {
+      return(
+        <LoadingPage/>
+      );
+    }
     return (
     <div className="CouriersListPage-header">
       <List>
@@ -74,47 +120,3 @@ export function CouriersListPage() {
     </div>
     );
 }
-// import React, { useEffect, useState } from 'react';
-
-// export const CouriersListPage = () => {
-//   const [data, setData] = useState(null);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch('https://localhost:7160/api/offers', {
-//           method: 'GET',
-//           headers: {
-//             'Content-Type': 'application/json', // Jeśli to wymagane
-//             // Dodaj inne nagłówki, jeśli są wymagane
-//           },
-//           // Dodaj ciało żądania, jeśli to konieczne (choć w przypadku GET, zazwyczaj nie jest)
-//         });
-
-//         if (!response.ok) {
-//           throw new Error('Network response was not ok');
-//         }
-
-//         const result = await response.json();
-//         setData(result);
-//       } catch (error) {
-//         console.error('There was a problem with the fetch operation:', error);
-//       }
-//     };
-
-//     fetchData();
-//   }, []); // Pusta tablica oznacza, że useEffect wykona się tylko raz po zamontowaniu komponentu
-
-//   return (
-//     <div>
-//       {/* Wyświetl dane, na przykład: */}
-//       {data && (
-//         <ul>
-//           {data.map(item => (
-//             <li key={item.id}>{item.name}</li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };

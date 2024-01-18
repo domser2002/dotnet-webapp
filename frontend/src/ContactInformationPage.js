@@ -2,50 +2,70 @@ import './App.css';
 import React, { useState } from 'react';
 import { Grid, FormControl, TextField, Button, FormLabel, Box,Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useStore } from './store';
 export function ContactInformationPage() {
     const navigate = useNavigate();
 
-    const [onErrorMessage, setOnErrorMessage] = useState("");
+    const [onErrorMessage, ] = useState("");
 
-    const [SourceStreet, setSourceStreet] = useState("");
-    const [SourceStreetNumber, setSourceStreetNumber] = useState("");
-    const [SourceFlatNumber, setSourceFlatNumber] = useState("");
-    const [SourcePostalCode, setSourcePostalCode] = useState("");
-    const [SourceCity, setSourceCity] = useState("");
+    const [SourceStreet, setSourceStreetS] = useState("");
+    const [SourceStreetNumber, setSourceStreetNumberS] = useState("");
+    const [SourceFlatNumber, setSourceFlatNumberS] = useState("");
+    const [SourcePostalCode, setSourcePostalCodeS] = useState("");
+    const [SourceCity, setSourceCityS] = useState("");
 
-    const [PersonalData, setPersonalData] = useState("");
-    const [Email, setEmail] = useState("");
+    const [PersonalData, setPersonalDataS] = useState("");
+    const [Email, setEmailS] = useState("");
 
+    const {
+        setPersonaData,
+        setEmail,
+        setOwnerSourceStreet,
+        setOwnerSourceStreetNumber,
+        setOwnerSourceFlatNumber,
+        setOwnerSourcePostalCode,
+        setOwnerSourceCity,
+      } = useStore();
 
     const handleSubmit = async () => {
-      try {
-          const response = await fetch('https://localhost:7160/api/ContactInformation', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                PersonalData: PersonalData,
-                Email: Email,
-                Address: {
-                  Street: SourceStreet, 
-                  StreetNumber: SourceStreetNumber, 
-                  FlatNumber: SourceFlatNumber, 
-                  PostalCode: SourcePostalCode, 
-                  City: SourceCity}}),
-          });
-          const responseData = await response.text();
-          if (response.status === 200) {
-              console.log('Pomyślnie wysłano żądanie POST do API');
-              navigate('/summaryPage');
-          } else {
-            setOnErrorMessage(`Provided data is invalid ${responseData}`);
-          }
-      } catch (error) {
-          console.error('Błąd:', error);
-      }
-  }
+        setPersonaData(PersonalData);
+        setEmail(Email);
+        setOwnerSourceStreet(SourceStreet);
+        setOwnerSourceStreetNumber(SourceStreetNumber);
+        setOwnerSourceFlatNumber(SourceFlatNumber);
+        setOwnerSourcePostalCode(SourcePostalCode);
+        setOwnerSourceCity(SourceCity);
+        navigate('/summaryPage');
+    }
+
+//     const handleSubmit = async () => {
+//       try {
+//           const response = await fetch('https://localhost:7160/api/ContactInformation', {
+//               method: 'POST',
+//               headers: {
+//                   'Content-Type': 'application/json',
+//               },
+//               body: JSON.stringify({
+//                 PersonalData: PersonalData,
+//                 Email: Email,
+//                 Address: {
+//                   Street: SourceStreet, 
+//                   StreetNumber: SourceStreetNumber, 
+//                   FlatNumber: SourceFlatNumber, 
+//                   PostalCode: SourcePostalCode, 
+//                   City: SourceCity}}),
+//           });
+//           const responseData = await response.text();
+//           if (response.status === 200) {
+//               console.log('Pomyślnie wysłano żądanie POST do API');
+//               navigate('/summaryPage');
+//           } else {
+//             setOnErrorMessage(`Provided data is invalid ${responseData}`);
+//           }
+//       } catch (error) {
+//           console.error('Błąd:', error);
+//       }
+//   }
 
 
 
@@ -65,7 +85,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={PersonalData}
-                            onChange={(e)=>setPersonalData(e.target.value)}
+                            onChange={(e)=>setPersonalDataS(e.target.value)}
                             />
                             <TextField
                             label="E-mail"
@@ -74,7 +94,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={Email}
-                            onChange={(e)=>setEmail(e.target.value)}
+                            onChange={(e)=>setEmailS(e.target.value)}
                             />
                         </FormControl>
                     </Box>
@@ -90,7 +110,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={SourceStreet}
-                            onChange={(e)=>setSourceStreet(e.target.value)}
+                            onChange={(e)=>setSourceStreetS(e.target.value)}
                             />
                             <TextField
                             label="Street Number"
@@ -99,7 +119,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={SourceStreetNumber}
-                            onChange={(e)=>setSourceStreetNumber(e.target.value)}
+                            onChange={(e)=>setSourceStreetNumberS(e.target.value)}
                             />
                             <TextField
                             label="Flat Number"
@@ -108,7 +128,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={SourceFlatNumber}
-                            onChange={(e)=>setSourceFlatNumber(e.target.value)}
+                            onChange={(e)=>setSourceFlatNumberS(e.target.value)}
                             />
                             <TextField
                             label="Postal Code"
@@ -117,7 +137,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={SourcePostalCode}
-                            onChange={(e)=>setSourcePostalCode(e.target.value)}
+                            onChange={(e)=>setSourcePostalCodeS(e.target.value)}
                             />
                             <TextField
                             label="City"
@@ -126,7 +146,7 @@ export function ContactInformationPage() {
                             fullWidth
                             required
                             value={SourceCity}
-                            onChange={(e)=>setSourceCity(e.target.value)}
+                            onChange={(e)=>setSourceCityS(e.target.value)}
                             />
                         </FormControl>
                     </Box>

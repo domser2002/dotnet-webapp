@@ -29,7 +29,7 @@ namespace Api.Controllers
             return Ok(users);
         }
 
-        // GET api/users/{id}
+        // GET api/users/subs/{id}
         [HttpGet("subs/{id}")]
         public ActionResult<User> GetByID(string id)
         {
