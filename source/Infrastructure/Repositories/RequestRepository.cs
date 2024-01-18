@@ -15,6 +15,10 @@ public class RequestRepository : IRequestRepository
     public int Add(Request request)
     {
         int index = 0;
+        ContactInformationRepository contactInformationRepository = new(connectionString);
+        List<ContactInformation> contacts = contactInformationRepository.GetAll();
+        ContactInformation? contactInformation = contacts.Where(c => c.Id == request.Owner.Id).FirstOrDefault();
+        if (contactInformation is null) request.Owner.Id = contactInformationRepository.AddContactInformation(request.Owner);
         try
         {
             using SqlConnection connection = new(connectionString);
