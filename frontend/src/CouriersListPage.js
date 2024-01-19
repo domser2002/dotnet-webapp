@@ -13,6 +13,10 @@ import { LoadingPage } from './LoadingPage';
 
 export function CouriersListPage() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const usersOffer = baseUrl+"/api/offers";
+
     const {
       setPersonaData,
       setEmail,
@@ -33,7 +37,7 @@ export function CouriersListPage() {
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const response = await fetch('https://localhost:7160/api/offers');
+          const response = await fetch(usersOffer);
           const data = await response.json();
           setOffers(data);
         } catch (error) {
@@ -46,7 +50,7 @@ export function CouriersListPage() {
           try {
             const claims = await getIdTokenClaims();
             const id = claims["sub"].split('|')[1]
-            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+            const response = await fetch(`${usersSubsId}/${id}`);
     
             if (response.ok) {
               const userData = await response.json();
@@ -73,7 +77,7 @@ export function CouriersListPage() {
       fetchData();
       fetchUserData();
       setIsLoading(false);
-    }, [isAuthenticated, getIdTokenClaims, setPersonaData, setEmail, setCompanyName,
+    }, [isAuthenticated, getIdTokenClaims, setPersonaData, setEmail, setCompanyName,usersSubsId,usersOffer,
        setOwnerSourceStreet, setOwnerSourceStreetNumber, setOwnerSourceFlatNumber, setOwnerSourcePostalCode, setOwnerSourceCity]);
     
 

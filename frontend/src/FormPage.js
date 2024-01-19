@@ -9,6 +9,11 @@ import {useStore} from './store';
 import { LoadingPage } from './LoadingPage';
 
 export function FormPage() {
+
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const apiInquiries = baseUrl+"/api/inquiries";
+
     const navigate = useNavigate();
 
     const SourceStreet = useStore((state) => state.SourceStreet);
@@ -116,7 +121,7 @@ export function FormPage() {
     
         const getUserById = async (id) => {
           try {
-            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+            const response = await fetch(`${usersSubsId}/${id}`);
             if(response.status === 200)
             {
               const body = await response.json();
@@ -144,14 +149,14 @@ export function FormPage() {
         };
 
         getIdFromToken();
-      }, [getIdTokenClaims, isAuthenticated, setSourceCity, setSourceFlatNumber, setSourcePostalCode, setSourceStreet, setSourceStreetNumber]);
+      }, [getIdTokenClaims, isAuthenticated, setSourceCity, setSourceFlatNumber, setSourcePostalCode, setSourceStreet, setSourceStreetNumber, usersSubsId]);
 
 
 
     const handleSubmit = async () => {
       setIsLoading(true);
       try {
-          const response = await fetch('http://localhost:5261/api/inquiries', {
+          const response = await fetch(apiInquiries, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',

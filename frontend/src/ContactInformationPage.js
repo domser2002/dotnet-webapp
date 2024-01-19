@@ -4,6 +4,7 @@ import { Grid, FormControl, TextField, Button, FormLabel, Box,Typography } from 
 import { useNavigate } from 'react-router-dom';
 import { useStore } from './store';
 export function ContactInformationPage() {
+
     const navigate = useNavigate();
 
     const [onErrorMessage, ] = useState("");
@@ -37,37 +38,6 @@ export function ContactInformationPage() {
         setOwnerSourceCity(SourceCity);
         navigate('/summaryPage');
     }
-
-//     const handleSubmit = async () => {
-//       try {
-//           const response = await fetch('https://localhost:7160/api/ContactInformation', {
-//               method: 'POST',
-//               headers: {
-//                   'Content-Type': 'application/json',
-//               },
-//               body: JSON.stringify({
-//                 PersonalData: PersonalData,
-//                 Email: Email,
-//                 Address: {
-//                   Street: SourceStreet, 
-//                   StreetNumber: SourceStreetNumber, 
-//                   FlatNumber: SourceFlatNumber, 
-//                   PostalCode: SourcePostalCode, 
-//                   City: SourceCity}}),
-//           });
-//           const responseData = await response.text();
-//           if (response.status === 200) {
-//               console.log('Pomyślnie wysłano żądanie POST do API');
-//               navigate('/summaryPage');
-//           } else {
-//             setOnErrorMessage(`Provided data is invalid ${responseData}`);
-//           }
-//       } catch (error) {
-//           console.error('Błąd:', error);
-//       }
-//   }
-
-
 
     return (
       <div className="App-header">

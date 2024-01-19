@@ -5,6 +5,8 @@ using Infrastructure.Repositories;
 using Infrastructure.FakeRepositories;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +39,27 @@ builder.Services.AddSingleton<IInquireValidator>(provider =>
     return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight, minStringLength, maxStringLength);
 });
 
+// Konfiguracja autentykacji JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://dev-16zwhx0tnshxv7h2.us.auth0.com";
+        options.Audience = "oq9dIThIfvXR71YXAvPqahwjpARlTGf7"; // Nazwa audytorium z Auth0
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            RoleClaimType = "role", // Klucz roli w tokenie
+        };
+    });
+
+// Konfiguracja autoryzacji
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
+
+// Dodanie autentykacji do potoku middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Cors
 app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());

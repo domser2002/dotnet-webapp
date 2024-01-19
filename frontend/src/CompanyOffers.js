@@ -13,6 +13,10 @@ import "./OfficeWorkerPanel.css";
 
 export function CompanyOffers() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const usersOffer = baseUrl+"/api/offers";
+
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();
     const {getIdTokenClaims} = useAuth0();
@@ -23,7 +27,11 @@ export function CompanyOffers() {
           try {
               const claims = await getIdTokenClaims();
               const id = claims["sub"].split('|')[1];
-              const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+              const response = await fetch(`${usersSubsId}/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${claims["__raw"]}`,
+                },
+            });
               const data = await response.json();
               return data["companyName"];
 
@@ -34,7 +42,7 @@ export function CompanyOffers() {
   
       const fetchRequestsData = async (d) => {
           try {
-              const response = await fetch(`https://localhost:7160/api/offers`);
+              const response = await fetch(usersOffer);
               const data = await response.json();
               const filteredRequests = data.filter((offer) => offer["companyName"] === d);
 
@@ -50,7 +58,7 @@ export function CompanyOffers() {
       };
   
       fetchData();
-  }, [setCompany, setRequests, getIdTokenClaims]);
+  }, [setCompany, setRequests, getIdTokenClaims, usersSubsId, usersOffer]);
 
 
     const handleDetailsClick = async (id) => 

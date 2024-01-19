@@ -13,6 +13,10 @@ import './CourierPanel.css';
 
 export function CourierPanel() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const companiesName = baseUrl+"/companies";
+
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();
     const {getIdTokenClaims} = useAuth0();
@@ -22,10 +26,16 @@ export function CourierPanel() {
       const fetchUserData = async () => {
           try {
               const claims = await getIdTokenClaims();
-              console.log(claims);
+
               const id = claims["sub"].split('|')[1];
-              console.log(id);
-              const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+
+              const response = await fetch(`${usersSubsId}/${id}`,
+               {
+                headers: {
+                    Authorization: `Bearer ${claims["__raw"]}`,
+                },
+            }
+              );
               const data = await response.json();
               return data["companyName"];
 
@@ -36,7 +46,15 @@ export function CourierPanel() {
   
       const fetchRequestsData = async (d) => {
           try {
-              const response = await fetch(`https://localhost:7160/companies/${d}`);
+            const claims = await getIdTokenClaims();
+
+            const id = claims["sub"].split('|')[1];
+              const response = await fetch(`${companiesName}/${d}`, {
+                headers: {
+                    Authorization: `Bearer ${claims["__raw"]}`,
+                },
+            }
+              );
               const data = await response.json();
               setRequests(data);
           } catch (error) {
@@ -50,7 +68,7 @@ export function CourierPanel() {
       };
   
       fetchData();
-  }, [setCompany, setRequests, getIdTokenClaims]);
+  }, [setCompany, setRequests, getIdTokenClaims, usersSubsId, companiesName]);
 
 
     const handleDetailsClick = async (id) => 

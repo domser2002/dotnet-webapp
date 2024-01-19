@@ -5,6 +5,7 @@ using Frontend.Validators.Abstractions;
 using Frontend.Validators;
 using Azure;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -41,6 +42,7 @@ namespace Api.Controllers
         // Must have Microsoft.AspNetCore.Mvc.NewtonsoftJson installed
         // PATCH /api/users/subs/{id}
         [HttpPatch("/subs/{id}")]
+        [Authorize]
         public ActionResult PatchByID(string id, [FromBody] UserPatchModel userPatch)
         {
             if (userPatch == null)
@@ -96,6 +98,7 @@ namespace Api.Controllers
         }
         // POST api/users (dodawanie nowego uzytkownika)
         [HttpPost]
+        [Authorize]
         public ActionResult<User> Create([FromBody] User user)
         {
             if (user == null)

@@ -1,20 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Button, Typography, Box, TextField} from '@mui/material';
 import { useStore } from './store.js';
-
+import { useAuth0 } from '@auth0/auth0-react';
 import './OfficeWorkerPanel.css';
 import './CouriersListPage.css';
 
 
 export function RequestDetails() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const apiRequests = baseUrl+"/api/requests";
+
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
+
+    const {getIdTokenClaims} = useAuth0();
 
     useEffect(() => {
       const fetchData = async () => {
           try {
-            const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`);
+            const claims = await getIdTokenClaims();
+            const response = await fetch(`${apiRequests}/${RequestId}`, {
+              headers: {
+                  Authorization: `Bearer ${claims["__raw"]}`,
+
+              },
+          });
             const data = await response.json();
             setDetails(data);
           } catch (error) {
@@ -23,7 +34,7 @@ export function RequestDetails() {
       };
   
       fetchData();
-  }, [RequestId]);
+  }, [RequestId, apiRequests, getIdTokenClaims]);
 
 
 
@@ -54,10 +65,12 @@ export function RequestDetails() {
     const handleAcceptClick = async () => 
     {
       try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${apiRequests}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${claims["__raw"]}`,
           },
           body: JSON.stringify({
             Status: 1,
@@ -76,10 +89,12 @@ export function RequestDetails() {
     const handleDeclineClick = async () => 
     {
       try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${apiRequests}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${claims["__raw"]}`,
           },
           body: JSON.stringify({
             Status: 5,

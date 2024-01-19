@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
 using Frontend.Validators;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -24,6 +25,7 @@ namespace Api.Controllers
         }
         // GET api/requests/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<Request> GetByID(int id)
         {
             var request = repository.GetById(id);
@@ -32,6 +34,7 @@ namespace Api.Controllers
         }
         // GET api/requests/subs/{user_id}
         [HttpGet("/subs/{user_id}")]
+        [Authorize]
         public ActionResult<List<Request>> GetByUserID([FromRoute] string user_id)
         {
             var requests = repository.GetByOwner(user_id);
@@ -39,6 +42,7 @@ namespace Api.Controllers
         }
         // GET api/requests/companies/{CompanyName}
         [HttpGet("/companies/{CompanyName}")]
+        [Authorize]
         public ActionResult<List<Request>> GetByCompany([FromRoute] string companyName)
         {
             var requests = repository.GetByCompany(companyName);
@@ -66,6 +70,7 @@ namespace Api.Controllers
 
         // PATCH /api/requests/{id}
         [HttpPatch("{id}")]
+        [Authorize]
         public ActionResult PatchByID([FromRoute] int id, [FromBody] RequestPatchModel requestPatch)
         {
             if (requestPatch == null)

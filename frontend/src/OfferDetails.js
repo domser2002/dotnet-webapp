@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Typography, Box} from '@mui/material';
 import { useStore } from './store.js';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import './OfficeWorkerPanel.css';
 import './CouriersListPage.css';
@@ -8,13 +9,24 @@ import './CouriersListPage.css';
 
 export function OfferDetails() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const apiOffers = baseUrl+"/api/offers";
+
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
+
+    const {getIdTokenClaims} = useAuth0();
 
     useEffect(() => {
       const fetchData = async () => {
           try {
-            const response = await fetch(`https://localhost:7160/api/offers`);
+            const claims = await getIdTokenClaims();
+            const response = await fetch(apiOffers, {
+              headers: {
+                  Authorization: `Bearer ${claims["__raw"]}`,
+
+              },
+          });
             const data = await response.json();
             const filteredData = data.filter((offer) => offer["id"] === RequestId);
             console.log(filteredData[0]);
@@ -25,7 +37,7 @@ export function OfferDetails() {
       };
   
       fetchData();
-  }, [RequestId]);
+  }, [RequestId, apiOffers, getIdTokenClaims]);
 
 
 

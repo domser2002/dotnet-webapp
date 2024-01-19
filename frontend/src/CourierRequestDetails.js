@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Typography, Box} from '@mui/material';
 import { useStore } from './store.js';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import './CourierPanel.css';
 import './CouriersListPage.css';
@@ -8,13 +9,22 @@ import './CouriersListPage.css';
 
 export function CourierRequestDetails() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const requestsId = baseUrl+"/api/requests";
+
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
-
+    const {getIdTokenClaims} = useAuth0();
     useEffect(() => {
       const fetchData = async () => {
           try {
-            const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`);
+            const claims = await getIdTokenClaims();
+            const response = await fetch(`${requestsId}/${RequestId}`, {
+              headers: {
+                  Authorization: `Bearer ${claims["__raw"]}`,
+                  // Dodaj inne nagłówki, jeśli są potrzebne
+              },
+          });
             const data = await response.json();
             setDetails(data);
           } catch (error) {
@@ -23,17 +33,19 @@ export function CourierRequestDetails() {
       };
   
       fetchData();
-  }, [RequestId]);
+  }, [RequestId, requestsId, getIdTokenClaims]);
 
 
 
     const handleReceivedClick = async () => 
     {
       try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${requestsId}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+             Authorization: `Bearer ${claims["__raw"]}`,
           },
           body: JSON.stringify({
             Status: 2,
@@ -51,10 +63,12 @@ export function CourierRequestDetails() {
     const handleDeliveredClick = async () => 
     {
       try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${requestsId}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+             Authorization: `Bearer ${claims["__raw"]}`,
           },
           body: JSON.stringify({
             Status: 3,
@@ -72,10 +86,12 @@ export function CourierRequestDetails() {
     const handleCannotDeliverClick = async () => 
     {
       try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${requestsId}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${claims["__raw"]}`,
           },
           body: JSON.stringify({
             Status: 4,

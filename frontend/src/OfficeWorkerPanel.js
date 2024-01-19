@@ -12,6 +12,10 @@ import "./OfficeWorkerPanel.css";
 
 export function OfficeWorkerPanel() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const apiUsersSubsId = baseUrl+"/api/users/subs";
+    const companiesId = baseUrl+"/companies";
+
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();
     const {getIdTokenClaims} = useAuth0();
@@ -24,7 +28,12 @@ export function OfficeWorkerPanel() {
               console.log(claims);
               const id = claims["sub"].split('|')[1];
               console.log(id);
-              const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+              const response = await fetch(`${apiUsersSubsId}/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${claims["__raw"]}`,
+
+                },
+            });
               const data = await response.json();
               return data["companyName"];
               // setCompany(data["companyName"]);
@@ -36,7 +45,13 @@ export function OfficeWorkerPanel() {
   
       const fetchRequestsData = async (d) => {
           try {
-              const response = await fetch(`https://localhost:7160/companies/${d}`);
+            const claims = await getIdTokenClaims();
+              const response = await fetch(`${companiesId}/${d}`, {
+                headers: {
+                    Authorization: `Bearer ${claims["__raw"]}`,
+
+                },
+            });
               const data = await response.json();
               setRequests(data);
           } catch (error) {
@@ -50,7 +65,7 @@ export function OfficeWorkerPanel() {
       };
   
       fetchData();
-  }, [setCompany, setRequests, getIdTokenClaims]);
+  }, [setCompany, setRequests, getIdTokenClaims, apiUsersSubsId, companiesId]);
 
 
     const handleDetailsClick = async (id) => 

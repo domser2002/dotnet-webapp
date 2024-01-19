@@ -6,12 +6,14 @@ import {NavLink} from "react-router-dom";
 export function LandingPage() {
     const [usersCount, setUsersCount] = useState(0);
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersGetCountUrl = baseUrl+"/api/users/count";
     useEffect(() => {
-        fetch('https://localhost:7160/api/users/count').then(response => response.json()).then(data => {setUsersCount(data);})
+        fetch(usersGetCountUrl).then(response => response.json()).then(data => {setUsersCount(data);})
         .catch(error => {
         console.error('GET error:', error);
         });
-    }, []);
+    }, [usersGetCountUrl]);
     return (
         <div className='App-header'>
             <div>

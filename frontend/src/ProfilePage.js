@@ -13,6 +13,11 @@ import './ProfilePage.css';
 
 export const ProfilePage = () =>
 {
+
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const apiUsersSubsId = baseUrl+"/api/users/subs";
+
+
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
     const [profile, setProfile] = useState();
     const navigate = useNavigate();
@@ -42,7 +47,11 @@ export const ProfilePage = () =>
             if (isAuthenticated) {
                 const claims = await getIdTokenClaims();
                 const id = claims["sub"].split('|')[1]
-                const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+                const response = await fetch(`${apiUsersSubsId}/${id}`, {
+                  headers: {
+                      Authorization: `Bearer ${claims["__raw"]}`,
+                  },
+              });
                 const data = await response.json();
                 setProfile(data);
                 console.log(data["requests"]);
@@ -75,7 +84,7 @@ export const ProfilePage = () =>
         getRolesFromToken();
         fetchUserData();
         //fetchRequestsData()
-      }, [getIdTokenClaims, isAuthenticated, setProfile]);
+      }, [getIdTokenClaims, isAuthenticated, setProfile, apiUsersSubsId]);
 
   
       const handleDetailsClick = async (id) => 
@@ -325,7 +334,7 @@ export const ProfilePage = () =>
                 </div>
             );
         }
-        if(role === "Office worker")
+        if(role === "OfficeWorker")
         {
             return(
                 <div className="App-header-officeWorker">

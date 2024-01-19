@@ -9,6 +9,10 @@ import './App.css';
 
 export function RegisterPage() {
 
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const apiUsersSubsId = baseUrl+"/api/users/subs";
+    const apiUsers = baseUrl+"/api/users";
+
     const navigate = useNavigate();
 
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
@@ -75,7 +79,12 @@ export function RegisterPage() {
     
         const getUserById = async (id) => {
           try {
-            const response = await fetch(`https://localhost:7160/api/users/subs/${id}`);
+            const claims = await getIdTokenClaims();
+            const response = await fetch(`${apiUsersSubsId}/${id}`, {
+              headers: {
+                  Authorization: `Bearer ${claims["__raw"]}`,
+              },
+          });
             if(response.status === 200)
             {
               return true;
@@ -90,15 +99,17 @@ export function RegisterPage() {
         };
 
         getIdFromToken();
-      }, [getIdTokenClaims, isAuthenticated, navigate]);
+      }, [getIdTokenClaims, isAuthenticated, navigate, apiUsersSubsId]);
 
 
     const handleSubmit = async () => {
       try {
-          const response = await fetch('https://localhost:7160/api/users', {
+        const claims = await getIdTokenClaims();
+          const response = await fetch(apiUsers, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
+                  Authorization: `Bearer ${claims["__raw"]}`,
               },
               body: JSON.stringify({
                 FirstName: FirstName,

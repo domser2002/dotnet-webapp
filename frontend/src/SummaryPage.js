@@ -6,10 +6,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LoadingPage } from './LoadingPage';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import './SummaryPage.css';
 
 export const SummaryPage = () => {
+  
+  const baseUrl = process.env.REACT_APP_API_URL;
+  const apiOffers = baseUrl+"/api/offers";
+  const apiRequests = baseUrl+"/api/requests";
+  
   const {
     offerId,
     SourceStreet,
@@ -43,11 +49,20 @@ export const SummaryPage = () => {
   const [offerData, setOfferData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  const {getIdTokenClaims} = useAuth0();
+
   useEffect(() => {
     setIsLoading(true);
     const fetchOfferData = async () => {
       try {
-        const response = await fetch(`https://localhost:7160/api/offers/${offerId}`);
+        const claims = await getIdTokenClaims();
+        const response = await fetch(`${apiOffers}/${offerId}`, {
+          headers: {
+              Authorization: `Bearer ${claims["__raw"]}`,
+              // Dodaj inne nagłówki, jeśli są potrzebne
+          },
+      });
         const data = await response.json();
         setOfferData(data);
         setIsLoading(false);
@@ -60,15 +75,17 @@ export const SummaryPage = () => {
     if (offerId) {
       fetchOfferData();
     }
-  }, [offerId]);
+  }, [offerId, apiOffers, getIdTokenClaims]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-        const response = await fetch('http://localhost:5261/api/requests', {
+      const claims = await getIdTokenClaims();
+        const response = await fetch(apiRequests, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${claims["__raw"]}`,
             },
             body: JSON.stringify({
               Package: {

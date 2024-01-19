@@ -43,7 +43,7 @@ export const RoleButton = () => {
                     </NavLink>
                 );
             }
-            if(role === "Office worker")
+            if(role === "OfficeWorker")
             {
                 return (
                     <div>
