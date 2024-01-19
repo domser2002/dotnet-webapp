@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Button, Typography, Box, TextField} from '@mui/material';
+import { Button, Typography, Box} from '@mui/material';
 import { useStore } from './store.js';
 
-import './OfficeWorkerPanel.css';
+import './UserRequestDetails.css';
 import './CouriersListPage.css';
 
-
-export function RequestDetails() {
+export function UserRequestDetails() {
 
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
@@ -27,53 +26,7 @@ export function RequestDetails() {
 
 
 
-    const [selectedAgreement, setSelectedAgreement] = useState(null);
-    const [selectedReceipt, setSelectedReceipt] = useState(null);
-    const handleAgreementChange = (event) => {
-      const file = event.target.files[0];
-      setSelectedAgreement(file);
-    };
-
-    const handleReceiptChange = (event) => {
-      const file = event.target.files[0];
-      setSelectedReceipt(file);
-    };
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      // Tutaj możesz przetworzyć lub przesłać plik do serwera
-      if (selectedAgreement) {
-        console.log('Agreement:', selectedAgreement);
-        console.log('Receipt:', selectedReceipt);
-        // Dodaj kod obsługi przesyłania pliku tutaj
-        // TUTAJ WYSŁAĆ PLIK
-        // HANDLE ACCEPT
-      }
-    };
-
-    const handleAcceptClick = async () => 
-    {
-      try {
-        const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            Status: 1,
-        }),
-        });
-
-        const data = await response.json();
-        console.log('Pomyślnie zaktualizowano zasób:', data);
-
-      } catch (error) {
-        console.error('Błąd podczas aktualizacji zasobu:', error.message);
-      }
-    }
-
-    // WYSLAC EMAIL Z ODRZUCENIEM
-    const handleDeclineClick = async () => 
+    const handleChangeClick = async () => 
     {
       try {
         const response = await fetch(`https://localhost:7160/api/requests/${RequestId}`, {
@@ -93,10 +46,20 @@ export function RequestDetails() {
         console.error('Błąd podczas aktualizacji zasobu:', error.message);
       }
     }
+
+    const isCancelDisabled = () => {
+        if (details && details.cancelDate) {
+          const currentDate = new Date();
+          const cancelDate = new Date(details.cancelDate);
+    
+          return currentDate > cancelDate;
+        }
+        return false; // Jeśli brak cancelDate lub błąd w danych
+      };
+
     return (
-      <div className="Panel-header-officeWorker">
-  {details && (
-        
+      <div className="userRequest-container">
+        {details && (
         <Box>
           {/* package */}
           <Typography variant="body1" gutterBottom className="gray-text">
@@ -155,49 +118,19 @@ export function RequestDetails() {
         </Box>
         
       )}
+        <Typography variant="h5" gutterBottom className="gray-text">
+            Change delivery status
+        </Typography>
       <div className='button-container'>
 
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Typography variant="body1" gutterBottom className="gray-text">
-                Agreement file:
-              </Typography>
-                <TextField
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleAgreementChange}
-                  variant="outlined"
-                />
-              <Typography variant="body1" gutterBottom className="gray-text">
-                Receipt file:
-              </Typography>
-                <TextField
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleReceiptChange}
-                  variant="outlined"
-                />
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  style={{ backgroundColor: '#0d10a6', color: 'white' }}
-                  onClick={() => handleAcceptClick()}
-                >
-                  Accept
-                </Button>
-              </Box>
-
-
-        <div>
             <Button
                 variant="contained"
                 color="primary"
                 style={{ backgroundColor: '#0d10a6', color: 'white' }}
-                onClick={() => handleDeclineClick()}
-            >
-                Decline
+                onClick={() => handleChangeClick()}
+                disabled={isCancelDisabled()}
+            >Cancel Order
             </Button>
-          </div>
       </div>
     </div>
     );

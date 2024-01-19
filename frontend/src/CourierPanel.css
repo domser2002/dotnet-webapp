@@ -1,5 +1,6 @@
-.Panel-header-officeWorker {
-    background: linear-gradient( #fffc00, #ffffff);
+.Panel-header-courier {
+    background: linear-gradient( #e2a9d8, #FAE7F3);
+
     min-height: 100vh;
     display: flex;
     flex-direction: column;

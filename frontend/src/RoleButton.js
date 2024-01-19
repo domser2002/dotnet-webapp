@@ -46,9 +46,16 @@ export const RoleButton = () => {
             if(role === "Office worker")
             {
                 return (
+                    <div>
                     <NavLink to={"/officeWorkerPanel"}>
                         <Button variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Office worker panel</Button>
                     </NavLink>
+                    <NavLink to={"/companyOffers"}>
+                        <Button variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Company offers</Button>
+                    </NavLink>
+                    </div>
+
+                    
                 );
             }
         }

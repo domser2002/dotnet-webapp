@@ -21,7 +21,11 @@ import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
 //import { ProfilePage } from "./ProfilePage.js";
 import { SummaryPage } from "./SummaryPage.js";
 import { ProfilePage } from "./ProfilePage.js";
-import { RequestDetails } from "./RequestDetails.js"
+import { RequestDetails } from "./RequestDetails.js";
+import {CourierRequestDetails} from "./CourierRequestDetails.js";
+import {UserRequestDetails} from "./UserRequestDetails.js";
+import {CompanyOffers} from "./CompanyOffers.js"
+import { OfferDetails } from "./OfferDetails.js";
 
   function App() {
 
@@ -137,6 +141,22 @@ import { RequestDetails } from "./RequestDetails.js"
           {
             path: "/officeWorkerPanel/requestDetails",
             element: <RequestDetails />,
+          },
+          {
+            path: "/courierPanel/courierRequestDetails",
+            element: <CourierRequestDetails />,
+          },
+          {
+            path: "/profile/userRequestDetails",
+            element: <UserRequestDetails />,
+          },
+          {
+            path: "/companyOffers",
+            element: <CompanyOffers />,
+          },
+          {
+            path: "/companyOffers/offerDetails",
+            element: <OfferDetails />,
           },
           {
             path: "*",

@@ -32,9 +32,9 @@ namespace Api.Controllers
         }
         // GET api/requests/subs/{user_id}
         [HttpGet("/subs/{user_id}")]
-        public ActionResult<List<Request>> GetByUserID(string userId)
+        public ActionResult<List<Request>> GetByUserID([FromRoute] string user_id)
         {
-            var requests = repository.GetByOwner(userId);
+            var requests = repository.GetByOwner(user_id);
             return Ok(requests);
         }
         // GET api/requests/companies/{CompanyName}
