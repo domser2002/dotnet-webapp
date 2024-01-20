@@ -83,7 +83,9 @@ namespace Infrastructure.LectureRepositories
 
         List<Offer> IOfferRepository.GetByInquiry(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            List<Offer> offers = GetByInquiry(inquiry).Result;
+            Thread.Sleep(ApiTimeoutMilliseconds+1000);
+            return offers;
         }
 
         private class PriceResponse
