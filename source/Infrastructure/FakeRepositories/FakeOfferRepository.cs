@@ -41,5 +41,10 @@ namespace Infrastructure.FakeRepositories
             offers[id].Active = false;
             return;
         }
+
+        public List<Offer> GetByInquiry(Inquiry inquiry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

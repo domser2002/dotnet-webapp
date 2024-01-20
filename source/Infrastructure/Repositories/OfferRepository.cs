@@ -119,5 +119,10 @@ namespace Infrastructure.Repositories
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
             return result;
         }
+
+        public List<Offer> GetByInquiry(Inquiry inquiry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
