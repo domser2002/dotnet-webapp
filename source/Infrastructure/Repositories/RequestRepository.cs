@@ -149,7 +149,7 @@ public class RequestRepository : IRequestRepository
                 "DestinationAddressStreetNumber = @DestinationAddressStreetNumber, " +
                 "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode, " +
                 "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate, " +
-                "DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus", connection);
+                $"DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus WHERE id={request.Id}", connection);
             command.Parameters.AddWithValue("@SourceAddressStreet", request.SourceAddress.Street);
             command.Parameters.AddWithValue("@SourceAddressStreetNumber", request.SourceAddress.StreetNumber);
             command.Parameters.AddWithValue("@SourceAddressFlatNumber", request.SourceAddress.FlatNumber);
@@ -162,7 +162,9 @@ public class RequestRepository : IRequestRepository
             command.Parameters.AddWithValue("@DestinationAddressCity", request.DestinationAddress.City);
             command.Parameters.AddWithValue("@PickupDate", request.PickupDate);
             command.Parameters.AddWithValue("@DeliveryDate", request.DeliveryDate);
-            command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
+            //command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
+            if (request.CancelDate is null) command.Parameters.AddWithValue("@CancelDate", DBNull.Value);
+            else command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
             command.Parameters.AddWithValue("@RequestStatus", request.Status);
             connection.Open();
             command.ExecuteNonQuery();
