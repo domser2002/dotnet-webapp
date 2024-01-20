@@ -2,6 +2,19 @@
 {
     public class Offer : Base
     {
+        public Offer(LectureOffer lectureOffer,Inquiry inquiry) 
+        {
+            CompanyName = "LectureCompany";
+            Price = (decimal)lectureOffer.totalPrice;
+            Active = true;
+            DeliveryTime = ((TimeSpan)(inquiry.DeliveryDate - inquiry.PickupDate)).Days;
+            Begins = (DateTime)inquiry.PickupDate;
+            Ends = (DateTime)inquiry.DeliveryDate;
+            MinDimension = 0;
+            MaxDimension = float.MaxValue;
+            MinWeight = 0;
+            MaxWeight = float.MaxValue;
+        }
         public string CompanyName { get; set; }
         public decimal Price { get; set; }
         public bool Active { get; set; }
@@ -22,5 +35,19 @@
                 (inquiry.PickupDate > Begins) &&
                 (((TimeSpan)(inquiry.DeliveryDate - inquiry.PickupDate)).Days<DeliveryTime);
         }
+    }
+    public class LectureOffer
+    {
+        public class PriceBreakDownItem
+        {
+            public double? amount { get; set; }
+            public string? currency { get; set; }
+            public string? description { get; set; }
+        }
+        public Guid inquiryId { get; set; }
+        public double totalPrice { get; set; }
+        public string? currency { get; set; }
+        public DateTime? expiringAt { get; set; }
+        public List<PriceBreakDownItem> priceBreakDown { get; set; }
     }
 }
