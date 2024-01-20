@@ -14,8 +14,8 @@ namespace Infrastructure.LectureRepositories
     {
         private const string ApiEndpoint = "https://mini.currier.api.snet.com.pl/Inquires";
         private const int ApiTimeoutMilliseconds = 5000;
-        private const string ClientId = "your_client_id";
-        private const string SecretId = "your_secret_id";
+        private const string ClientId = "team1a";
+        private const string SecretId = "4FBCF2E8-2845-4EAA-BE16-6B971798F846";
 
         private static async Task<HttpResponseMessage> MakeHttpPostRequest(string url, string jsonBody)
         {
