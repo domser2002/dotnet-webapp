@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Model;
+using Infrastructure.LectureRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,16 @@ namespace Api.Controllers
             var offer = repository.GetByID(id);
             return Ok(offer);
         }
-
+        // GET api/offers/inquiry
+        [HttpGet("/inquiry")]
+        [Authorize]
+        public ActionResult<List<Offer>> GetByInquiry([FromBody] Inquiry inquiry)
+        {
+            var offers = repository.GetByInquiry(inquiry);
+            var lecture_offers = LectureOfferRepository.GetByInquiry(inquiry);
+            offers.AddRange((IEnumerable<Offer>)lecture_offers);
+            return Ok(offers);
+        }
         // POST api/offers (dodawanie nowej oferty)
         [HttpPost]
         public ActionResult<Offer> Create([FromBody] Offer offer)
