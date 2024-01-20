@@ -17,19 +17,14 @@ namespace Infrastructure.LectureRepositories
         private const string ClientId = "your_client_id";
         private const string SecretId = "your_secret_id";
 
-        private async Task<HttpResponseMessage> MakeHttpPostRequest(string url, string jsonBody)
+        private static async Task<HttpResponseMessage> MakeHttpPostRequest(string url, string jsonBody)
         {
-            using (HttpClient client = new())
-            {
-                // Add client_id and secret_id to the request headers
-                client.DefaultRequestHeaders.Add("client_id", ClientId);
-                client.DefaultRequestHeaders.Add("secret_id", SecretId);
-
-                StringContent content = new(jsonBody, Encoding.UTF8, "application/json");
-
-                // Make the HTTP POST request with a timeout
-                return await client.PostAsync(url, content);
-            }
+            using HttpClient client = new();
+            client.Timeout = TimeSpan.FromMilliseconds(ApiTimeoutMilliseconds);
+            client.DefaultRequestHeaders.Add("client_id", ClientId);
+            client.DefaultRequestHeaders.Add("secret_id", SecretId);
+            StringContent content = new(jsonBody, Encoding.UTF8, "application/json");
+            return await client.PostAsync(url, content);
         }
         public void AddOffer(Offer offer)
         {
@@ -52,18 +47,13 @@ namespace Infrastructure.LectureRepositories
 
         public async Task<List<Offer>> GetByInquiry(Inquiry inquiry)
         {
+            LectureInquiryAdapter lectureInquiry = new LectureInquiryAdapter(inquiry);
             try
             {
-                // Convert Inquiry object to JSON
-                string jsonBody = JsonConvert.SerializeObject(new { inquiry });
-
-                // Make HTTP POST request with client_id and secret_id headers
+                string jsonBody = JsonConvert.SerializeObject(new { lectureInquiry });
                 HttpResponseMessage response = await MakeHttpPostRequest(ApiEndpoint, jsonBody);
-
-                // Check if the request was successful
                 if (response.IsSuccessStatusCode)
                 {
-                    // Parse the response and get the price
                     string responseBody = await response.Content.ReadAsStringAsync();
                     PriceResponse priceResponse = JsonConvert.DeserializeObject<PriceResponse>(responseBody);
 
@@ -90,6 +80,12 @@ namespace Infrastructure.LectureRepositories
             // Return an empty list if there's an error
             return new List<Offer>();
         }
+
+        List<Offer> IOfferRepository.GetByInquiry(Inquiry inquiry)
+        {
+            throw new NotImplementedException();
+        }
+
         private class PriceResponse
         {
             public decimal? Price { get; set; }
