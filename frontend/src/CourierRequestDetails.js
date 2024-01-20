@@ -107,7 +107,7 @@ export function CourierRequestDetails() {
     }
 
     return (
-      <div className="Panel-header-officeWorker">
+      <div className="Panel-header-courier">
         {details && (
         <Box>
           {/* package */}
