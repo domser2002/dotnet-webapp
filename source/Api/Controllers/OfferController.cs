@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -26,6 +27,7 @@ namespace Api.Controllers
 
         // GET api/offers/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<List<Offer>> GetByID(int id)
         {
             var offer = repository.GetByID(id);
@@ -48,6 +50,7 @@ namespace Api.Controllers
 
         // PATCH api/offers/{id}
         [HttpPatch("{id}")]
+        [Authorize]
         public ActionResult<string> Deactivate([FromRoute] int id)
         {
             repository.Deactivate(id);

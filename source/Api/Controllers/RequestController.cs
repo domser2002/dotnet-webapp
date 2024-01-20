@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
 using Frontend.Validators;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -24,22 +25,25 @@ namespace Api.Controllers
         }
         // GET api/requests/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<Request> GetByID(int id)
         {
             var request = repository.GetById(id);
             if(request == null) { return BadRequest("Request not found."); }
             return Ok(request);
         }
-        // GET api/requests/{user_id}
-        [HttpGet("{user_id}")]
-        public ActionResult<List<Request>> GetByUserID(string userId)
+        // GET api/requests/subs/{user_id}
+        [HttpGet("/subs/{user_id}")]
+        [Authorize]
+        public ActionResult<List<Request>> GetByUserID([FromRoute] string user_id)
         {
-            var requests = repository.GetByOwner(userId);
+            var requests = repository.GetByOwner(user_id);
             return Ok(requests);
         }
-        // GET api/requests/{CompanyName}
-        [HttpGet("{CompanyName}")]
-        public ActionResult<List<Request>> GetByCompany(string companyName)
+        // GET api/requests/companies/{CompanyName}
+        [HttpGet("/companies/{CompanyName}")]
+        [Authorize]
+        public ActionResult<List<Request>> GetByCompany([FromRoute] string companyName)
         {
             var requests = repository.GetByCompany(companyName);
             return Ok(requests);
@@ -66,7 +70,8 @@ namespace Api.Controllers
 
         // PATCH /api/requests/{id}
         [HttpPatch("{id}")]
-        public ActionResult PatchByID(int id, [FromBody] RequestPatchModel requestPatch)
+        [Authorize]
+        public ActionResult PatchByID([FromRoute] int id, [FromBody] RequestPatchModel requestPatch)
         {
             if (requestPatch == null)
             {

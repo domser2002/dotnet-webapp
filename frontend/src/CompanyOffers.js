@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText'
-import { Button, Typography, TextField, MenuItem} from '@mui/material';
+import { Button, Typography, TextField} from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from './store';
@@ -10,11 +10,12 @@ import { useStore } from './store';
 import './CouriersListPage.css';
 import "./OfficeWorkerPanel.css";
 
-export function OfficeWorkerPanel() {
+
+export function CompanyOffers() {
 
     const baseUrl = process.env.REACT_APP_API_URL;
-    const apiUsersSubsId = baseUrl+"/api/users/subs";
-    const companiesId = baseUrl+"/companies";
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const usersOffer = baseUrl+"/api/offers";
 
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();
@@ -25,19 +26,15 @@ export function OfficeWorkerPanel() {
       const fetchUserData = async () => {
           try {
               const claims = await getIdTokenClaims();
-              console.log(claims);
               const id = claims["sub"].split('|')[1];
-              console.log(id);
-              const response = await fetch(`${apiUsersSubsId}/${id}`, {
+              const response = await fetch(`${usersSubsId}/${id}`, {
                 headers: {
                     Authorization: `Bearer ${claims["__raw"]}`,
-
                 },
             });
               const data = await response.json();
               return data["companyName"];
-              // setCompany(data["companyName"]);
-              // console.log(data["companyName"]);
+
           } catch (error) {
               console.error('Error fetching user data:', error);
           }
@@ -45,15 +42,11 @@ export function OfficeWorkerPanel() {
   
       const fetchRequestsData = async (d) => {
           try {
-            const claims = await getIdTokenClaims();
-              const response = await fetch(`${companiesId}/${d}`, {
-                headers: {
-                    Authorization: `Bearer ${claims["__raw"]}`,
-
-                },
-            });
+              const response = await fetch(usersOffer);
               const data = await response.json();
-              setRequests(data);
+              const filteredRequests = data.filter((offer) => offer["companyName"] === d);
+
+              setRequests(filteredRequests);
           } catch (error) {
               console.error('Error fetching requests data:', error);
           }
@@ -65,33 +58,14 @@ export function OfficeWorkerPanel() {
       };
   
       fetchData();
-  }, [setCompany, setRequests, getIdTokenClaims, apiUsersSubsId, companiesId]);
+  }, [setCompany, setRequests, getIdTokenClaims, usersSubsId, usersOffer]);
 
 
     const handleDetailsClick = async (id) => 
     {
       setRequestId(id);
-      navigate("./requestDetails");
+      navigate("./offerDetails");
     }
-
-    const getStatusText = (status) => {
-      switch (status) {
-        case 0:
-          return 'Pending';
-        case 1:
-          return 'Accepted';
-        case 2:
-          return 'Received';
-        case 3:
-          return 'Delivered';
-        case 4:
-          return 'Cannot Deliver';
-        case 5:
-          return 'Cancelled';
-        default:
-          return 'Unknown Status';
-      }
-    };
 
     const [sortBy, setSortBy] = useState(null);
 
@@ -123,7 +97,6 @@ export function OfficeWorkerPanel() {
 
   const [filterDate, setFilterDate] = useState(null);
   const [filterDeliveryDate, setDeliveryFilterDate] = useState(null);
-  const [filterStatus, setFilterStatus] = useState(null);
 
   const handleFilterDateChange = (event) => {
     const selectedDate = event.target.value;
@@ -135,22 +108,17 @@ export function OfficeWorkerPanel() {
     setDeliveryFilterDate(selectedDate);
   };
 
-  const handleFilterStatusChange = (event) => {
-    const selectedStatus = event.target.value;
-    setFilterStatus(selectedStatus);
-  };
 
   const resetFilters = () => {
     setFilterDate(null);
     setDeliveryFilterDate(null);
-    setFilterStatus(null);
   };
 
   const filteredRequests = requests.filter((offer) => {
     return (
       (!filterDate || offer.pickupDate.split('T')[0] === filterDate ) &&
-      (!filterDeliveryDate || offer.deliveryDate.split('T')[0] === filterDeliveryDate ) &&
-      (!filterStatus || offer.status === filterStatus)
+      (!filterDeliveryDate || offer.deliveryDate.split('T')[0] === filterDeliveryDate )
+
     );
   });
 
@@ -168,21 +136,14 @@ export function OfficeWorkerPanel() {
             color="primary"
             onClick={() => handleSortBy('pickupDate')}
           >
-            Sort by Pickup Date
+            Sort by Begin Date
           </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleSortBy('deliveryDate')}
           >
-            Sort by Delivery Date
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleSortBy('status')}
-          >
-            Sort by Status
+            Sort by End Date
           </Button>
       </div>
       <Typography variant="h5" gutterBottom className='gray-text'>
@@ -211,25 +172,7 @@ export function OfficeWorkerPanel() {
           value={filterDate || ''}
           onChange={handleFilterDeliveryDateChange}
         />
-        <TextField
-          id="filter-status"
-          label="Filter by Status"
-          select
-          variant="outlined"
-          value={filterStatus || ''}
-          onChange={handleFilterStatusChange}
-          style={{ minWidth: '150px' }} 
-        >
-          <MenuItem value="" disabled>
-            Select Status
-          </MenuItem>
-          <MenuItem value={0}>Pending</MenuItem>
-          <MenuItem value={1}>Accepted</MenuItem>
-          <MenuItem value={2}>Received</MenuItem>
-          <MenuItem value={3}>Delivered</MenuItem>
-          <MenuItem value={4}>Cannot Deliver</MenuItem>
-          <MenuItem value={5}>Cancelled</MenuItem>
-        </TextField>
+
         <Button
           variant="contained"
           color="primary"
@@ -243,12 +186,8 @@ export function OfficeWorkerPanel() {
           <ListItem key={offer.id} className="list-item">
             <ListItemText
               primary={`ID: ${offer.id}`}
-              secondary={`Date: ${offer.pickupDate && new Date(offer.pickupDate).toLocaleDateString()} - 
-                  ${offer.deliveryDate && new Date(offer.deliveryDate).toLocaleDateString()}`}
-              className="list-item-text"
-            />
-            <ListItemText
-              secondary={`Status: ${getStatusText(offer.status)}`}
+              secondary={`Date: ${offer.begins && new Date(offer.begins).toLocaleDateString()} - 
+                  ${offer.ends && new Date(offer.ends).toLocaleDateString()}`}
               className="list-item-text"
             />
             <Button

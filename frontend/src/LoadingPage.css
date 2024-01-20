@@ -1,0 +1,21 @@
+.rotating-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rotating-image {
+    width: 200px;
+    height: 200px;
+    animation: rotate 2s linear infinite; /* Ustaw czas obrotu i animację jako nieskończoną */
+  }
+  
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  

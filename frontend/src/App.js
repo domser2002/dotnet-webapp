@@ -18,8 +18,13 @@ import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CourierLandingPage } from "./CourierLandingPage.js"
 import { OfficeWorkerLandingPage } from "./OfficeWorkerLandingPage.js";
-//import { ProfilePage } from "./ProfilePage.js";
 import { SummaryPage } from "./SummaryPage.js";
+import { ProfilePage } from "./ProfilePage.js";
+import { RequestDetails } from "./RequestDetails.js";
+import { CourierRequestDetails } from "./CourierRequestDetails.js";
+import { UserRequestDetails } from "./UserRequestDetails.js";
+import { CompanyOffers } from "./CompanyOffers.js"
+import { OfferDetails } from "./OfferDetails.js";
 
   function App() {
 
@@ -45,7 +50,7 @@ import { SummaryPage } from "./SummaryPage.js";
 
     const renderLandingPage = () => {
       switch (role) {
-        case "Office worker":
+        case "OfficeWorker":
           return <OfficeWorkerLandingPage />;
         case "Courier":
           return <CourierLandingPage />;
@@ -67,7 +72,7 @@ import { SummaryPage } from "./SummaryPage.js";
 
     const renderOfficeWorkerPage = () => {
       switch (role) {
-        case "Office worker":
+        case "OfficeWorker":
           return <OfficeWorkerPanel />;
 
         default:
@@ -126,7 +131,31 @@ import { SummaryPage } from "./SummaryPage.js";
           },
           {
             path: "/profile",
+            element: <ProfilePage />,
+          },
+          {
+            path: "/register",
             element: <RegisterPage />,
+          },
+          {
+            path: "/officeWorkerPanel/requestDetails",
+            element: <RequestDetails />,
+          },
+          {
+            path: "/courierPanel/courierRequestDetails",
+            element: <CourierRequestDetails />,
+          },
+          {
+            path: "/profile/userRequestDetails",
+            element: <UserRequestDetails />,
+          },
+          {
+            path: "/companyOffers",
+            element: <CompanyOffers />,
+          },
+          {
+            path: "/companyOffers/offerDetails",
+            element: <OfferDetails />,
           },
           {
             path: "*",

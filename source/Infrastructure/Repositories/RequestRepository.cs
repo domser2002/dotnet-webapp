@@ -122,7 +122,7 @@ public class RequestRepository : IRequestRepository
 
     public List<Request> GetByCompany(string company)
     {
-        return ReadFromDatabase($"SELECT * FROM Requests WHERE Companyname={company}");
+        return ReadFromDatabase($"SELECT * FROM Requests WHERE CompanyName='{company}'");
     }
 
     public Request GetById(int id)
@@ -142,13 +142,13 @@ public class RequestRepository : IRequestRepository
         try
         {
             using SqlConnection connection = new(connectionString);
-            var command = new SqlCommand("UPDATE Requests SET SourceAddressStreet = @SourceAddressStreet" +
+            var command = new SqlCommand("UPDATE Requests SET SourceAddressStreet = @SourceAddressStreet, " +
                 "SourceAddressStreetNumber = @SourceAddressStreetNumber, SourceAddressFlatNumber = " +
-                "@SourceAddressFlatNumber, SourceAddressPostalCode = @SourceAddressPostalCode," +
-                "SourceAddressCity = @SourceAddressCity, DestinationAddressStreet = @DestinationAddressStreet," +
+                "@SourceAddressFlatNumber, SourceAddressPostalCode = @SourceAddressPostalCode, " +
+                "SourceAddressCity = @SourceAddressCity, DestinationAddressStreet = @DestinationAddressStreet, " +
                 "DestinationAddressStreetNumber = @DestinationAddressStreetNumber, " +
-                "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode" +
-                "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate," +
+                "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode, " +
+                "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate, " +
                 "DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus", connection);
             command.Parameters.AddWithValue("@SourceAddressStreet", request.SourceAddress.Street);
             command.Parameters.AddWithValue("@SourceAddressStreetNumber", request.SourceAddress.StreetNumber);

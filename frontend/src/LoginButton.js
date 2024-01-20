@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@mui/material";
-import GoogleIcon from '@mui/icons-material/Google';
+import LoginIcon from '@mui/icons-material/Login';
 
 export const LoginButton = () =>
 {
@@ -12,7 +12,7 @@ export const LoginButton = () =>
             variant="contained" 
             sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}
             color="primary"
-            startIcon={<GoogleIcon />}
+            startIcon={<LoginIcon />}
             >
                 Login by ClientID
             </Button>
