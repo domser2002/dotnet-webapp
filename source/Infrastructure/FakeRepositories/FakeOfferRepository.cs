@@ -44,7 +44,13 @@ namespace Infrastructure.FakeRepositories
 
         public List<Offer> GetByInquiry(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            List<Offer> ret = new();
+            foreach(var offer in offers) 
+            {
+                if (offer.Value.MatchesInquiry(inquiry))
+                    ret.Add(offer.Value);
+            }
+            return ret;
         }
     }
 }

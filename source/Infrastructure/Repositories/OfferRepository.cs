@@ -122,7 +122,13 @@ namespace Infrastructure.Repositories
 
         public List<Offer> GetByInquiry(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            List<Offer> offers = new();
+            foreach (var offer in GetAll())
+            {
+                if (offer.MatchesInquiry(inquiry))
+                    offers.Add(offer);
+            }
+            return offers;
         }
     }
 }
