@@ -10,13 +10,12 @@ using Newtonsoft.Json;
 
 namespace Infrastructure.LectureRepositories
 {
-    public class LectureOfferRepository : IOfferRepository
+    public class LectureOfferRepository
     {
         private const string ApiEndpoint = "https://mini.currier.api.snet.com.pl/Inquires";
         private const int ApiTimeoutMilliseconds = 5000;
         private const string ClientId = "team1a";
         private const string SecretId = "4FBCF2E8-2845-4EAA-BE16-6B971798F846";
-
         private static async Task<HttpResponseMessage> MakeHttpPostRequest(string url, string jsonBody)
         {
             using HttpClient client = new();
@@ -26,28 +25,9 @@ namespace Infrastructure.LectureRepositories
             StringContent content = new(jsonBody, Encoding.UTF8, "application/json");
             return await client.PostAsync(url, content);
         }
-        public void AddOffer(Offer offer)
-        {
-            throw new NotImplementedException();
-        }
-        public void Deactivate(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Offer> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Offer GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public static async Task<List<Offer>> GetByInquiry(Inquiry inquiry)
         {
-            LectureInquiryAdapter lectureInquiry = new LectureInquiryAdapter(inquiry);
+            LectureInquiryAdapter lectureInquiry = new(inquiry);
             try
             {
                 string jsonBody = JsonConvert.SerializeObject(new { lectureInquiry });
@@ -56,10 +36,8 @@ namespace Infrastructure.LectureRepositories
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     LectureOffer lectureoffer = JsonConvert.DeserializeObject<LectureOffer>(responseBody);
-
                     if (lectureoffer != null)
                     {
-                        // Return the list of offers (assuming PriceResponse has an Offers property)
                         return new List<Offer> { new Offer(lectureoffer, inquiry) };
                     }
                     else
@@ -77,13 +55,6 @@ namespace Infrastructure.LectureRepositories
                 Console.WriteLine($"Exception: {ex.Message}");
             }
             return new List<Offer>();
-        }
-
-        List<Offer> IOfferRepository.GetByInquiry(Inquiry inquiry)
-        {
-            List<Offer> offers = GetByInquiry(inquiry).Result;
-            Thread.Sleep(ApiTimeoutMilliseconds+1000);
-            return offers;
         }
     }
 }
