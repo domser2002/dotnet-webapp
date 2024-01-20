@@ -45,7 +45,7 @@ namespace Infrastructure.LectureRepositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Offer>> GetByInquiry(Inquiry inquiry)
+        public static async Task<List<Offer>> GetByInquiry(Inquiry inquiry)
         {
             LectureInquiryAdapter lectureInquiry = new LectureInquiryAdapter(inquiry);
             try
@@ -55,16 +55,16 @@ namespace Infrastructure.LectureRepositories
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    PriceResponse priceResponse = JsonConvert.DeserializeObject<PriceResponse>(responseBody);
+                    LectureOffer lectureoffer = JsonConvert.DeserializeObject<LectureOffer>(responseBody);
 
-                    if (priceResponse != null && priceResponse.Price.HasValue)
+                    if (lectureoffer != null)
                     {
                         // Return the list of offers (assuming PriceResponse has an Offers property)
-                        return priceResponse.Offers;
+                        return new List<Offer> { new Offer(lectureoffer, inquiry) };
                     }
                     else
                     {
-                        Console.WriteLine("Failed to parse price from the response.");
+                        Console.WriteLine("Failed to parse the response.");
                     }
                 }
                 else
@@ -76,8 +76,6 @@ namespace Infrastructure.LectureRepositories
             {
                 Console.WriteLine($"Exception: {ex.Message}");
             }
-
-            // Return an empty list if there's an error
             return new List<Offer>();
         }
 
@@ -86,13 +84,6 @@ namespace Infrastructure.LectureRepositories
             List<Offer> offers = GetByInquiry(inquiry).Result;
             Thread.Sleep(ApiTimeoutMilliseconds+1000);
             return offers;
-        }
-
-        private class PriceResponse
-        {
-            public decimal? Price { get; set; }
-            public List<Offer> Offers { get; set; }
-            // Add other properties as needed
         }
     }
 }
