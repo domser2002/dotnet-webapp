@@ -2,6 +2,7 @@
 {
     public class Offer : Base
     {
+        public Offer() { }
         public Offer(LectureOffer lectureOffer,Inquiry inquiry) 
         {
             CompanyName = "LectureCompany";
