@@ -39,7 +39,7 @@ namespace Api.Controllers
 
         // Must have Microsoft.AspNetCore.Mvc.NewtonsoftJson installed
         // PATCH /api/users/subs/{id}
-        [HttpPatch("/subs/{id}")]
+        [HttpPatch("subs/{id}")]
         [Authorize]
         public ActionResult PatchByID(string id, [FromBody] UserPatchModel userPatch)
         {

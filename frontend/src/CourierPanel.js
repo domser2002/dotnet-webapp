@@ -15,7 +15,7 @@ export function CourierPanel() {
 
     const baseUrl = process.env.REACT_APP_API_URL;
     const usersSubsId = baseUrl+"/api/users/subs";
-    const companiesName = baseUrl+"/companies";
+    const companiesName = baseUrl+"/api/requests/companies";
 
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();

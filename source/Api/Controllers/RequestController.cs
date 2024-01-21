@@ -34,7 +34,7 @@ namespace Api.Controllers
             return Ok(request);
         }
         // GET api/requests/subs/{user_id}
-        [HttpGet("/subs/{user_id}")]
+        [HttpGet("subs/{user_id}")]
         [Authorize]
         public ActionResult<List<Request>> GetByUserID([FromRoute] string user_id)
         {
@@ -42,7 +42,7 @@ namespace Api.Controllers
             return Ok(requests);
         }
         // GET api/requests/companies/{CompanyName}
-        [HttpGet("/companies/{CompanyName}")]
+        [HttpGet("companies/{CompanyName}")]
         [Authorize]
         public ActionResult<List<Request>> GetByCompany([FromRoute] string companyName)
         {
@@ -129,5 +129,24 @@ namespace Api.Controllers
             repository.Update(existingRequest);
             return Ok(existingRequest);
         }
+
+        // POST api/requests/agreement/{requestId}
+        [HttpPost("agreement/{id}")]
+        [Authorize]
+        public ActionResult<List<Request>> SendAgreement([FromRoute] string id, [FromForm] IFormFile agreement)
+        {
+
+            return Ok();
+        }
+
+        // POST api/requests/receipt/{requestId}
+        [HttpPost("receipt/{id}")]
+        [Authorize]
+        public ActionResult<List<Request>> SednReceipt([FromRoute] string id, [FromForm] IFormFile receipt)
+        {
+
+            return Ok();
+        }
+
     }
 }

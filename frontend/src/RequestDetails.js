@@ -10,6 +10,8 @@ export function RequestDetails() {
 
     const baseUrl = process.env.REACT_APP_API_URL;
     const apiRequests = baseUrl+"/api/requests";
+    const apiRequestsAgreement = baseUrl+"/api/requests/agreement";
+    const apiRequestsReceipt = baseUrl+"/api/requests/receipt";
 
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
@@ -50,23 +52,54 @@ export function RequestDetails() {
       setSelectedReceipt(file);
     };
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      // Tutaj możesz przetworzyć lub przesłać plik do serwera
-      if (selectedAgreement) {
-        console.log('Agreement:', selectedAgreement);
-        console.log('Receipt:', selectedReceipt);
-        // Dodaj kod obsługi przesyłania pliku tutaj
-        // TUTAJ WYSŁAĆ PLIK
-        // HANDLE ACCEPT
-      }
-    };
+    // const handleSubmit = (event) => {
+    //   event.preventDefault();
+    //   // Tutaj możesz przetworzyć lub przesłać plik do serwera
+    //   if (selectedAgreement) {
+    //     console.log('Agreement:', selectedAgreement);
+    //     console.log('Receipt:', selectedReceipt);
+    //     // Dodaj kod obsługi przesyłania pliku tutaj
+    //     // TUTAJ WYSŁAĆ PLIK
+    //     // HANDLE ACCEPT
+    //   }
+    // };
 
-    const handleAcceptClick = async () => 
-    {
+
+    const handleAcceptClick = async () => {
       try {
         const claims = await getIdTokenClaims();
-        const response = await fetch(`${apiRequests}/${RequestId}`, {
+        const formDataAgreement = new FormData();
+        const formDataReceipt = new FormData();
+
+        // Dodaj plik umowy do formularza
+        if (selectedAgreement) {
+          formDataAgreement.append('agreement', selectedAgreement);
+        }
+    
+        // Dodaj plik paragonu do formularza
+        if (selectedReceipt) {
+          formDataReceipt.append('receipt', selectedReceipt);
+        }
+    
+        const responseAgreement = await fetch(`${apiRequestsAgreement}/${RequestId}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${claims["__raw"]}`,
+          },
+          body: formDataAgreement,
+        });
+        // Dodaj inne dane do formularza (jeśli są wymagane)
+        //formData.append('Status', 1);
+    
+        const response = await fetch(`${apiRequestsReceipt}/${RequestId}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${claims["__raw"]}`,
+          },
+          body: formDataReceipt,
+        });
+    
+        const responsePatch = await fetch(`${apiRequests}/${RequestId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -77,13 +110,36 @@ export function RequestDetails() {
         }),
         });
 
+
         const data = await response.json();
         console.log('Pomyślnie zaktualizowano zasób:', data);
-
       } catch (error) {
         console.error('Błąd podczas aktualizacji zasobu:', error.message);
       }
-    }
+    };
+
+    // const handleAcceptClick = async () => 
+    // {
+    //   try {
+    //     const claims = await getIdTokenClaims();
+    //     const response = await fetch(`${apiRequests}/${RequestId}`, {
+    //       method: 'PATCH',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${claims["__raw"]}`,
+    //       },
+    //       body: JSON.stringify({
+    //         Status: 1,
+    //     }),
+    //     });
+
+    //     const data = await response.json();
+    //     console.log('Pomyślnie zaktualizowano zasób:', data);
+
+    //   } catch (error) {
+    //     console.error('Błąd podczas aktualizacji zasobu:', error.message);
+    //   }
+    // }
 
     // WYSLAC EMAIL Z ODRZUCENIEM
     const handleDeclineClick = async () => 
@@ -197,6 +253,7 @@ export function RequestDetails() {
                   color="primary"
                   style={{ backgroundColor: '#0d10a6', color: 'white' }}
                   onClick={() => handleAcceptClick()}
+                  disabled={!selectedAgreement || !selectedReceipt}
                 >
                   Accept
                 </Button>
