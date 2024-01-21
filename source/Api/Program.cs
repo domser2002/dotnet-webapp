@@ -62,7 +62,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Cors
-app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000", "https://courierhubreact.azurewebsites.net").AllowAnyMethod().AllowAnyHeader());
 
 if (app.Environment.IsDevelopment())
 {

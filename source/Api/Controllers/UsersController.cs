@@ -3,8 +3,6 @@ using Domain.Model;
 using Domain.Abstractions;
 using Frontend.Validators.Abstractions;
 using Frontend.Validators;
-using Azure;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
@@ -113,6 +111,7 @@ namespace Api.Controllers
                 return BadRequest(validationResults.Message);
 
             repository.AddUser(user);
+            new Mailer.Mailer().SendRegistrationMail(user);
             return CreatedAtAction("GetById", new { id = user.Id }, user);
         }
     }

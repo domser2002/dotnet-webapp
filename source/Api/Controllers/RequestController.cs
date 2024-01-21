@@ -4,6 +4,7 @@ using Domain.Model;
 using Frontend.Validators;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Repositories;
 
 namespace Api.Controllers
 {
@@ -107,6 +108,23 @@ namespace Api.Controllers
             if(requestPatch.Status != RequestStatus.Idle)
             {
                 existingRequest.Status = requestPatch.Status;
+                Mailer.Mailer mailer = new();
+                switch(requestPatch.Status)
+                {
+                    case RequestStatus.Accepted:
+                        mailer.SendRequestAcceptedMail(existingRequest, $"agreement{id}.pdf", $"receipt{id}.pdf");
+                        break;
+                    case RequestStatus.Received:
+                        mailer.SendPackagePickedUpMail(existingRequest);
+                        break;
+                    case RequestStatus.Delivered:
+                        mailer.SendPackageDeveliredMail(existingRequest);
+                        break;
+                    case RequestStatus.CannotDeliver:
+                        User? courier = new UserRepository().GetById(requestPatch.CourierId);
+                        if (courier is not null) mailer.SendDeliveryFailedMail(existingRequest, courier, requestPatch.Message);
+                        break;
+                }
             }
             repository.Update(existingRequest);
             return Ok(existingRequest);
