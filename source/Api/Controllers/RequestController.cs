@@ -4,6 +4,7 @@ using Domain.Model;
 using Frontend.Validators;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Repositories;
 
 namespace Api.Controllers
 {
@@ -120,7 +121,8 @@ namespace Api.Controllers
                         mailer.SendPackageDeveliredMail(existingRequest);
                         break;
                     case RequestStatus.CannotDeliver:
-                        mailer.SendDeliveryFailedMail(existingRequest, new(), "etwas");
+                        User? courier = new UserRepository().GetById(requestPatch.CourierId);
+                        if (courier is not null) mailer.SendDeliveryFailedMail(existingRequest, courier, requestPatch.Message);
                         break;
                 }
             }
