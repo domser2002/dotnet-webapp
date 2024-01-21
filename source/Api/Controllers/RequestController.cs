@@ -107,6 +107,22 @@ namespace Api.Controllers
             if(requestPatch.Status != RequestStatus.Idle)
             {
                 existingRequest.Status = requestPatch.Status;
+                Mailer.Mailer mailer = new();
+                switch(requestPatch.Status)
+                {
+                    case RequestStatus.Accepted:
+                        mailer.SendRequestAcceptedMail(existingRequest, $"agreement{id}.pdf", $"receipt{id}.pdf");
+                        break;
+                    case RequestStatus.Received:
+                        mailer.SendPackagePickedUpMail(existingRequest);
+                        break;
+                    case RequestStatus.Delivered:
+                        mailer.SendPackageDeveliredMail(existingRequest);
+                        break;
+                    case RequestStatus.CannotDeliver:
+                        mailer.SendDeliveryFailedMail(existingRequest, new(), "etwas");
+                        break;
+                }
             }
             repository.Update(existingRequest);
             return Ok(existingRequest);
