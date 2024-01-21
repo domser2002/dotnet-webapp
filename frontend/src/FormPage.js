@@ -95,13 +95,13 @@ export function FormPage() {
 
     const {getIdTokenClaims, isAuthenticated} = useAuth0();
 
-    const [hiddenSourceStreet, setHiddenSourceStreet] = useState(false);
-    const [hiddenSourceStreetNumber, setHiddenSourceStreetNumber] = useState(false);
-    const [hiddenSourceFlatNumber, setHiddenSourceFlatNumber] = useState(false);
-    const [hiddenSourcePostalCode, setHiddenSourcePostalCode] = useState(false);
-    const [hiddenSourceCity, setHiddenSourceCity] = useState(false);
+    // const [hiddenSourceStreet, setHiddenSourceStreet] = useState(false);
+    // const [hiddenSourceStreetNumber, setHiddenSourceStreetNumber] = useState(false);
+    // const [hiddenSourceFlatNumber, setHiddenSourceFlatNumber] = useState(false);
+    // const [hiddenSourcePostalCode, setHiddenSourcePostalCode] = useState(false);
+    // const [hiddenSourceCity, setHiddenSourceCity] = useState(false);
 
-    const [user, setUser] = useState();
+    //const [user, setUser] = useState();
 
     useEffect(() => {
       setIsLoading(true);
@@ -110,7 +110,7 @@ export function FormPage() {
             if (isAuthenticated) {
               const claims = await getIdTokenClaims();
 
-              const resp = await getUserById(claims["sub"].split('|')[1]);
+              await getUserById(claims["sub"].split('|')[1]);
             }
             setIsLoading(false);
           } catch (error) {
@@ -125,18 +125,18 @@ export function FormPage() {
             if(response.status === 200)
             {
               const body = await response.json();
-              setUser(body);
+              //setUser(body);
               setSourceStreet(body["defaultSourceAddress"]["street"]);
               setSourceStreetNumber(body["defaultSourceAddress"]["streetNumber"]);
               setSourceFlatNumber(body["defaultSourceAddress"]["flatNumber"]);
               setSourcePostalCode(body["defaultSourceAddress"]["postalCode"]);
               setSourceCity(body["defaultSourceAddress"]["city"]);
               
-              setHiddenSourceStreet(true);
-              setHiddenSourceStreetNumber(true);
-              setHiddenSourceFlatNumber(true);
-              setHiddenSourcePostalCode(true);
-              setHiddenSourceCity(true);
+              // setHiddenSourceStreet(true);
+              // setHiddenSourceStreetNumber(true);
+              // setHiddenSourceFlatNumber(true);
+              // setHiddenSourcePostalCode(true);
+              // setHiddenSourceCity(true);
               return true;
             }
             if(response.status === 404)
@@ -269,53 +269,53 @@ if(isLoading)
           <FormControl variant='outlined'>
             <FormLabel>Source Address</FormLabel>
             <TextField
-              label="Street"
+              label="Source Street"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceStreet}
-              disabled={hiddenSourceStreet}
+
               onChange={(e)=>setSourceStreet(e.target.value)}
             />
             <TextField
-              label="Street Number"
+              label="Source Street Number"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceStreetNumber}
-              disabled={hiddenSourceStreetNumber}
+
               onChange={(e)=>setSourceStreetNumber(e.target.value)}
             />
             <TextField
-              label="Flat Number"
+              label="Source Flat Number"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceFlatNumber}
-              disabled={hiddenSourceFlatNumber}
+
               onChange={(e)=>setSourceFlatNumber(e.target.value)}
             />
             <TextField
-              label="Postal Code"
+              label="Source Postal Code"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourcePostalCode}
-              disabled={hiddenSourcePostalCode}
+
               onChange={(e)=>setSourcePostalCode(e.target.value)}
             />
             <TextField
-              label="City"
+              label="Source City"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceCity}
-              disabled={hiddenSourceCity}
+
               onChange={(e)=>setSourceCity(e.target.value)}
             />
           </FormControl>
@@ -326,7 +326,7 @@ if(isLoading)
           <FormControl variant='outlined'>
             <FormLabel>Destination Address</FormLabel>
             <TextField
-              label="Street"
+              label="Destination Street"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -335,7 +335,7 @@ if(isLoading)
               onChange={(e)=>setDestinationStreet(e.target.value)}
             />
             <TextField
-              label="Street Number"
+              label="Destination Street Number"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -344,7 +344,7 @@ if(isLoading)
               onChange={(e)=>setDestinationStreetNumber(e.target.value)}
             />
             <TextField
-              label="Flat Number"
+              label="Destination Flat Number"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -353,7 +353,7 @@ if(isLoading)
               onChange={(e)=>setDestinationFlatNumber(e.target.value)}
             />
             <TextField
-              label="Postal Code"
+              label="Destination Postal Code"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -362,7 +362,7 @@ if(isLoading)
               onChange={(e)=>setDestinationPostalCode(e.target.value)}
             />
             <TextField
-              label="City"
+              label="Destination City"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -380,13 +380,14 @@ if(isLoading)
             <FormLabel >Delivery and pickup date</FormLabel>
             
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker value={DateFrom}               
+              <DatePicker value={DateFrom}    label="Date from"            
               onChange={(newDate) => setDateFrom(newDate)}
               renderInput={(params) => <TextField {...params} /> }/>
             </LocalizationProvider>
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker 
+              label="Date to"
               value={DateTo}           
               onChange={(newDate) => setDateTo(newDate)}
               renderInput={(params) => <TextField {...params} /> }/>

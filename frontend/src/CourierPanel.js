@@ -48,7 +48,7 @@ export function CourierPanel() {
           try {
             const claims = await getIdTokenClaims();
 
-            const id = claims["sub"].split('|')[1];
+            //const id = claims["sub"].split('|')[1];
               const response = await fetch(`${companiesName}/${d}`, {
                 headers: {
                     Authorization: `Bearer ${claims["__raw"]}`,
