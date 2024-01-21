@@ -27,7 +27,6 @@ namespace Api.Controllers
 
         // GET api/offers/{id}
         [HttpGet("{id}")]
-        [Authorize]
         public ActionResult<List<Offer>> GetByID(int id)
         {
             var offer = repository.GetByID(id);
