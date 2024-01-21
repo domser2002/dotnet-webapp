@@ -37,9 +37,9 @@ namespace Api.Controllers
         [HttpPost("/inquiry")]
         public ActionResult<List<Offer>> GetByInquiry([FromBody] Inquiry inquiry)
         {
-            //var offers = repository.GetByInquiry(inquiry);
+            var offers = repository.GetByInquiry(inquiry);
             var lecture_offers = LectureOfferRepository.GetByInquiry(inquiry).Result;
-            //offers.AddRange(lecture_offers);
+            offers.AddRange(lecture_offers);
             return Ok(lecture_offers);
         }
         // POST api/offers (dodawanie nowej oferty)
