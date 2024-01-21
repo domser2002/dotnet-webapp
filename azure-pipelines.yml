@@ -13,10 +13,19 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  artifactsDirectory1: 'drop1'
+  artifactsDirectory2: 'drop2'
+  # version number to set manually
+  major: 1
+  minor: 0
+
+# custom versioning
+name: $(major).$(minor)$(Rev:.r)
 
 steps:
 - task: NuGetToolInstaller@1
 
+# build backend
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
@@ -32,3 +41,39 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(artifactsDirectory1)'
+    publishLocation: 'Container'
+
+# deploy backend to Azure App Service
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: '$(artifactsDirectory1)'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Ser connection'
+    appType: 'webApp'
+    WebAppName: 'DotnetCourierHub'
+    Package: '$(System.ArtifactsDirectory)/$(artifactsDirectory1)/*.zip'
+    enableCustomDeployment: true
+    deploymentType: 'webDeploy'
+
+# build frontend
+- task: UseNode@1
+  inputs:
+    version: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd frontend
+    npm install
+    npm run build
+    npm run test
+  displayName: 'npm install, build and test'
