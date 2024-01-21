@@ -49,5 +49,6 @@ namespace Domain.Model
         public DateTime CancelDate { get; set; }    
         public RequestStatus Status { get; set; }
         public string Message { get; set; }
+        public string CourierId { get; set; }
     }
 }

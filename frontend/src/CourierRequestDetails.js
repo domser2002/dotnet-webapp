@@ -93,6 +93,7 @@ export function CourierRequestDetails() {
     {
       try {
         const claims = await getIdTokenClaims();
+        const courierId = claims["sub"].split('|')[1];
         const response = await fetch(`${requestsId}/${RequestId}`, {
           method: 'PATCH',
           headers: {
@@ -102,6 +103,7 @@ export function CourierRequestDetails() {
           body: JSON.stringify({
             Status: 4,
             Message: courierMessage,
+            CourierId: courierId,
           }),
         });
         navigate("/courierPanel");
