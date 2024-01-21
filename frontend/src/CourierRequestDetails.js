@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Typography, Box} from '@mui/material';
+import { Button, Typography, Box, TextField} from '@mui/material';
 import { useStore } from './store.js';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 import './CourierPanel.css';
 import './CouriersListPage.css';
@@ -12,9 +13,14 @@ export function CourierRequestDetails() {
     const baseUrl = process.env.REACT_APP_API_URL;
     const requestsId = baseUrl+"/api/requests";
 
+    const [courierMessage, setCourierMessage] = useState("");
+  
+
     const [details, setDetails] = useState();
     const {RequestId} = useStore();
     const {getIdTokenClaims} = useAuth0();
+    const navigate = useNavigate();
+
     useEffect(() => {
       const fetchData = async () => {
           try {
@@ -54,7 +60,7 @@ export function CourierRequestDetails() {
 
         const data = await response.json();
         console.log('Pomyślnie zaktualizowano zasób:', data);
-
+        navigate("/courierPanel");
       } catch (error) {
         console.error('Błąd podczas aktualizacji zasobu:', error.message);
       }
@@ -77,7 +83,7 @@ export function CourierRequestDetails() {
 
         const data = await response.json();
         console.log('Pomyślnie zaktualizowano zasób:', data);
-
+        navigate("/courierPanel");
       } catch (error) {
         console.error('Błąd podczas aktualizacji zasobu:', error.message);
       }
@@ -95,9 +101,10 @@ export function CourierRequestDetails() {
           },
           body: JSON.stringify({
             Status: 4,
+            Message: courierMessage,
           }),
         });
-
+        navigate("/courierPanel");
         const data = await response.json();
         console.log('Pomyślnie zaktualizowano zasób:', data);
 
@@ -105,6 +112,26 @@ export function CourierRequestDetails() {
         console.error('Błąd podczas aktualizacji zasobu:', error.message);
       }
     }
+
+    const getStatusText = (status) => {
+      switch (status) {
+        case 0:
+          return 'Pending';
+        case 1:
+          return 'Accepted';
+        case 2:
+          return 'Received';
+        case 3:
+          return 'Delivered';
+        case 4:
+          return 'Cannot Deliver';
+        case 5:
+          return 'Cancelled';
+        default:
+          return 'Unknown Status';
+      }
+    };
+
 
     return (
       <div className="Panel-header-courier">
@@ -152,7 +179,7 @@ export function CourierRequestDetails() {
 
           {/* status */}
           <Typography variant="body1" gutterBottom className="gray-text">
-            Status: {details.status}
+            Status: {getStatusText(details.status)}
           </Typography>
 
           {/* owner */}
@@ -171,14 +198,17 @@ export function CourierRequestDetails() {
             Change delivery status
         </Typography>
       <div className='button-container'>
-
+          <div>
             <Button
                 variant="contained"
                 color="primary"
                 style={{ backgroundColor: '#0d10a6', color: 'white' }}
                 onClick={() => handleReceivedClick()}
-            >Received
-            </Button>
+              >Received
+              </Button>
+          </div>
+            
+          <div>
             <Button
                 variant="contained"
                 color="primary"
@@ -186,14 +216,27 @@ export function CourierRequestDetails() {
                 onClick={() => handleDeliveredClick()}
             >Delivered
             </Button>
+          </div>
+            
+
+          <div className='button-message-container'>
+            <TextField
+              id="courier-message"
+              label="Courier message"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={courierMessage}
+              onChange={(e) => setCourierMessage(e.target.value)}
+            />
             <Button
-                variant="contained"
-                color="primary"
-                style={{ backgroundColor: '#0d10a6', color: 'white' }}
-                onClick={() => handleCannotDeliverClick()}
+              variant="contained"
+              color="primary"
+              style={{ backgroundColor: '#0d10a6', color: 'white' }}
+              onClick={() => handleCannotDeliverClick()}
             >Cannot deliver
             </Button>
-
+          </div>
       </div>
     </div>
     );

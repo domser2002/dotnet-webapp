@@ -60,3 +60,8 @@ margin: 10px;
     justify-content: space-around;
     
   }
+  .button-message-container {
+    display: flex;
+    flex-direction: column;
+    
+  }
