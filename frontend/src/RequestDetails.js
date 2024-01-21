@@ -214,7 +214,7 @@ export function RequestDetails() {
             Status: {details.status}
           </Typography>
 
-          {/* owner */}
+          {/* owner*/}
           <Typography variant="body1" gutterBottom className="gray-text">
             Owner: Personal Data: {details.owner.personalData}, Email: {details.owner.email}, Address: Street: {details.owner.address.street}, Street Number: {details.owner.address.streetNumber}, Flat Number: {details.owner.address.flatNumber}, Postal Code: {details.owner.address.postalCode}, City: {details.owner.address.city}, ID: {details.owner.id}
           </Typography>
