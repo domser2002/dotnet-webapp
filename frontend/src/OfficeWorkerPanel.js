@@ -14,7 +14,7 @@ export function OfficeWorkerPanel() {
 
     const baseUrl = process.env.REACT_APP_API_URL;
     const apiUsersSubsId = baseUrl+"/api/users/subs";
-    const companiesId = baseUrl+"/companies";
+    const companiesId = baseUrl+"/api/requests/companies";
 
     const [requests, setRequests] = useState([]);
     const [ setCompany ] = useState();

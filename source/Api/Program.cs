@@ -7,6 +7,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,16 @@ builder.Services.AddSingleton<IContactInformationValidator>(provider =>
 builder.Services.AddSingleton<IInquireValidator>(provider =>
 {
     return new InquireValidator(minDimension, maxDimension, minWeight, maxWeight, minStringLength, maxStringLength);
+});
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.AllowSynchronousIO = true;
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue;
 });
 
 // Konfiguracja autentykacji JWT
