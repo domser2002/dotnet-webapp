@@ -35,7 +35,6 @@ namespace Api.Controllers
         }
         // GET api/offers/inquiry
         [HttpGet("/inquiry")]
-        [Authorize]
         public ActionResult<List<Offer>> GetByInquiry([FromBody] Inquiry inquiry)
         {
             var offers = repository.GetByInquiry(inquiry);
