@@ -9,8 +9,8 @@ namespace Domain.Abstractions
 {
     public interface IOfferRepository
     {
-        List<Offer> GetAll();
-        List<Offer> GetByInquiry(Inquiry inquiry);
+        Task<List<Offer>> GetAll();
+        Task<List<Offer>> GetByInquiry(Inquiry inquiry);
         void AddOffer(Offer offer);
         Offer GetByID(int id);
         void Deactivate(int id);
