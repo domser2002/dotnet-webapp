@@ -119,5 +119,16 @@ namespace Infrastructure.Repositories
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
             return result;
         }
+
+        public List<Offer> GetByInquiry(Inquiry inquiry)
+        {
+            List<Offer> offers = new();
+            foreach (var offer in GetAll())
+            {
+                if (offer.MatchesInquiry(inquiry))
+                    offers.Add(offer);
+            }
+            return offers;
+        }
     }
 }

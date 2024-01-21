@@ -41,5 +41,16 @@ namespace Infrastructure.FakeRepositories
             offers[id].Active = false;
             return;
         }
+
+        public List<Offer> GetByInquiry(Inquiry inquiry)
+        {
+            List<Offer> ret = new();
+            foreach(var offer in offers) 
+            {
+                if (offer.Value.MatchesInquiry(inquiry))
+                    ret.Add(offer.Value);
+            }
+            return ret;
+        }
     }
 }
