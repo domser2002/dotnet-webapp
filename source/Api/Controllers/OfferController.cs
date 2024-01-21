@@ -33,13 +33,13 @@ namespace Api.Controllers
             var offer = repository.GetByID(id);
             return Ok(offer);
         }
-        // GET api/offers/inquiry
-        [HttpGet("/inquiry")]
+        // POST api/offers/inquiry
+        [HttpPost("/inquiry")]
         public ActionResult<List<Offer>> GetByInquiry([FromBody] Inquiry inquiry)
         {
             var offers = repository.GetByInquiry(inquiry);
-            var lecture_offers = LectureOfferRepository.GetByInquiry(inquiry);
-            offers.AddRange((IEnumerable<Offer>)lecture_offers);
+            var lecture_offers = LectureOfferRepository.GetByInquiry(inquiry).Result;
+            offers.AddRange(lecture_offers);
             return Ok(offers);
         }
         // POST api/offers (dodawanie nowej oferty)
