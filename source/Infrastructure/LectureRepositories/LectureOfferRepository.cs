@@ -23,38 +23,38 @@ namespace Infrastructure.LectureRepositories
             {
                 dimensions = new
                 {
-                    width = 1,
-                    height = 1,
-                    length = 1,
-                    dimensionUnit = "Meters"
+                    width = lectureInquiry.Dimensions.Width,
+                    height = lectureInquiry.Dimensions.Height,
+                    length = lectureInquiry.Dimensions.Length,
+                    dimensionUnit = lectureInquiry.Dimensions.dimensionsUnit
                 },
-                currency = "PLN",
-                weight = 1,
-                weightUnit = "Kilograms",
+                currency = lectureInquiry.Currency,
+                weight = lectureInquiry.Weight,
+                weightUnit = lectureInquiry.WeightUnit,
                 source = new
                 {
-                    houseNumber = "1",
-                    apartmentNumber = "2",
-                    street = "string",
-                    city = "string",
-                    zipCode = "string",
-                    country = "string"
+                    houseNumber = lectureInquiry.Source.HouseNumber,
+                    apartmentNumber = lectureInquiry.Source.ApartmentNumber,
+                    street = lectureInquiry.Source.Street,
+                    city = lectureInquiry.Source.City,
+                    zipCode = lectureInquiry.Source.ZipCode,
+                    country = lectureInquiry.Source.Country
                 },
                 destination = new
                 {
-                    houseNumber = "2",
-                    apartmentNumber = "1",
-                    street = "string",
-                    city = "string",
-                    zipCode = "string",
-                    country = "string"
+                    houseNumber = lectureInquiry.Destination.HouseNumber,
+                    apartmentNumber = lectureInquiry.Destination.ApartmentNumber,
+                    street = lectureInquiry.Destination.Street,
+                    city = lectureInquiry.Destination.City,
+                    zipCode = lectureInquiry.Destination.ZipCode,
+                    country = lectureInquiry.Destination.Country
                 },
-                pickupDate = new DateTime(2024, 2, 19),
-                deliveryDay = new DateTime(2024, 2, 24),
-                deliveryInWeekend = true,
-                priority = "High",
-                vipPackage = true,
-                isComapny = true
+                pickupDate = lectureInquiry.PickupDate,
+                deliveryDay = lectureInquiry.DeliveryDay,
+                deliveryInWeekend = lectureInquiry.DeliveryInWeekend,
+                priority = lectureInquiry.Priority,
+                vipPackage = lectureInquiry.VipPackage,
+                isComapny = lectureInquiry.IsCompany
             };
             var jsonPayload = JsonSerializer.Serialize(payload);
             var response = await client.PostAsync($"{apiUrl}/Inquires", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));

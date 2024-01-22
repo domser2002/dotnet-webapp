@@ -37,9 +37,9 @@ namespace Api.Controllers
         [HttpPost("inquiry")]
         public async Task<ActionResult<List<Offer>>> GetByInquiry([FromBody] Inquiry inquiry)
         {
-            var offers = await repository.GetByInquiry(inquiry);
+            //var offers = await repository.GetByInquiry(inquiry);
             var lecture_offers = await LectureOfferRepository.GetByInquiry(inquiry);
-            offers.AddRange(lecture_offers);
+            //offers.AddRange(lecture_offers);
             return Ok(lecture_offers);
         }
         // POST api/offers (dodawanie nowej oferty)
