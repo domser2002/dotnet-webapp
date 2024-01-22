@@ -86,6 +86,16 @@ namespace Api.Controllers
             repository.Update(existingUser);
             return Ok(existingUser);
         }
+        // PATCH /api/users/{request_id}
+        [HttpPatch("{request_id}")]
+        public ActionResult AddRequest(string userID, [FromBody] Request request)
+        {
+            if (!string.IsNullOrEmpty(userID))
+            {
+                repository.AddRequest(userID, request);
+            }
+            return Ok();
+        }
         // GET api/users/count
         [HttpGet("count")]
         public ActionResult<int> GetUserCount()
