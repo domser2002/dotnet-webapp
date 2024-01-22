@@ -79,7 +79,7 @@ namespace DBIntegrationTests
             DatabaseSeeding.Clear(con);
             OfferRepository repo = new(con);
             SqlConnection connection = new SqlConnection(con);
-            Offer offer = new FakeOfferRepository().GetAll().First();
+            Offer offer = new FakeOfferRepository().GetAll().Result.First();
             SqlCommand command = new("SELECT COUNT(*) FROM Offers", connection);
 
             //Act
@@ -193,11 +193,11 @@ namespace DBIntegrationTests
         {
             //Arrange
             DatabaseSeeding.Clear(con);
-            Offer offer = new FakeOfferRepository().GetAll().First();
+            Offer offer = new FakeOfferRepository().GetAll().Result.First();
             offer.Active = true;
             OfferRepository repo = new(con);
             repo.AddOffer(offer);
-            int index = repo.GetAll().First().Id;
+            int index = repo.GetAll().Result.First().Id;
 
             //Act
             repo.Deactivate(index);
