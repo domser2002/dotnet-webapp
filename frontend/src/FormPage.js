@@ -1,45 +1,162 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField, Button, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useAuth0 } from '@auth0/auth0-react';
+import {useStore} from './store';
+import { LoadingPage } from './LoadingPage';
 
 export function FormPage() {
+
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const usersSubsId = baseUrl+"/api/users/subs";
+    const apiInquiries = baseUrl+"/api/inquiries";
+
     const navigate = useNavigate();
 
-    const [SourceStreet, setSourceStreet] = useState("");
-    const [SourceStreetNumber, setSourceStreetNumber] = useState("");
-    const [SourceFlatNumber, setSourceFlatNumber] = useState("");
-    const [SourcePostalCode, setSourcePostalCode] = useState("");
-    const [SourceCity, setSourceCity] = useState("");
+    const SourceStreet = useStore((state) => state.SourceStreet);
+    const SourceStreetNumber = useStore((state) => state.SourceStreetNumber);
+    const SourceFlatNumber = useStore((state) => state.SourceFlatNumber);
+    const SourcePostalCode = useStore((state) => state.SourcePostalCode);
+    const SourceCity = useStore((state) => state.SourceCity);
+  
+    const DestinationStreet = useStore((state) => state.DestinationStreet);
+    const DestinationStreetNumber = useStore((state) => state.DestinationStreetNumber);
+    const DestinationFlatNumber = useStore((state) => state.DestinationFlatNumber);
+    const DestinationPostalCode = useStore((state) => state.DestinationPostalCode);
+    const DestinationCity = useStore((state) => state.DestinationCity);
+  
+    const DeliveryAtWeekend = useStore((state) => state.DeliveryAtWeekend);
+  
+    const Priority = useStore((state) => state.Priority);
+  
+    const Length = useStore((state) => state.Length);
+    const Width = useStore((state) => state.Width);
+    const Height = useStore((state) => state.Height);
+    const Weight = useStore((state) => state.Weight);
+  
+    const DateFrom = useStore((state) => state.DateFrom);
+    const DateTo = useStore((state) => state.DateTo);
+  
+    const setSourceStreet = useStore((state) => state.setSourceStreet);
+    const setSourceStreetNumber = useStore((state) => state.setSourceStreetNumber);
+    const setSourceFlatNumber = useStore((state) => state.setSourceFlatNumber);
+    const setSourcePostalCode = useStore((state) => state.setSourcePostalCode);
+    const setSourceCity = useStore((state) => state.setSourceCity);
+  
+    const setDestinationStreet = useStore((state) => state.setDestinationStreet);
+    const setDestinationStreetNumber = useStore((state) => state.setDestinationStreetNumber);
+    const setDestinationFlatNumber = useStore((state) => state.setDestinationFlatNumber);
+    const setDestinationPostalCode = useStore((state) => state.setDestinationPostalCode);
+    const setDestinationCity = useStore((state) => state.setDestinationCity);
+  
+    const setDeliveryAtWeekend = useStore((state) => state.setDeliveryAtWeekend);
+  
+    const setPriority = useStore((state) => state.setPriority);
+  
+    const setLength = useStore((state) => state.setLength);
+    const setWidth = useStore((state) => state.setWidth);
+    const setHeight = useStore((state) => state.setHeight);
+    const setWeight = useStore((state) => state.setWeight);
+  
+    const setDateFrom = useStore((state) => state.setDateFrom);
+    const setDateTo = useStore((state) => state.setDateTo);
 
-    const [DestinationStreet, setDestinationStreet] = useState("");
-    const [DestinationStreetNumber, setDestinationStreetNumber] = useState("");
-    const [DestinationFlatNumber, setDestinationFlatNumber] = useState("");
-    const [DestinationPostalCode, setDestinationPostalCode] = useState("");
-    const [DestinationCity, setDestinationCity] = useState("");
 
-    const [DeliveryAtWeekend, setDeliveryAtWeekend] = useState(true);
+    // const [SourceStreet, setSourceStreet] = useState("");
+    // const [SourceStreetNumber, setSourceStreetNumber] = useState("");
+    // const [SourceFlatNumber, setSourceFlatNumber] = useState("");
+    // const [SourcePostalCode, setSourcePostalCode] = useState("");
+    // const [SourceCity, setSourceCity] = useState("");
 
-    const [Priority, setPriority] = useState(0);
+    // const [DestinationStreet, setDestinationStreet] = useState("");
+    // const [DestinationStreetNumber, setDestinationStreetNumber] = useState("");
+    // const [DestinationFlatNumber, setDestinationFlatNumber] = useState("");
+    // const [DestinationPostalCode, setDestinationPostalCode] = useState("");
+    // const [DestinationCity, setDestinationCity] = useState("");
 
-    const [Length, setLength] = useState("");
-    const [Width, setWidth] = useState("");
-    const [Height, setHeight] = useState("");
-    const [Weight, setWeight] = useState("");
+    // const [DeliveryAtWeekend, setDeliveryAtWeekend] = useState(true);
 
-    const [DateFrom, setDateFrom] = useState(null);
-    const [DateTo, setDateTo] = useState(null);
+    // const [Priority, setPriority] = useState(0);
+
+    // const [Length, setLength] = useState("");
+    // const [Width, setWidth] = useState("");
+    // const [Height, setHeight] = useState("");
+    // const [Weight, setWeight] = useState("");
+
+    // const [DateFrom, setDateFrom] = useState(null);
+    // const [DateTo, setDateTo] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const [onErrorMessage, setOnErrorMessage] = useState("");
 
+    const {getIdTokenClaims, isAuthenticated} = useAuth0();
+
+    // const [hiddenSourceStreet, setHiddenSourceStreet] = useState(false);
+    // const [hiddenSourceStreetNumber, setHiddenSourceStreetNumber] = useState(false);
+    // const [hiddenSourceFlatNumber, setHiddenSourceFlatNumber] = useState(false);
+    // const [hiddenSourcePostalCode, setHiddenSourcePostalCode] = useState(false);
+    // const [hiddenSourceCity, setHiddenSourceCity] = useState(false);
+
+    //const [user, setUser] = useState();
+
+    useEffect(() => {
+      setIsLoading(true);
+        const getIdFromToken = async () => {
+          try {
+            if (isAuthenticated) {
+              const claims = await getIdTokenClaims();
+
+              await getUserById(claims["sub"].split('|')[1]);
+            }
+            setIsLoading(false);
+          } catch (error) {
+            console.error('Error while decoding token:', error);
+            setIsLoading(false);
+          }
+        };
+    
+        const getUserById = async (id) => {
+          try {
+            const response = await fetch(`${usersSubsId}/${id}`);
+            if(response.status === 200)
+            {
+              const body = await response.json();
+              //setUser(body);
+              setSourceStreet(body["defaultSourceAddress"]["street"]);
+              setSourceStreetNumber(body["defaultSourceAddress"]["streetNumber"]);
+              setSourceFlatNumber(body["defaultSourceAddress"]["flatNumber"]);
+              setSourcePostalCode(body["defaultSourceAddress"]["postalCode"]);
+              setSourceCity(body["defaultSourceAddress"]["city"]);
+              
+              // setHiddenSourceStreet(true);
+              // setHiddenSourceStreetNumber(true);
+              // setHiddenSourceFlatNumber(true);
+              // setHiddenSourcePostalCode(true);
+              // setHiddenSourceCity(true);
+              return true;
+            }
+            if(response.status === 404)
+            {
+              return false;
+            }
+          } catch (error) {
+            return false;
+          }
+        };
+
+        getIdFromToken();
+      }, [getIdTokenClaims, isAuthenticated, setSourceCity, setSourceFlatNumber, setSourcePostalCode, setSourceStreet, setSourceStreetNumber, usersSubsId]);
+
+
+
     const handleSubmit = async () => {
       setIsLoading(true);
       try {
-          const response = await fetch('http://localhost:5261/api/inquiries', {
+          const response = await fetch(apiInquiries, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -88,10 +205,17 @@ export function FormPage() {
       setIsLoading(false);
   }
 
+if(isLoading)
+{
+  return (
+    <LoadingPage/>
+  );
+}
+
     return (
       <div>
         {isLoading ? (<div>
-        <label>Loading...</label>
+        <LoadingPage/>
         </div>) : (
           <div className="App-header">
         <form onSubmit={handleSubmit}>
@@ -145,48 +269,53 @@ export function FormPage() {
           <FormControl variant='outlined'>
             <FormLabel>Source Address</FormLabel>
             <TextField
-              label="Street"
+              label="Source Street"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceStreet}
+
               onChange={(e)=>setSourceStreet(e.target.value)}
             />
             <TextField
-              label="Street Number"
+              label="Source Street Number"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceStreetNumber}
+
               onChange={(e)=>setSourceStreetNumber(e.target.value)}
             />
             <TextField
-              label="Flat Number"
+              label="Source Flat Number"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceFlatNumber}
+
               onChange={(e)=>setSourceFlatNumber(e.target.value)}
             />
             <TextField
-              label="Postal Code"
+              label="Source Postal Code"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourcePostalCode}
+
               onChange={(e)=>setSourcePostalCode(e.target.value)}
             />
             <TextField
-              label="City"
+              label="Source City"
               variant="outlined"
               margin="normal"
               fullWidth
               required
               value={SourceCity}
+
               onChange={(e)=>setSourceCity(e.target.value)}
             />
           </FormControl>
@@ -197,7 +326,7 @@ export function FormPage() {
           <FormControl variant='outlined'>
             <FormLabel>Destination Address</FormLabel>
             <TextField
-              label="Street"
+              label="Destination Street"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -206,7 +335,7 @@ export function FormPage() {
               onChange={(e)=>setDestinationStreet(e.target.value)}
             />
             <TextField
-              label="Street Number"
+              label="Destination Street Number"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -215,7 +344,7 @@ export function FormPage() {
               onChange={(e)=>setDestinationStreetNumber(e.target.value)}
             />
             <TextField
-              label="Flat Number"
+              label="Destination Flat Number"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -224,7 +353,7 @@ export function FormPage() {
               onChange={(e)=>setDestinationFlatNumber(e.target.value)}
             />
             <TextField
-              label="Postal Code"
+              label="Destination Postal Code"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -233,7 +362,7 @@ export function FormPage() {
               onChange={(e)=>setDestinationPostalCode(e.target.value)}
             />
             <TextField
-              label="City"
+              label="Destination City"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -251,19 +380,20 @@ export function FormPage() {
             <FormLabel >Delivery and pickup date</FormLabel>
             
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker value={DateFrom}               
+              <DatePicker value={DateFrom}    label="Date from"            
               onChange={(newDate) => setDateFrom(newDate)}
               renderInput={(params) => <TextField {...params} /> }/>
             </LocalizationProvider>
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker 
+              label="Date to"
               value={DateTo}           
               onChange={(newDate) => setDateTo(newDate)}
               renderInput={(params) => <TextField {...params} /> }/>
             </LocalizationProvider>
             <FormControlLabel control={<Checkbox value={DeliveryAtWeekend} defaultChecked
-              onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} color="textSecondary" label="Delivery at weekend" />
+              onChange={(e)=>{setDeliveryAtWeekend(e.target.checked);}}/>} sx={{ color: 'text.secondary', fontWeight: 'bold' }} label="Delivery at weekend" />
 
           </FormControl>
           </Box>
@@ -283,8 +413,8 @@ export function FormPage() {
               </Select>
             </FormControl>
           </Box>
-          {onErrorMessage &&           <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%',
-                              marginLeft: 'auto', marginRight: 'auto'}}>
+          {onErrorMessage &&
+            <Box component="section" sx={{ p: 2, border: '1px solid red', borderRadius: 8, m: 3, width: '40%', marginLeft: 'auto', marginRight: 'auto'}}>
             <Typography variant="h6" color="textSecondary">
               {onErrorMessage}
             </Typography>

@@ -47,8 +47,8 @@ namespace GetControllersUnitTest
             FakeOfferRepository repository = new();
             OffersController controller = new(repository);
             //Act
-            List<Offer> repository_output = repository.GetAll();
-            var tmp = controller.Get();
+            List<Offer> repository_output = repository.GetAll().Result;
+            var tmp = controller.Get().Result;
             var okObjectResult = tmp.Result as OkObjectResult;
             List<Offer>? controller_output = okObjectResult?.Value as List<Offer>;
             //Assert

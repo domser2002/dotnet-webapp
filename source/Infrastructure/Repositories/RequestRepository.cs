@@ -7,12 +7,21 @@ namespace Infrastructure.Repositories;
 
 public class RequestRepository : IRequestRepository
 {
+    private readonly string connectionString;
+
+    public RequestRepository() { connectionString = Connection.GetConnectionString(); }
+    public RequestRepository(string connection) { connectionString = connection; }
+
     public int Add(Request request)
     {
         int index = 0;
+        ContactInformationRepository contactInformationRepository = new(connectionString);
+        List<ContactInformation> contacts = contactInformationRepository.GetAll();
+        ContactInformation? contactInformation = contacts.Where(c => c.Id == request.Owner.Id).FirstOrDefault();
+        if (contactInformation is null) request.Owner.Id = contactInformationRepository.AddContactInformation(request.Owner);
         try
         {
-            using SqlConnection connection = new(Connection.GetConnectionString());
+            using SqlConnection connection = new(connectionString);
             string sql = $"INSERT INTO Requests VALUES(NULL, @Length, @Width, @Height, @Weight, @PickupDate, @DeliveryDate, @Street, @StreetNumber, " +
                 $"@FlatNumber, @PostalCode, @City, @DestinationStreet, @DestinationStreetnumber, @DestinationFlatNumber, @DestinationPostalCode, @DestinationCity, NULL, " +
                 $"@CompanyName, @Price, @Status, @CM) SELECT SCOPE_IDENTITY()";
@@ -68,7 +77,7 @@ public class RequestRepository : IRequestRepository
         {
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = $"UPDATE Requests SET CancelDate={request.CancelDate} WHERE id={request.Id}";
                 using SqlCommand command = new(sql, connection);
                 connection.Open();
@@ -84,7 +93,7 @@ public class RequestRepository : IRequestRepository
     {
         try
         {
-            using SqlConnection connection = new(Connection.GetConnectionString());
+            using SqlConnection connection = new(connectionString);
             string sql = $"UPDATE Requests SET RequestStatus={(int)status} WHERE id={id}";
             using SqlCommand command = new(sql, connection);
             connection.Open();
@@ -97,7 +106,7 @@ public class RequestRepository : IRequestRepository
     {
         try
         {
-            using SqlConnection connection = new(Connection.GetConnectionString());
+            using SqlConnection connection = new(connectionString);
             string sql = $"DELETE FROM Requests WHERE id={id}";
             using SqlCommand command = new(sql, connection);
             connection.Open();
@@ -113,7 +122,7 @@ public class RequestRepository : IRequestRepository
 
     public List<Request> GetByCompany(string company)
     {
-        return ReadFromDatabase($"SELECT * FROM Requests WHERE Companyname={company}");
+        return ReadFromDatabase($"SELECT * FROM Requests WHERE CompanyName='{company}'");
     }
 
     public Request GetById(int id)
@@ -132,15 +141,15 @@ public class RequestRepository : IRequestRepository
     {
         try
         {
-            using SqlConnection connection = new(Connection.GetConnectionString());
-            var command = new SqlCommand("UPDATE Requests SET SourceAddressStreet = @SourceAddressStreet" +
+            using SqlConnection connection = new(connectionString);
+            var command = new SqlCommand("UPDATE Requests SET SourceAddressStreet = @SourceAddressStreet, " +
                 "SourceAddressStreetNumber = @SourceAddressStreetNumber, SourceAddressFlatNumber = " +
-                "@SourceAddressFlatNumber, SourceAddressPostalCode = @SourceAddressPostalCode," +
-                "SourceAddressCity = @SourceAddressCity, DestinationAddressStreet = @DestinationAddressStreet," +
+                "@SourceAddressFlatNumber, SourceAddressPostalCode = @SourceAddressPostalCode, " +
+                "SourceAddressCity = @SourceAddressCity, DestinationAddressStreet = @DestinationAddressStreet, " +
                 "DestinationAddressStreetNumber = @DestinationAddressStreetNumber, " +
-                "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode" +
-                "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate," +
-                "DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus", connection);
+                "DestinationAddressFlatNumber = @SourceAddressFlatNumber, DestinationAddressPostalCode = @DestinationAddressPostalCode, " +
+                "DestinationAddressCity = @DestinationAddressCity, PickupDate = @PickupDate, " +
+                $"DeliveryDate = @DeliveryDate, CancelDate = @CancelDate, RequestStatus = @RequestStatus WHERE id={request.Id}", connection);
             command.Parameters.AddWithValue("@SourceAddressStreet", request.SourceAddress.Street);
             command.Parameters.AddWithValue("@SourceAddressStreetNumber", request.SourceAddress.StreetNumber);
             command.Parameters.AddWithValue("@SourceAddressFlatNumber", request.SourceAddress.FlatNumber);
@@ -153,7 +162,9 @@ public class RequestRepository : IRequestRepository
             command.Parameters.AddWithValue("@DestinationAddressCity", request.DestinationAddress.City);
             command.Parameters.AddWithValue("@PickupDate", request.PickupDate);
             command.Parameters.AddWithValue("@DeliveryDate", request.DeliveryDate);
-            command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
+            //command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
+            if (request.CancelDate is null) command.Parameters.AddWithValue("@CancelDate", DBNull.Value);
+            else command.Parameters.AddWithValue("@CancelDate", request.CancelDate);
             command.Parameters.AddWithValue("@RequestStatus", request.Status);
             connection.Open();
             command.ExecuteNonQuery();
@@ -164,10 +175,10 @@ public class RequestRepository : IRequestRepository
     private List<Request> ReadFromDatabase(string query)
     {
         List<Request> result = new();
-        ContactInformationRepository cmRepo = new();
+        ContactInformationRepository cmRepo = new(connectionString);
         try
         {
-            using SqlConnection connection = new(Connection.GetConnectionString());
+            using SqlConnection connection = new(connectionString);
             using SqlCommand command = new(query, connection);
             connection.Open();
             using SqlDataReader reader = command.ExecuteReader();
