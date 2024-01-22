@@ -58,7 +58,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'Ser connection'
+    azureSubscription: 'Azure subscription 1(6363c413-c51d-41ae-9ce7-ee453f599795)'
     appType: 'webApp'
     WebAppName: 'DotnetCourierHub'
     Package: '$(System.ArtifactsDirectory)/$(artifactsDirectory1)/*.zip'
