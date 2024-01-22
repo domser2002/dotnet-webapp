@@ -7,12 +7,18 @@ namespace Infrastructure.Repositories
 {
     public class ContactInformationRepository : IContactInformationRepository
     {
-        public void AddContactInformation(ContactInformation contactInformation)
+        private readonly string connectionString;
+
+        public ContactInformationRepository() { connectionString = Connection.GetConnectionString(); }
+        public ContactInformationRepository(string connection) { connectionString = connection; }
+
+        public int AddContactInformation(ContactInformation contactInformation)
         {
+            int index = 0;
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
-                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City)";
+                using SqlConnection connection = new(connectionString);
+                string sql = "INSERT INTO ContactInformation VALUES (@PersonalData, @Email, @Street, @Streetnumber, @FlatNumber, @PostalCode, @City) SELECT SCOPE_IDENTITY()";
                 using SqlCommand command = new(sql, connection);
                 command.Parameters.Add("@PersonalData", SqlDbType.VarChar);
                 command.Parameters["@PersonalData"].Value = contactInformation.PersonalData;
@@ -29,9 +35,11 @@ namespace Infrastructure.Repositories
                 command.Parameters.Add("@City", SqlDbType.VarChar);
                 command.Parameters["@City"].Value = contactInformation.Address.City;
                 connection.Open();
-                command.ExecuteNonQuery();
+                index = (int)(decimal)command.ExecuteScalar();
+                connection.Close();
             }
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
+            return index;
         }
 
         public List<ContactInformation> GetAll()
@@ -39,7 +47,7 @@ namespace Infrastructure.Repositories
             List<ContactInformation> result = new();
             try
             {
-                using SqlConnection connection = new(Connection.GetConnectionString());
+                using SqlConnection connection = new(connectionString);
                 string sql = "SELECT * FROM ContactInformation";
 
                 using SqlCommand command = new(sql, connection);

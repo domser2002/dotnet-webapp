@@ -8,7 +8,7 @@ namespace Infrastructure
         {
             SqlConnectionStringBuilder builder = new()
             {
-                DataSource = "dot-net-webapp.database.windows.net",
+                DataSource = "chmurzynskim.database.windows.net",
                 UserID = "database_admin",
                 Password = "dawid_to_koks1234",
                 InitialCatalog = "NET"

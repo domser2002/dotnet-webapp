@@ -17,9 +17,11 @@ namespace Infrastructure.FakeRepositories
             };
             contacts = ci.ToDictionary(p => p.Id);
         }
-        public void AddContactInformation(ContactInformation contactInformation)
+        public int AddContactInformation(ContactInformation contactInformation)
         {
-            contacts.Add(contacts.Count + 1, contactInformation);
+            int index = contacts.Count + 1;
+            contacts.Add(index, contactInformation);
+            return index;
         }
         public List<ContactInformation> GetAll()
         {

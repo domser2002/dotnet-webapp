@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
+//import {ContentPasteSearchIcon} from '@mui/icons-material/ContentPasteSearch';
 
 export const RoleButton = () => {
     const { isAuthenticated, getIdTokenClaims } = useAuth0();
@@ -42,12 +43,19 @@ export const RoleButton = () => {
                     </NavLink>
                 );
             }
-            if(role === "Office worker")
+            if(role === "OfficeWorker")
             {
                 return (
+                    <div>
                     <NavLink to={"/officeWorkerPanel"}>
                         <Button variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Office worker panel</Button>
                     </NavLink>
+                    <NavLink to={"/companyOffers"}>
+                        <Button variant="contained" sx={{color: 'white', backgroundColor: 'rgb(45, 45, 45)',}}>Company offers</Button>
+                    </NavLink>
+                    </div>
+
+                    
                 );
             }
         }

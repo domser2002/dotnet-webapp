@@ -44,4 +44,18 @@
             }
         }
     }
+    public class LectureAddressAdapter
+    {
+        private Address adaptee;
+        public LectureAddressAdapter(Address adaptee)
+        {
+            this.adaptee = adaptee;
+        }
+        public string HouseNumber => adaptee.StreetNumber;
+        public string ApartmentNumber => adaptee.FlatNumber;
+        public string Street => adaptee.Street;
+        public string City => adaptee.City;
+        public string ZipCode => adaptee.PostalCode;
+        public string Country => "Poland"; // we do not have country xd
+    }
 }

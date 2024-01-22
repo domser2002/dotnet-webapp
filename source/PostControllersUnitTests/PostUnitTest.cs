@@ -31,11 +31,11 @@ namespace PostControllersUnitTests
             //Arrange
             FakeOfferRepository repository = new();
             OffersController controller = new(repository);
-            int count_before = repository.GetAll().Count;
+            int count_before = repository.GetAll().Result.Count;
             //Act
             Offer offer = new();
             controller.Create(offer);
-            int count_after = repository.GetAll().Count;
+            int count_after = repository.GetAll().Result.Count;
             //Assert
             Assert.AreEqual(count_before + 1, count_after);
         }
