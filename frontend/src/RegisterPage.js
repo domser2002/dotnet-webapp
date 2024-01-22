@@ -150,7 +150,7 @@ export function RegisterPage() {
 
     if(userInDb)
     {
-      navigate("./profile");
+      navigate("/profile");
     }
 
     if(isLoading)
