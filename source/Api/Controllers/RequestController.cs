@@ -63,7 +63,7 @@ namespace Api.Controllers
                 return BadRequest();
             };
 
-            repository.Add(request);
+            request.Id = repository.Add(request);
             return CreatedAtAction("GetById", new { id = request.Id }, request);
         }
         // DELETE /api/requests
