@@ -1,0 +1,79 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  artifactsDirectory1: 'drop1'
+  artifactsDirectory2: 'drop2'
+  # version number to set manually
+  major: 1
+  minor: 0
+
+# custom versioning
+name: $(major).$(minor)$(Rev:.r)
+
+steps:
+- task: NuGetToolInstaller@1
+
+# build backend
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+#- task: VSTest@2
+#  inputs:
+#    platform: '$(buildPlatform)'
+#    configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(artifactsDirectory1)'
+    publishLocation: 'Container'
+
+# deploy backend to Azure App Service
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: '$(artifactsDirectory1)'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Ser connection'
+    appType: 'webApp'
+    WebAppName: 'DotnetCourierHub'
+    Package: '$(System.ArtifactsDirectory)/$(artifactsDirectory1)/*.zip'
+    enableCustomDeployment: true
+    deploymentType: 'webDeploy'
+
+# build frontend
+- task: UseNode@1
+  inputs:
+    version: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd frontend
+    npm install
+    npm run build
+    npm run test
+  displayName: 'npm install, build and test'
