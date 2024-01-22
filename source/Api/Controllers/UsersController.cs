@@ -86,13 +86,13 @@ namespace Api.Controllers
             repository.Update(existingUser);
             return Ok(existingUser);
         }
-        // PATCH /api/users/{request_id}
-        [HttpPatch("{request_id}")]
-        public ActionResult AddRequest(string userID, [FromBody] Request request)
+        // PATCH /api/users/{user_id}
+        [HttpPatch("{user_id}")]
+        public ActionResult AddRequest([FromRoute] string user_id, [FromBody] Request request)
         {
-            if (!string.IsNullOrEmpty(userID))
+            if (!string.IsNullOrEmpty(user_id))
             {
-                repository.AddRequest(userID, request);
+                repository.AddRequest(user_id, request);
             }
             return Ok();
         }
