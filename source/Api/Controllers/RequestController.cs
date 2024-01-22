@@ -1,10 +1,11 @@
 ﻿using Domain.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model;
-using Frontend.Validators;
-using System.ComponentModel.DataAnnotations;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authorization;
 using Infrastructure.Repositories;
+using System.ComponentModel;
+using System.IO;
 
 namespace Api.Controllers
 {
@@ -12,9 +13,13 @@ namespace Api.Controllers
     public class RequestController : ControllerBase
     {
         private readonly IRequestRepository repository;
+        private readonly BlobContainerClient containerClient;
         public RequestController(IRequestRepository repository)
         {
             this.repository = repository;
+            BlobServiceClient blobServiceClient = new("DefaultEndpointsProtocol=https;AccountName=dotnetwebapp;" +
+            "AccountKey=l8YwfKHD9jI0GRpxzKfJrhbJHpiavg5hQvN0MXhRmAB0BLOoqZY6+dG+xMApvt0w2YNXvTtxdzo++ASt0zLpNg==;EndpointSuffix=core.windows.net");
+            containerClient = blobServiceClient.GetBlobContainerClient("container");
         }
 
         //GET api/requests
@@ -135,7 +140,7 @@ namespace Api.Controllers
         [Authorize]
         public ActionResult<List<Request>> SendAgreement([FromRoute] string id, [FromForm] IFormFile agreement)
         {
-
+            UploadFile(id, agreement, "agreement").Wait();
             return Ok();
         }
 
@@ -144,8 +149,15 @@ namespace Api.Controllers
         [Authorize]
         public ActionResult<List<Request>> SednReceipt([FromRoute] string id, [FromForm] IFormFile receipt)
         {
-
+            UploadFile(id, receipt, "receipt").Wait();
             return Ok();
+        }
+
+        private async Task UploadFile(string id, IFormFile file, string name)
+        {
+            StreamReader streamReader = new(file.OpenReadStream());
+            var blob = containerClient.GetBlobClient($"{name}{id}.pdf");
+            await blob.UploadAsync(streamReader.BaseStream);
         }
 
     }
