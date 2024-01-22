@@ -34,12 +34,10 @@ namespace Infrastructure
                 else con = new(connection);
                 SqlCommand command1 = new("DELETE FROM Users", con);
                 SqlCommand command2 = new("DELETE FROM Offers", con);
-                SqlCommand command3 = new("DELETE FROM Inquiries", con);
                 SqlCommand command4 = new("DELETE FROM ContactInformation", con);
                 SqlCommand command5 = new("DELETE FROM Requests", con);
                 con.Open();
                 command5.ExecuteNonQuery();
-                command3.ExecuteNonQuery();
                 command1.ExecuteNonQuery();
                 command2.ExecuteNonQuery();
                 command4.ExecuteNonQuery();
