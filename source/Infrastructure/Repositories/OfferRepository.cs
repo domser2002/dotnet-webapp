@@ -58,7 +58,7 @@ namespace Infrastructure.Repositories
             catch (SqlException e) { Console.WriteLine(e.ToString()); }
         }
 
-        public List<Offer> GetAll()
+        public async Task<List<Offer>> GetAll()
         {
             List<Offer> result = new();
             try
@@ -67,9 +67,9 @@ namespace Infrastructure.Repositories
                 string sql = "SELECT * FROM Offers";
 
                 using SqlCommand command = new(sql, connection);
-                connection.Open();
+                await connection.OpenAsync();
                 using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     Offer offer = new()
                     {
@@ -120,10 +120,10 @@ namespace Infrastructure.Repositories
             return result;
         }
 
-        public List<Offer> GetByInquiry(Inquiry inquiry)
+        public async Task<List<Offer>> GetByInquiry(Inquiry inquiry)
         {
             List<Offer> offers = new();
-            foreach (var offer in GetAll())
+            foreach (var offer in await GetAll())
             {
                 if (offer.MatchesInquiry(inquiry))
                     offers.Add(offer);

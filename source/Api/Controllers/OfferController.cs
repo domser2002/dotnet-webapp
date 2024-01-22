@@ -19,9 +19,9 @@ namespace Api.Controllers
 
         // GET api/offers
         [HttpGet]
-        public ActionResult<List<Offer>> Get()
+        public async Task<ActionResult<List<Offer>>> Get()
         {
-            var offers = repository.GetAll();
+            var offers = await repository.GetAll();
 
             return Ok(offers);
         }
@@ -35,10 +35,10 @@ namespace Api.Controllers
         }
         // POST api/offers/inquiry
         [HttpPost("/inquiry")]
-        public ActionResult<List<Offer>> GetByInquiry([FromBody] Inquiry inquiry)
+        public async Task<ActionResult<List<Offer>>> GetByInquiry([FromBody] Inquiry inquiry)
         {
-            var offers = repository.GetByInquiry(inquiry);
-            var lecture_offers = LectureOfferRepository.GetByInquiry(inquiry).Result;
+            var offers = await repository.GetByInquiry(inquiry);
+            var lecture_offers = await LectureOfferRepository.GetByInquiry(inquiry);
             offers.AddRange(lecture_offers);
             return Ok(lecture_offers);
         }
