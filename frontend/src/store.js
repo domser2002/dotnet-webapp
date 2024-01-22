@@ -41,6 +41,10 @@ export const useStore = create((set) => ({
 
     RequestId: 0,
 
+
+    OfferPrice: 0,
+    OfferCompany: "",
+
     setSourceStreet: (newValue) => set({ SourceStreet: newValue }),
     setSourceStreetNumber: (newValue) => set({ SourceStreetNumber: newValue }),
     setSourceFlatNumber: (newValue) => set({ SourceFlatNumber: newValue }),
@@ -71,4 +75,7 @@ export const useStore = create((set) => ({
     setOwnerSourceCity: (newValue) => set({ OwnerSourceCity: newValue }),
 
     setRequestId: (newValue) => set({ RequestId: newValue }),
+
+    setOfferPrice: (newValue) => set({ OfferPrice: newValue }),
+    setOfferCompany: (newValue) => set({ OfferCompany: newValue }),
 }));

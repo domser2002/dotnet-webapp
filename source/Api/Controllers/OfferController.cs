@@ -28,13 +28,13 @@ namespace Api.Controllers
 
         // GET api/offers/{id}
         [HttpGet("{id}")]
-        public ActionResult<List<Offer>> GetByID(int id)
+        public ActionResult<List<Offer>> GetByID([FromRoute] int id)
         {
             var offer = repository.GetByID(id);
             return Ok(offer);
         }
         // POST api/offers/inquiry
-        [HttpPost("/inquiry")]
+        [HttpPost("inquiry")]
         public async Task<ActionResult<List<Offer>>> GetByInquiry([FromBody] Inquiry inquiry)
         {
             var offers = await repository.GetByInquiry(inquiry);

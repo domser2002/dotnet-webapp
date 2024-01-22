@@ -15,7 +15,7 @@ export function CouriersListPage() {
 
     const baseUrl = process.env.REACT_APP_API_URL;
     const usersSubsId = baseUrl+"/api/users/subs";
-    const usersOffer = baseUrl+"/api/offers";
+    const usersOffer = baseUrl+"/api/offers/inquiry";
 
     const {
       setPersonaData,
@@ -26,6 +26,33 @@ export function CouriersListPage() {
       setOwnerSourceFlatNumber,
       setOwnerSourcePostalCode,
       setOwnerSourceCity,
+      SourceStreet,
+      SourceStreetNumber,
+      SourceFlatNumber,
+      SourcePostalCode,
+      SourceCity,
+  
+      DestinationStreet,
+      DestinationStreetNumber,
+      DestinationFlatNumber,
+      DestinationPostalCode,
+      DestinationCity,
+  
+      DeliveryAtWeekend,
+  
+      Priority,
+  
+      Length,
+      Width,
+      Height,
+      Weight,
+  
+      DateFrom,
+      DateTo,
+
+      setOfferPrice,
+      setOfferCompany,
+  
     } = useStore();
     const setOfferId = useStore((state) => state.setOfferId);
     const [offers, setOffers] = useState([]);
@@ -37,7 +64,41 @@ export function CouriersListPage() {
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const response = await fetch(usersOffer);
+          const response = await fetch(usersOffer, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+
+              Package: {
+                Length: Length,
+                Width: Width,
+                Height: Height,
+                Weight: Weight,
+              },
+              PickupDate: DateFrom,
+              DeliveryDate: DateTo,
+              SourceAddress: {
+                Street: SourceStreet,
+                StreetNumber: SourceStreetNumber,
+                FlatNumber: SourceFlatNumber,
+                PostalCode: SourcePostalCode,
+                City: SourceCity,
+              },
+              DestinationAddress: {
+                Street: DestinationStreet,
+                StreetNumber: DestinationStreetNumber,
+                FlatNumber: DestinationFlatNumber,
+                PostalCode: DestinationPostalCode,
+                City: DestinationCity,
+              },
+              Priority: Priority,
+              DeliveryAtWeekend: DeliveryAtWeekend,
+              Active: true,
+              OwnerId: 0,
+            }),
+          });
           const data = await response.json();
           setOffers(data);
         } catch (error) {
@@ -81,9 +142,11 @@ export function CouriersListPage() {
        setOwnerSourceStreet, setOwnerSourceStreetNumber, setOwnerSourceFlatNumber, setOwnerSourcePostalCode, setOwnerSourceCity]);
     
 
-    const handleButtonClick = async (id) => 
+    const handleButtonClick = async (offer) => 
     {
-      setOfferId(id);
+      setOfferId(offer.id);
+      setOfferPrice(offer.price);
+      setOfferCompany(offer.companyName);
       if(!isAuthenticated)
       {
         navigate("/contactInformation");
@@ -114,7 +177,7 @@ export function CouriersListPage() {
               variant="contained"
               color="primary"
               style={{ backgroundColor: '#0d10a6', color: 'white' }}
-              onClick={() => handleButtonClick(offer.id)}
+              onClick={() => handleButtonClick(offer)}
             >Choose
             </Button>
           </ListItem>

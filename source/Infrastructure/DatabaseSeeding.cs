@@ -20,7 +20,7 @@ namespace Infrastructure
             ContactInformationRepository databaseContactInformation = new(con);
             RequestRepository databaseRequests = new(con);
             foreach(var user in users.GetAll()) { databaseUsers.AddUser(user); }
-            foreach (var offer in offers.GetAll()) { databaseOffers.AddOffer(offer); }
+            //foreach (var offer in offers.GetAll()) { databaseOffers.AddOffer(offer); }
             foreach (var contact in contactInformation.GetAll()) { databaseContactInformation.AddContactInformation(contact); }
             foreach (var request in requestRepository.GetAll()) { databaseRequests.Add(request); }
         }

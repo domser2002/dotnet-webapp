@@ -43,30 +43,32 @@ export const SummaryPage = () => {
     OwnerSourceFlatNumber,
     OwnerSourcePostalCode,
     OwnerSourceCity,
+    OfferPrice,
+    OfferCompany,
   } = useStore();
 
   const [offerData, setOfferData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchOfferData = async () => {
-      try {
-        const response = await fetch(`${apiOffers}/${offerId}`);
-        const data = await response.json();
-        setOfferData(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching offer data:', error);
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const fetchOfferData = async () => {
+  //     try {
+  //       const response = await fetch(`${apiOffers}/${offerId}`);
+  //       const data = await response.json();
+  //       setOfferData(data);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.error('Error fetching offer data:', error);
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    if (offerId) {
-      fetchOfferData();
-    }
-  }, [offerId, apiOffers, setOfferData]);
+  //   if (offerId !== null) {
+  //     fetchOfferData();
+  //   }
+  // }, [offerId, apiOffers, setOfferData]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -97,8 +99,8 @@ export const SummaryPage = () => {
                 City: DestinationCity},
               PickupDate: DateFrom.toISOString(),
               DeliveryDate: DateTo.toISOString(),
-              CompanyName: offerData["companyName"],
-              Price: offerData["price"],
+              CompanyName: OfferCompany,
+              Price: OfferPrice,
               Status: 0,
               Owner: {
                 PersonalData: PersonaData,
@@ -160,8 +162,8 @@ export const SummaryPage = () => {
               <Typography>Pickup date: {DateFrom && new Date(DateFrom).toLocaleDateString()}</Typography>
               <Typography>Delivery date: {DateTo && new Date(DateTo).toLocaleDateString()}</Typography>
               <Typography>Cancellation date: {DateTo && new Date(DateTo).toLocaleDateString()}</Typography>
-              <Typography>Company Name: {offerData ? offerData["companyName"] : ''}</Typography>
-              <Typography>Price: {offerData ? offerData["price"] : ''}</Typography>
+              <Typography>Company Name: {OfferCompany}</Typography>
+              <Typography>Price: {OfferPrice}</Typography>
               <Typography>Personal data: {PersonaData}</Typography>
               <Typography>Your company: {CompanyName}</Typography>
               <Typography>Email: {Email}</Typography>
