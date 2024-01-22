@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LoadingPage } from './LoadingPage';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import './SummaryPage.css';
 
@@ -14,6 +15,9 @@ export const SummaryPage = () => {
   const baseUrl = process.env.REACT_APP_API_URL;
   const apiOffers = baseUrl+"/api/offers";
   const apiRequests = baseUrl+"/api/requests";
+  const apiUsersRequestId = baseUrl+"/api/users"
+
+  const {isAuthenticated, getIdTokenClaims} = useAuth0();
   
   const {
     offerId,
@@ -50,25 +54,27 @@ export const SummaryPage = () => {
   const [offerData, setOfferData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [id, setId] = useState();
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchOfferData = async () => {
-  //     try {
-  //       const response = await fetch(`${apiOffers}/${offerId}`);
-  //       const data = await response.json();
-  //       setOfferData(data);
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       console.error('Error fetching offer data:', error);
-  //       setIsLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchOfferData = async () => {
+      try {
+        const claims = await getIdTokenClaims();
+        const id2 = claims["__raw"].split('|')[1];
+        console.log(id2);
+        setId(id2);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching offer data:', error);
+        setIsLoading(false);
+      }
+    };
 
-  //   if (offerId !== null) {
-  //     fetchOfferData();
-  //   }
-  // }, [offerId, apiOffers, setOfferData]);
+
+      fetchOfferData();
+    
+  }, [getIdTokenClaims, setId, setIsLoading,]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -116,7 +122,24 @@ export const SummaryPage = () => {
         });
 
         const responseStatus = response.status;
-        
+        const dat = await response.json();
+
+      if(isAuthenticated)
+      {
+
+        const response2 = await fetch(`${apiUsersRequestId}/${id}`, {
+          method: 'PATCH',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dat),
+      });
+      }
+
+
+
+
+        console.log(dat);
         if(responseStatus === 201)
         {
           navigate('/');

@@ -81,18 +81,11 @@ import { OfferDetails } from "./OfferDetails.js";
     };
 
     const renderFormPage = () => {
-        if(!isAuthenticated)
-        {
-          return <FormPage/>;
-        }
-        else
-        {
-          if(role === "User")
-          {
-            return <FormPage/>;
-          }
-        }
-        return <Error404/>;
+        
+        return (
+          <FormPage/>
+          );
+        
       }
     
 
